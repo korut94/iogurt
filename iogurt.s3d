@@ -2,42 +2,38 @@
 #include <Script3d.h>
 #include <Camera.s3d.h>
 
-#define SIZE_EVENT_QUEUE 100
+#define SIZE_COMMAND_QUEUE 100
 
 /* Set global scene parameters */
 SET SCENE_FOV  = 60;
 SET SCENE_NEAR = 0.5;
 SET SCENE_FAR  = 1000;
 
-/* Global params */
-var __controller;
+/* Player */
+var __player;
 
-/* All variabile to manage the event queue */
-// Index reached by the insertion of the new event
-var __last_event = 0;
-// The queue itself
-var __event_queue = Array(SIZE_EVENT_QUEUE);
+/* All variabile to manage the command queue */
+// Index reached by the insertion of the new command
+var __last_command = 0;
+// The command queue itself
+var __command_queue = Array(SIZE_COMMAND_QUEUE);
 
 /* Camera globals */
 var step = 0;
 var RotX= 0, RotY=0; 
-var CamDir = [0,0,-1];		//camera direction
+var CamDir = [0,0,1];		//camera direction
 var CamPos = [0.0,1.0,10.0];  	//camera position
 /* Light globals */
 var Light0;
 var PosL = [0.0, 10.0, 10.0];	// default light position
 
-#include "controller.s3d"
+#include "device/default.s3d"
+#include "player.s3d"
 
 /* Function declarations */
 function CameraMoveMouse();
 function DrawGrid(col, size);
-
-function OnDownload()
-{
-	// TODO: download your resources here
-	// E.g.: FileDownload("resource.ext");
-}
+function updateView(view);
 
 function OnInit(params)
 {
@@ -47,15 +43,13 @@ function OnInit(params)
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
 	
-	__controller = Controller();
+	__player = Player([0.0,1.0,-10.0]);
 }
-
-
 
 function OnFrame()
 {
 	/* manage camera */
-	CameraMoveMouse();
+	updateView(__player.getView());
 	
 	SceneBegin();
 	glClearColor(1.0, 1.0, 1.0);
@@ -98,40 +92,40 @@ function OnFrame()
 	SceneEnd();
 }
 
-
-
-function DownloadReady(RequestID)
-{
-	// TODO
-}
-
-
-
 function OnTimer()
 {
-	__controller.processEvents(__event_queue, __last_event, SIZE_EVENT_QUEUE);
+	__player.processCommands(__command_queue, __last_command, SIZE_COMMAND_QUEUE);
+	
+	SetCursorPos(0.5, 0.5);
 }
-
 
 function OnEvent(eventID, wparam, lparam)
 {
-	__event_queue[__last_event++] = {eventID, wparam, lparam};
+	var command = deviceTranslation(eventID, wparam, lparam);
 	
-	// Make a circular list so to skip any cleaning phase
-	if (__last_event == SIZE_EVENT_QUEUE) {
-		__last_event = 0;
+	// Any command in ignored status will be rejected
+	if (command[COMMAND_STATUS] != STATUS_IGNORED) {
+		__command_queue[__last_command++] = command;
+	
+		// Make a circular list so to skip any cleaning phase
+		if (__last_command == SIZE_COMMAND_QUEUE) {
+			__last_command = 0;
+		}	
 	}
+	
+	// TODO: to implement a simple message system to alert the user that
+	// an event dosen't have un corrispetive command. 
 }
 
-function OnError(){
-	// TODO: put your errors handling code here
+function updateView(view) {
+	CameraSetPosition(view.position);
+	CameraSetDirection(view.direction);
 }
 
-
-function OnExit()
-{
-	// TODO: put your cleanup code here
-}
+function DownloadReady(RequestID) {}
+function OnDownload() {}
+function OnError(){}
+function OnExit() {}
 
 // Camera manager (using mouse)
 function CameraMoveMouse()
@@ -179,7 +173,6 @@ function CameraMoveMouse()
 	else
 		InMouseR = false;
 }
-
 
 
 function DrawGrid(col, size)
