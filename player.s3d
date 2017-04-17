@@ -1,0 +1,67 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include "human/body.s3d"
+#include "human/id_parts.s3d"
+#include "human/view.s3d"
+
+class Player
+{
+	var m_currentCommand;
+	var m_parts;
+	
+	// Return the expected position and rotation of the view bye
+	getView();
+	processCommands(commandQueue, lastCommand, sizeCommandQueue);
+	processCommand(command);
+};
+
+function Player::Player(startPosition) {
+	m_currentCommand = 0;
+	
+	m_parts = Array(N_PARTS);
+	
+	// Root of the human character
+	var pBody = Body();
+	pBody.setPosition(startPosition);
+	
+	m_parts[BODY_ID] = pBody;
+}
+
+function Player::getView() {
+	var body = m_parts[BODY_ID];
+	
+	var pView = View();
+	pView.position = body.getPosition();
+	pView.direction = body.getDirection();
+	
+	return pView;
+}
+
+function Player::processCommand(command) {
+	command[COMMAND_ACTION].apply(m_parts[command[COMMAND_TARGET]]);
+}
+
+function Player::processCommands(commandQueue, lastCommand, sizeCommandQueue) {
+	// The buffer for the commands is a circular list, so in the case
+	// that the number of commands exceeds the list's size, a part of the
+	// commands are pushed in the last part of the list and the stragglers
+	// in its first part. In that case m_currentCommand will be grater
+	// than the value of the lastCommand.
+	
+	// This to scan only the last part so to keep the while's
+	// invariant that m_currentCommand is less or equal than lastCommand.
+	if (m_currentCommand > lastCommand) {
+		for (var i = m_currentCommand; i < sizeCommandQueue; i++) {
+			processCommand(commandQueue[i]);
+		}
+		
+		m_currentCommand = 0;
+	}
+	
+	while (m_currentCommand < lastCommand) {
+		processCommand(commandQueue[m_currentCommand++]);
+	}
+}
+
+#endif // PLAYER_H
