@@ -1,0 +1,48 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include "body.s3d"
+#include "def.s3d"
+#include "view.s3d"
+
+class Player
+{
+	var m_parts;
+	
+	// Return the expected position and rotation of the view bye
+	getView();
+	processCommands(commandQueue);
+	processCommand(command);
+};
+
+function Player::Player(startPosition) {
+	m_parts = Array(N_PARTS);
+	
+	// Root of the human character
+	var pBody = Body();
+	pBody.setPosition(startPosition);
+	
+	m_parts[BODY_ID] = pBody;
+}
+
+function Player::getView() {
+	var body = m_parts[BODY_ID];
+	
+	var pView = View();
+	pView.position = body.getPosition();
+	pView.direction = body.getDirection();
+	
+	return pView;
+}
+
+function Player::processCommand(command) {
+	command[COMMAND_ACTION].apply(m_parts[command[COMMAND_TARGET]]);
+}
+
+function Player::processCommands(commandQueue) {
+	while (!commandQueue.isEmpty()) {
+		processCommand(commandQueue.pop());
+	}
+}
+
+#endif // PLAYER_H

@@ -12,10 +12,10 @@
 
 #define ANGLE_SPEED		0.5
 
-#include "id_parts.s3d"
+#include "def.s3d"
 #include "../command/move.s3d"
 #include "../command/rotate.s3d"
-#include "../human/id_parts.s3d"
+#include "../human/def.s3d"
 
 /*
  * @brief The function defaultTranslation translates all events
@@ -31,10 +31,10 @@ function deviceTranslation(eventId, wparam, lparam) {
 	
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
-			case KEY_D: command = {STATUS_ACCEPTED, BODY_ID, Move(1, [-1, 0, 0])}; break;
-			case KEY_A: command = {STATUS_ACCEPTED, BODY_ID, Move(1, [1, 0, 0])}; break;
-			case KEY_W: command = {STATUS_ACCEPTED, BODY_ID, Move(1, [0, 0, 1])}; break;
-			case KEY_S: command = {STATUS_ACCEPTED, BODY_ID, Move(1, [0, 0, -1])}; break;
+			case KEY_D: command = {true, BODY_ID, Move(1, [-1, 0, 0])}; break;
+			case KEY_A: command = {true, BODY_ID, Move(1, [1, 0, 0])}; break;
+			case KEY_W: command = {true, BODY_ID, Move(1, [0, 0, 1])}; break;
+			case KEY_S: command = {true, BODY_ID, Move(1, [0, 0, -1])}; break;
 			default: command = EVENT_IGNORED;
 		}
 	} else if (eventId == MOUSE_MOVE) {
@@ -42,7 +42,7 @@ function deviceTranslation(eventId, wparam, lparam) {
 		// (the center of the screen), with a function that gives the center window
 		// coordinates.
 		command = {
-			STATUS_ACCEPTED,
+			true,
 			BODY_ID, 
 			Rotate(-(Mouse.X - 320) * ANGLE_SPEED, -(Mouse.Y - 231) * ANGLE_SPEED)
 		};

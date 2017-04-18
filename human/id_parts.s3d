@@ -1,8 +1,0 @@
-#ifndef HUMAN_ID_PARTS_H
-#define HUMAN_ID_PARTS_H
-
-#define N_PARTS 1
-
-#define BODY_ID 0x00
-
-#endif // HUMAN_ID_PARTS_H
