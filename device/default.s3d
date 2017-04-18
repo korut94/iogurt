@@ -17,16 +17,30 @@
 #include "../command/rotate.s3d"
 #include "../human/def.s3d"
 
-/*
- * @brief The function defaultTranslation translates all events
- * relative to the mouse and keyboard in human interaction commands.
- * 
- * @return The tuple (status : bool, target : int, command : Command). 
- * If `status` is false so the event was ignored and the value of 
- * `command` is void, otherwise `command` reppresents the correct command
- * to apply.
- */
-function deviceTranslation(eventId, wparam, lparam) {
+class DefaultDevice
+{
+	/*
+	 * @brief The function will be invoked by the application when all events
+	 * have been processed.
+	 */
+	finish();
+	/*
+	 * @brief The function translates all events relative to the mouse and 
+	 * keyboard in human interaction commands.
+	 * 
+	 * @return The tuple (status : bool, target : int, command : Command). 
+	 * If `status` is false so the event was ignored and the value of 
+	 * `command` is void, otherwise `command` reppresents the correct command
+	 * to apply.
+	 */
+	translate(eventId, wparam, lparam);
+};
+
+function DefaultDevice::finish() {
+	SetCursorPos(0.5, 0.5);
+}
+
+function DefaultDevice::translate(eventId, wparam, lparam) {
 	var command;
 	
 	if (eventId == KEY_PRESSED) {
@@ -38,14 +52,7 @@ function deviceTranslation(eventId, wparam, lparam) {
 			default: command = EVENT_IGNORED;
 		}
 	} else if (eventId == MOUSE_MOVE) {
-		// TODO: Replacing 320 and 231, the started position (x and y) of the mouse
-		// (the center of the screen), with a function that gives the center window
-		// coordinates.
-		command = {
-			true,
-			BODY_ID, 
-			Rotate(-(Mouse.X - 320) * ANGLE_SPEED, -(Mouse.Y - 231) * ANGLE_SPEED)
-		};
+		command = {true, BODY_ID, Rotate(-(Mouse.X - 320) * ANGLE_SPEED, -(Mouse.Y - 229) * ANGLE_SPEED)};
 	} else {
 		command = EVENT_IGNORED;
 	}
