@@ -7,10 +7,11 @@
 
 class Application 
 {
+	var m_device;
 	var m_player;
 	var m_queue;
 	
-	event(eventID, wparam, lparam);
+	event(eventId, wparam, lparam);
 	init(params);
 	render();
 	update();
@@ -18,12 +19,13 @@ class Application
 };
 
 function Application::Application() {
+	m_device = DefaultDevice();
 	m_player = Player([0.0, 1.0, -10.0]);
 	m_queue = CommandQueue();
 }
 
-function Application::event(eventID, wparam, lparam) {
-	var command = deviceTranslation(eventID, wparam, lparam);
+function Application::event(eventId, wparam, lparam) {
+	var command = m_device.translate(eventId, wparam, lparam);
 	
 	// Any command in ignored status will be rejected
 	if (command[COMMAND_ACCEPTED] == true) {
@@ -41,11 +43,11 @@ function Application::init(params) {
 
 function Application::render() {
 	updateView(m_player.getView());
-	SetCursorPos(0, 0);
 }
 
 function Application::update() {
 	m_player.processCommands(m_queue);
+	m_device.finish();
 }
 
 function Application::updateView(view) {
