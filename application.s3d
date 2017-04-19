@@ -2,7 +2,7 @@
 #define APPLICATION_H
 
 #include "command/commandqueue.s3d"
-#include "device/default.s3d"
+#include "device/mousekeyboard.s3d"
 #include "human/player.s3d"
 
 class Application 
@@ -19,7 +19,7 @@ class Application
 };
 
 function Application::Application() {
-	m_device = DefaultDevice();
+	m_device = MouseKeyboard();
 	m_player = Player([0.0, 1.0, -10.0]);
 	m_queue = CommandQueue();
 }
