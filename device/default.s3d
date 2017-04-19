@@ -6,7 +6,7 @@
 
 #define KEY_PRESSED 	0x0100
 #define KEY_RELEASED	0x0101
-#define KEY_TAPPED		0x0102	
+#define KEY_TAPPED		0x0102
 #define KEY_A			0x41	
 #define MAP_KEY_A 		0
 #define KEY_D			0x44	
@@ -15,6 +15,7 @@
 #define MAP_KEY_S 		2
 #define KEY_W			0x57	
 #define MAP_KEY_W 		3
+#define COUNT_MAP_KEY	4
 
 #define ANGLE_SPEED		0.5
 
@@ -49,7 +50,7 @@ class DefaultDevice
 };
 
 function DefaultDevice::DefaultDevice() {
-	m_kbStatus = Array(4);
+	m_kbStatus = Array(COUNT_MAP_KEY);
 	
 	m_kbStatus[MAP_KEY_A] = false;
 	m_kbStatus[MAP_KEY_S] = false;
