@@ -28,7 +28,7 @@ function Application::event(eventId, wparam, lparam) {
 	var command = m_device.translate(eventId, wparam, lparam);
 	
 	// Any command in ignored status will be rejected
-	if (command[COMMAND_ACCEPTED] == true) {
+	if (command.isAccepted() == true) {
 		m_queue.push(command);
 	}
 }
