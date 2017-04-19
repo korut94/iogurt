@@ -65,8 +65,6 @@ function DefaultDevice::translate(eventId, wparam, lparam) {
 	var cmd;
 	
 	if (eventId == KEY_PRESSED) {
-		OutputLN("Pressed");
-		
 		switch (wparam) {
 			case KEY_D: {
 				cmd = (m_kbStatus[MAP_KEY_D]) ? CmdIgnore() : Command(Move(1, [1, 0, 0]), BODY_ID);
@@ -92,8 +90,6 @@ function DefaultDevice::translate(eventId, wparam, lparam) {
 		}
 	// The second condition need to avoid the false positive by the keyboard repetition
 	} else if (eventId == KEY_RELEASED && !KeyPressed(wparam)) {
-		OutputLN("Released");
-		
 		switch (wparam) {
 			case KEY_D: {
 				cmd = Command(Move(0, [1, 0, 0]), BODY_ID);
