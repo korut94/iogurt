@@ -5,10 +5,14 @@
 #define MOUSE_MOVE 		0x0200
 
 #define KEY_PRESSED 	0x0100
-#define KEY_A			0x41
-#define KEY_D			0x44
-#define KEY_S			0x53
-#define KEY_W			0x57
+#define KEY_A			0x41	
+#define MAP_KEY_A 		0
+#define KEY_D			0x44	
+#define MAP_KEY_D 		1
+#define KEY_S			0x53	
+#define MAP_KEY_S 		2
+#define KEY_W			0x57	
+#define MAP_KEY_W 		3
 
 #define ANGLE_SPEED		0.5
 
@@ -19,6 +23,12 @@
 
 class DefaultDevice
 {
+	/*
+	 * @brief The keyboard status, when an item is true meaning that the relative
+	 * key is hold pressed.
+	 */
+	var m_kbStatus;
+	
 	/*
 	 * @brief The function will be invoked by the application when all events
 	 * have been processed.
@@ -36,6 +46,15 @@ class DefaultDevice
 	translate(eventId, wparam, lparam);
 };
 
+function DefaultDevice::DefaultDevice() {
+	m_kbStatus = Array(4);
+	
+	m_kbStatus[MAP_KEY_A] = false;
+	m_kbStatus[MAP_KEY_S] = false;
+	m_kbStatus[MAP_KEY_D] = false;
+	m_kbStatus[MAP_KEY_W] = false;
+}
+
 function DefaultDevice::finish() {
 	SetCursorPos(0.5, 0.5);
 }
@@ -45,10 +64,26 @@ function DefaultDevice::translate(eventId, wparam, lparam) {
 	
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
-			case KEY_D: command = {true, BODY_ID, Move(1, [-1, 0, 0])}; break;
-			case KEY_A: command = {true, BODY_ID, Move(1, [1, 0, 0])}; break;
-			case KEY_W: command = {true, BODY_ID, Move(1, [0, 0, 1])}; break;
-			case KEY_S: command = {true, BODY_ID, Move(1, [0, 0, -1])}; break;
+			case KEY_D: {
+				command = (m_kbStatus[MAP_KEY_D]) ? EVENT_IGNORED : {true, BODY_ID, Move(1, [1, 0, 0])};
+				m_kbStatus[MAP_KEY_D] = true;
+				break;
+			}
+			case KEY_A: {
+				command = (m_kbStatus[MAP_KEY_A]) ? EVENT_IGNORED : {true, BODY_ID, Move(1, [-1, 0, 0])}; 
+				m_kbStatus[MAP_KEY_A] = true;
+				break;
+			}
+			case KEY_W: {
+				command = (m_kbStatus[MAP_KEY_W]) ? EVENT_IGNORED : {true, BODY_ID, Move(1, [0, 0, 1])};
+				m_kbStatus[MAP_KEY_W] = true;
+				break;
+			}
+			case KEY_S: {
+				command = (m_kbStatus[MAP_KEY_S]) ? EVENT_IGNORED : {true, BODY_ID, Move(1, [0, 0, -1])};
+				m_kbStatus[MAP_KEY_S] = true;
+				break;
+			}
 			default: command = EVENT_IGNORED;
 		}
 	} else if (eventId == MOUSE_MOVE) {
