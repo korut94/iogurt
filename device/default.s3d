@@ -8,13 +8,13 @@
 #define KEY_RELEASED	0x0101
 #define KEY_TAPPED		0x0102
 #define KEY_A			0x41	
-#define MAP_KEY_A 		0
+#define MAP_KEY_A 		0x00
 #define KEY_D			0x44	
-#define MAP_KEY_D 		1
+#define MAP_KEY_D 		0x01
 #define KEY_S			0x53	
-#define MAP_KEY_S 		2
+#define MAP_KEY_S 		0x02
 #define KEY_W			0x57	
-#define MAP_KEY_W 		3
+#define MAP_KEY_W 		0x03
 #define COUNT_MAP_KEY	4
 
 #define ANGLE_SPEED		0.5
