@@ -36,7 +36,7 @@ function Player::getView() {
 }
 
 function Player::processCommand(command) {
-	command[COMMAND_ACTION].apply(m_parts[command[COMMAND_TARGET]]);
+	command.action().apply(m_parts[command.target()]);
 }
 
 function Player::processCommands(commandQueue) {
