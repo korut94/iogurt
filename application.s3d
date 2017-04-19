@@ -1,0 +1,58 @@
+#ifndef APPLICATION_H
+#define APPLICATION_H
+
+#include "command/commandqueue.s3d"
+#include "device/default.s3d"
+#include "human/player.s3d"
+
+class Application 
+{
+	var m_device;
+	var m_player;
+	var m_queue;
+	
+	event(eventId, wparam, lparam);
+	init(params);
+	render();
+	update();
+	updateView(view);
+};
+
+function Application::Application() {
+	m_device = DefaultDevice();
+	m_player = Player([0.0, 1.0, -10.0]);
+	m_queue = CommandQueue();
+}
+
+function Application::event(eventId, wparam, lparam) {
+	var command = m_device.translate(eventId, wparam, lparam);
+	
+	// Any command in ignored status will be rejected
+	if (command[COMMAND_ACCEPTED] == true) {
+		m_queue.push(command);
+	}
+}
+
+function Application::init(params) {
+	/* initialize light */
+	var Light0 = CVmLight();
+	Light0.SetPosition([0.0, 10.0, 10.0]);
+	Light0.SetDiffuse(1, 1, 1);
+	Light0.Enable();
+}
+
+function Application::render() {
+	updateView(m_player.getView());
+	m_device.finish();
+}
+
+function Application::update() {
+	m_player.processCommands(m_queue);
+}
+
+function Application::updateView(view) {
+	CameraSetPosition(view.position);
+	CameraSetDirection(view.direction);
+}
+
+#endif // APPLICATION_H

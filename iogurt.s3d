@@ -2,60 +2,33 @@
 #include <Script3d.h>
 #include <Camera.s3d.h>
 
-#define SIZE_EVENT_QUEUE 100
+#include "application.s3d"
 
 /* Set global scene parameters */
 SET SCENE_FOV  = 60;
 SET SCENE_NEAR = 0.5;
 SET SCENE_FAR  = 1000;
 
-/* Global params */
-var __controller;
-
-/* All variabile to manage the event queue */
-// Index reached by the insertion of the new event
-var __last_event = 0;
-// The queue itself
-var __event_queue = Array(SIZE_EVENT_QUEUE);
+var __application = Application();
 
 /* Camera globals */
 var step = 0;
 var RotX= 0, RotY=0; 
-var CamDir = [0,0,-1];		//camera direction
+var CamDir = [0,0,1];		//camera direction
 var CamPos = [0.0,1.0,10.0];  	//camera position
-/* Light globals */
-var Light0;
-var PosL = [0.0, 10.0, 10.0];	// default light position
-
-#include "controller.s3d"
 
 /* Function declarations */
 function CameraMoveMouse();
 function DrawGrid(col, size);
 
-function OnDownload()
-{
-	// TODO: download your resources here
-	// E.g.: FileDownload("resource.ext");
-}
-
 function OnInit(params)
 {
-	/* initialize light */
-	Light0 = CVmLight();
-	Light0.SetPosition(PosL);
-	Light0.SetDiffuse(1, 1, 1);
-	Light0.Enable();
-	
-	__controller = Controller();
+	__application.init(params);
 }
-
-
 
 function OnFrame()
 {
-	/* manage camera */
-	CameraMoveMouse();
+	__application.render();
 	
 	SceneBegin();
 	glClearColor(1.0, 1.0, 1.0);
@@ -98,40 +71,20 @@ function OnFrame()
 	SceneEnd();
 }
 
-
-
-function DownloadReady(RequestID)
-{
-	// TODO
-}
-
-
-
 function OnTimer()
 {
-	__controller.processEvents(__event_queue, __last_event, SIZE_EVENT_QUEUE);
+	__application.update();
 }
-
 
 function OnEvent(eventID, wparam, lparam)
 {
-	__event_queue[__last_event++] = {eventID, wparam, lparam};
-	
-	// Make a circular list so to skip any cleaning phase
-	if (__last_event == SIZE_EVENT_QUEUE) {
-		__last_event = 0;
-	}
+	__application.event(eventID, wparam, lparam);
 }
 
-function OnError(){
-	// TODO: put your errors handling code here
-}
-
-
-function OnExit()
-{
-	// TODO: put your cleanup code here
-}
+function DownloadReady(RequestID) {}
+function OnDownload() {}
+function OnError(){}
+function OnExit() {}
 
 // Camera manager (using mouse)
 function CameraMoveMouse()
@@ -179,7 +132,6 @@ function CameraMoveMouse()
 	else
 		InMouseR = false;
 }
-
 
 
 function DrawGrid(col, size)

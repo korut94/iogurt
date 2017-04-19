@@ -1,0 +1,26 @@
+#ifndef ROTATE_H
+#define ROTATE_H
+
+/**
+ * @brief The Rotata class defines the command to rotate
+ * the human body.
+ */
+class Rotate
+{
+	var m_angleX;
+	var m_angleY;
+	
+	apply(target);
+};
+
+function Rotate::Rotate(angleX, angleY) {
+	m_angleX = angleX;
+	m_angleY = angleY;
+}
+
+function Rotate::apply(target) {
+	target.rotate(m_angleX, [0, 1, 0]);
+	target.rotate(m_angleY, [1, 0, 0]);
+}
+
+#endif // ROTATE_H
