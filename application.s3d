@@ -43,11 +43,11 @@ function Application::init(params) {
 
 function Application::render() {
 	updateView(m_player.getView());
+	m_device.finish();
 }
 
 function Application::update() {
 	m_player.processCommands(m_queue);
-	m_device.finish();
 }
 
 function Application::updateView(view) {
