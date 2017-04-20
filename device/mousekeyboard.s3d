@@ -36,7 +36,7 @@ class MouseKeyboard
 	 * @brief The function will be invoked by the application when all events
 	 * have been processed.
 	 */
-	finish();
+	restart();
 	/*
 	 * @brief The function translates all events relative to the mouse and 
 	 * keyboard in human interaction commands.
@@ -58,7 +58,7 @@ function MouseKeyboard::MouseKeyboard() {
 	m_kbStatus[MAP_KEY_W] = false;
 }
 
-function MouseKeyboard::finish() {
+function MouseKeyboard::restart() {
 	SetCursorPos(0.5, 0.5);
 }
 
