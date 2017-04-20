@@ -1,0 +1,26 @@
+#ifndef POINT_2D_H
+#define POINT_2D_H
+
+class Point2D
+{
+	var m_x;
+	var m_y;
+	
+	x();
+	y();
+};
+
+function Point2D::Point2D(x, y) {
+	m_x = x;
+	m_y = y;
+}
+
+function Point2D::x() {
+	return m_x;
+}
+
+function Point2D::y() {
+	return m_y;
+}
+
+#endif // POINT_2D_H
