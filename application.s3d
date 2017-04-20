@@ -1,13 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "player.s3d"
 #include "command/commandqueue.s3d"
 #include "device/mousekeyboard.s3d"
-#include "human/player.s3d"
+#include "human/human.s3d"
 
 class Application 
 {
-	var m_device;
+	var m_human;
 	var m_player;
 	var m_queue;
 	
@@ -19,18 +20,13 @@ class Application
 };
 
 function Application::Application() {
-	m_device = MouseKeyboard();
-	m_player = Player([0.0, 1.0, -10.0]);
+	m_human = Human([0.0, 1.0, -10.0]);
+	m_player = Player(MouseKeyboard());
 	m_queue = CommandQueue();
 }
 
 function Application::event(eventId, wparam, lparam) {
-	var command = m_device.translate(eventId, wparam, lparam);
-	
-	// Any command in ignored status will be rejected
-	if (command.isAccepted() == true) {
-		m_queue.push(command);
-	}
+	m_player.processEvent(m_queue, eventId, wparam, lparam);
 }
 
 function Application::init(params) {
@@ -42,12 +38,12 @@ function Application::init(params) {
 }
 
 function Application::render() {
-	updateView(m_player.getView());
-	m_device.finish();
+	updateView(m_human.getView());
+	m_player.restart();
 }
 
 function Application::update() {
-	m_player.processCommands(m_queue);
+	m_human.processCommands(m_queue);
 }
 
 function Application::updateView(view) {
