@@ -4,21 +4,14 @@
 
 #include "application.s3d"
 
+var __application = Application();
+
 /* Set global scene parameters */
 SET SCENE_FOV  = 60;
 SET SCENE_NEAR = 0.5;
 SET SCENE_FAR  = 1000;
 
-var __application = Application();
-
-/* Camera globals */
-var step = 0;
-var RotX= 0, RotY=0; 
-var CamDir = [0,0,1];		//camera direction
-var CamPos = [0.0,1.0,10.0];  	//camera position
-
 /* Function declarations */
-function CameraMoveMouse();
 function DrawGrid(col, size);
 
 function OnInit(params)
@@ -85,54 +78,6 @@ function DownloadReady(RequestID) {}
 function OnDownload() {}
 function OnError(){}
 function OnExit() {}
-
-// Camera manager (using mouse)
-function CameraMoveMouse()
-{
-	static var InMouseR = false, InMouseL = false;				
-	static var PrecX = 0, PrecY = 0;			
-	if(Mouse.ButtonL)
-  	{
-  		if( InMouseL )
-   		{
-		    Rotx += (Mouse.X - PrecX)/50.0;
-		    Roty += (Mouse.Y - PrecY)/50.0;
-		    CameraSetRotation(Roty, 1,0,0);
-		    CameraRotate(Rotx , 0,1,0 );
-		   }
-	  	else
-   		{
-	   		PrecX = Mouse.X;
-   			PrecY = Mouse.Y;
-   		}
- 	 	InMouseL = true;
-  	}
- 	else
-  		InMouseL = false;
-
- 	if(Mouse.ButtonR)
-  	{
-  		if( InMouseR )
-   		{
-   			CamPos = CameraGetPosition();
-   			CamDir = CameraGetDirection();
-   			step = ( PrecY - Mouse.Y) /150.0; 
-			CamPos[0] += step*CamDir[0];
-			CamPos[1] += step*CamDir[1];
-			CamPos[2] += step*CamDir[2];
-   			CameraSetPosition( CamPos );
-    		}
-  		else
-   		{
-			PrecX = Mouse.X;
-			PrecY = Mouse.Y;
-   		}
-		InMouseR = true;
-  	}
-	else
-		InMouseR = false;
-}
-
 
 function DrawGrid(col, size)
 {
