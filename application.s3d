@@ -4,6 +4,7 @@
 #include "player.s3d"
 #include "command/commandqueue.s3d"
 #include "device/mousekeyboard.s3d"
+#include "graphic/window.s3d"
 #include "human/human.s3d"
 
 class Application 
@@ -11,22 +12,25 @@ class Application
 	var m_human;
 	var m_player;
 	var m_queue;
+	var m_window;
 	
 	event(eventId, wparam, lparam);
 	init(params);
 	render();
 	update();
 	updateView(view);
+	getWindow();
 };
 
 function Application::Application() {
 	m_human = Human([0.0, 1.0, -10.0]);
 	m_player = Player(MouseKeyboard());
 	m_queue = CommandQueue();
+	m_window = Window();
 }
 
 function Application::event(eventId, wparam, lparam) {
-	m_player.processEvent(m_queue, eventId, wparam, lparam);
+	m_player.processEvent(m_queue, eventId, wparam, lparam, m_window);
 }
 
 function Application::init(params) {
@@ -37,7 +41,17 @@ function Application::init(params) {
 	Light0.Enable();
 }
 
+function Application::getWindow() {
+	return m_window;
+}
+
 function Application::render() {
+	// This block gets the actual size (width and heigth) of the viewport
+	SceneBegin();
+	var res = glGet(GL_VIEWPORT);
+	m_window.setSize(res[2], res[3]);
+	SceneEnd();
+	
 	updateView(m_human.getView());
 	m_player.restart();
 }
