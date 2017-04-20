@@ -1,0 +1,51 @@
+#ifndef WINDOW_H
+#define WINDOW_H
+
+#include "point2d.s3d"
+
+extern function SetXVRWindowFullScreen;
+
+#define WINDOW_HEIGTH	1
+#define WINDOW_WIDTH	0
+
+class Window
+{
+	// 2D vectory with the shape [width,heigth] 
+	var m_size;
+	var m_isFullScreen;
+	
+	getSize();
+	isFullScreen();
+	setFullScreen();
+	setSize(width, heigth);
+};
+
+function Window::Window() {
+	m_size = [0, 0];
+	m_isFullScreen = false;
+}
+
+function Window::getSize() {
+	return Point2D(m_size[0], m_size[1]);
+}
+
+function Window::isFullScreen() {
+	return m_isFullScreen;
+}
+
+function Window::setFullScreen() {
+	m_isFullScreen = true;
+	SetXVRWindowFullScreen(true);
+}
+
+function Window::setSize(width, heigth) {
+	if (width != m_size[WINDOW_WIDTH]) {
+		m_size[WINDOW_WIDTH] = width;	
+	}
+	
+	if (heigth != m_size[WINDOW_HEIGTH]) {
+		m_size[WINDOW_HEIGTH] = heigth;
+	}
+}
+ 
+#endif // WINDOW_H

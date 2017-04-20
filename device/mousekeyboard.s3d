@@ -19,6 +19,8 @@
 
 #define ANGLE_SPEED		0.5
 
+#define WM_BORDER		11
+
 #include "../command/command.s3d"
 #include "../command/move.s3d"
 #include "../command/rotate.s3d"
@@ -46,7 +48,7 @@ class MouseKeyboard
 	 * `command` is void, otherwise `command` reppresents the correct command
 	 * to apply.
 	 */
-	translate(eventId, wparam, lparam);
+	translate(eventId, wparam, lparam, window);
 };
 
 function MouseKeyboard::MouseKeyboard() {
@@ -62,7 +64,7 @@ function MouseKeyboard::restart() {
 	SetCursorPos(0.5, 0.5);
 }
 
-function MouseKeyboard::translate(eventId, wparam, lparam) {
+function MouseKeyboard::translate(eventId, wparam, lparam, window) {
 	var cmd;
 	
 	if (eventId == KEY_PRESSED) {
@@ -115,7 +117,11 @@ function MouseKeyboard::translate(eventId, wparam, lparam) {
 			default: cmd = CmdIgnore();
 		}
 	} else if (eventId == MOUSE_MOVE) {
-		cmd = Command(Rotate(-(Mouse.X - 320) * ANGLE_SPEED, -(Mouse.Y - 229) * ANGLE_SPEED), BODY_ID);
+		var offX = window.getSize().x()/2;
+		// The eleven is the possible width of the window's border
+		var offY = window.isFullScreen() ? window.getSize().y()/2 : (window.getSize().y()/2) - WM_BORDER;
+		
+		cmd = Command(Rotate(-(Mouse.X - offX) * ANGLE_SPEED, -(Mouse.Y - offY) * ANGLE_SPEED), BODY_ID);
 	} else {
 		cmd = CmdIgnore();
 	}
