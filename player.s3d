@@ -1,0 +1,33 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+class Player
+{
+	var m_device;
+	
+	/*
+	 * @brief The function is called by the applicaion when the
+	 * event loop is restarted
+	 */
+	restart();
+	processEvent(queue, eventId, wparam, lparam);
+};
+
+function Player::Player(device) {
+	m_device = device;
+}
+
+function Player::restart() {
+	m_device.restart();
+}
+
+function Player::processEvent(queue, eventId, wparam, lparam) {
+	var command = m_device.translate(eventId, wparam, lparam);
+	
+	// Any command in ignored status will be rejected
+	if (command.isAccepted() == true) {
+		queue.push(command);
+	}
+}
+
+#endif // PLAYER_H
