@@ -1,0 +1,33 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
+class Object 
+{
+	var m_cvmObj;
+	var m_direction;
+	var m_velocity;
+	
+	getCVmObj();
+	setVelocity(velocity);
+	update();
+};
+
+function Object::Object() {
+	var m_cvmObj = CVmObj();
+	var m_direction = [0,0,1]; // look forward
+	var m_velocity = 0;
+}
+
+function Object::getCVmObj() {
+	return m_cvmObj;
+}
+
+function Object::setVelocity(velocity) {
+	m_velocity = velocity;
+}
+
+function Object::update() {
+	m_cvmObj.move(m_velocity * m_direction);
+}
+
+#endif // OBJECT_H
