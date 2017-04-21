@@ -1,0 +1,39 @@
+#ifndef WORLD_H
+#define WORLD_H
+
+#define MAX_NUMBER_OBJECTS 1000
+
+class World
+{
+	var m_lastIndexObj;
+	var m_objList;
+	var m_root;
+	
+	addObject(obj);
+	draw();
+	update();
+};
+
+function World::World() {
+	m_objList = Array(MAX_NUMBER_OBJECTS);
+	m_root = CVmObj();
+	
+	m_lastIndexObj = 0;
+}
+
+function World::addObject(obj) {
+	m_root.AddChild(obj.getCVmObj());
+	m_objList[m_lastIndexObj++] = obj;
+}
+
+function World::draw() {
+	m_root.Draw();
+}
+
+function World::update() {
+	for (var i = 0; i < m_lastIndexObj; i++) {
+		m_objList[i].update();
+	}
+}
+
+#endif // WORLD_H
