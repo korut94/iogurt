@@ -4,7 +4,7 @@
 #include "player.s3d"
 #include "command/commandqueue.s3d"
 #include "device/mousekeyboard.s3d"
-#include "graphic/window.s3d"
+#include "graphics/window.s3d"
 #include "human/human.s3d"
 
 class Application 
