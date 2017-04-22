@@ -15,12 +15,15 @@ class Human
 	processCommand(command);	
 };
 
-function Human::Human(startPosition) {
+function Human::Human() {
 	m_parts = Array(N_PARTS);
 	
 	// Root of the human character
 	m_parts[BODY_ID] = Object();
-	m_parts[BODY_ID].setPosition(startPosition);
+	m_parts[HEAD_ID] = Object();
+	
+	// Block the head to the body
+	m_parts[BODY_ID].getCVmObj().AddChild(m_parts[HEAD_ID].getCVmObj());
 }
 
 function Human::getParts() {
@@ -28,11 +31,11 @@ function Human::getParts() {
 }
 
 function Human::getView() {
-	var body = m_parts[BODY_ID];
+	var head = m_parts[HEAD_ID];
 	
 	var pView = View();
-	pView.position = body.getPosition();
-	pView.direction = body.getDirection();
+	pView.position = m_parts[BODY_ID].getCVmObj().LocalToWorld(head.getCVmObj().GetPosition());
+	pView.direction = head.getDirection();
 	
 	return pView;
 }
