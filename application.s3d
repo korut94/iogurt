@@ -6,6 +6,7 @@
 #include "device/mousekeyboard.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
+#include "scene/world.s3d"
 
 class Application 
 {
@@ -13,6 +14,7 @@ class Application
 	var m_player;
 	var m_queue;
 	var m_window;
+	var m_world;
 	
 	event(eventId, wparam, lparam);
 	init(params);
@@ -23,10 +25,11 @@ class Application
 };
 
 function Application::Application() {
-	m_human = Human([0.0, 1.0, -10.0]);
-	m_player = Player(MouseKeyboard());
-	m_queue = CommandQueue();
-	m_window = Window();
+	m_human 	= Human([0.0, 1.0, -10.0]);
+	m_player 	= Player(MouseKeyboard());
+	m_queue 	= CommandQueue();
+	m_window 	= Window();
+	m_world 	= World();
 }
 
 function Application::event(eventId, wparam, lparam) {
@@ -39,6 +42,12 @@ function Application::init(params) {
 	Light0.SetPosition([0.0, 10.0, 10.0]);
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
+	
+	var parts = m_human.getParts();
+	// Add all the human parts inside the world
+	for (var i = 0; i < len(parts); i++) {
+		m_world.addObject(parts[i]);	
+	}
 }
 
 function Application::getWindow() {
@@ -46,18 +55,21 @@ function Application::getWindow() {
 }
 
 function Application::render() {
+	updateView(m_human.getView());
+	
 	// This block gets the actual size (width and heigth) of the viewport
 	SceneBegin();
 	var res = glGet(GL_VIEWPORT);
 	m_window.setSize(res[2], res[3]);
+	m_world.draw();
 	SceneEnd();
 	
-	updateView(m_human.getView());
 	m_player.restart();
 }
 
 function Application::update() {
 	m_human.processCommands(m_queue);
+	m_world.update();
 }
 
 function Application::updateView(view) {
