@@ -94,11 +94,11 @@ function DrawGrid(col, size)
 	glBegin(GL_LINES);
 		for (var i = min; i <= max; i += step)
 		{
-			glVertex(i, 0, max);
-			glVertex(i, 0, min);
+			glVertex(i, -1, max);
+			glVertex(i, -1, min);
 			
-			glVertex(max, 0, i);
-			glVertex(min, 0, i);
+			glVertex(max, -1, i);
+			glVertex(min, -1, i);
 		}
 	glEnd();
 	
