@@ -19,8 +19,8 @@ function Rotate::Rotate(angleX, angleY) {
 }
 
 function Rotate::apply(target) {
-	target.rotate(m_angleX, [0, 1, 0]);
-	target.rotate(m_angleY, [1, 0, 0]);
+	target.getCVmObj().rotate(m_angleX, [0, 1, 0]);
+	target.getCVmObj().rotate(m_angleY, [1, 0, 0]);
 }
 
 #endif // ROTATE_H
