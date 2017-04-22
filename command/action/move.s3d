@@ -1,0 +1,28 @@
+#ifndef MOVE_H
+#define MOVE_H
+
+/**
+ * @brief The Move class defines the command to move,
+ * in a specific direction, the human body.
+ */
+class Move
+{
+	var m_direction;
+	// Scalar value with the module of the direction vector
+	var m_velocity;
+	
+	// Apply the move action to the target: any object that
+	// implement the move method.
+	apply(target);
+};
+
+function Move::Move(velocity, direction) {
+	m_velocity = velocity;
+	m_direction = direction;
+}
+
+function Move::apply(target) {
+	target.move(m_velocity, m_direction);
+}
+
+#endif // MOVE_H
