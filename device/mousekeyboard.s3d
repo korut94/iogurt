@@ -70,22 +70,22 @@ function MouseKeyboard::translate(eventId, wparam, lparam, window) {
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
 			case KEY_D: {
-				cmd = (m_kbStatus[MAP_KEY_D]) ? CmdIgnore() : Command(Move(1, [1, 0, 0]), BODY_ID);
+				cmd = (m_kbStatus[MAP_KEY_D]) ? CmdIgnore() : Command(Move(0.1, [1, 0, 0]), BODY_ID);
 				m_kbStatus[MAP_KEY_D] = true;
 				break;
 			}
 			case KEY_A: {
-				cmd = (m_kbStatus[MAP_KEY_A]) ? CmdIgnore() : Command(Move(1, [-1, 0, 0]), BODY_ID); 
+				cmd = (m_kbStatus[MAP_KEY_A]) ? CmdIgnore() : Command(Move(0.1, [-1, 0, 0]), BODY_ID); 
 				m_kbStatus[MAP_KEY_A] = true;
 				break;
 			}
 			case KEY_W: {
-				cmd = (m_kbStatus[MAP_KEY_W]) ? CmdIgnore() : Command(Move(1, [0, 0, 1]), BODY_ID);
+				cmd = (m_kbStatus[MAP_KEY_W]) ? CmdIgnore() : Command(Move(0.1, [0, 0, 1]), BODY_ID);
 				m_kbStatus[MAP_KEY_W] = true;
 				break;
 			}
 			case KEY_S: {
-				cmd = (m_kbStatus[MAP_KEY_S]) ? CmdIgnore() : Command(Move(1, [0, 0, -1]), BODY_ID);
+				cmd = (m_kbStatus[MAP_KEY_S]) ? CmdIgnore() : Command(Move(0.1, [0, 0, -1]), BODY_ID);
 				m_kbStatus[MAP_KEY_S] = true;
 				break;
 			}

@@ -8,18 +8,54 @@ class Object
 	var m_velocity;
 	
 	getCVmObj();
+	getDirection();
+	getPosition();
+	move(velocity, direction);
+	rotate(angle, axis);
+	setPosition(position);
 	setVelocity(velocity);
 	update();
 };
 
 function Object::Object() {
-	var m_cvmObj = CVmObj();
-	var m_direction = [0,0,1]; // look forward
-	var m_velocity = 0;
+	m_cvmObj = CVmObj();
+	m_direction = [0,0,1]; // look forward
+	m_velocity = 0;
 }
 
 function Object::getCVmObj() {
 	return m_cvmObj;
+}
+
+function Object::getDirection() {
+	return m_direction;
+}
+
+function Object::getPosition() {
+	return m_cvmObj.GetPosition();
+}
+
+function Object::move(velocity, direction) {
+	/*
+	m_velocity = velocity;
+	
+	var position = m_obj.GetPosition();
+	position[0] += velocity * m_direction[0];
+	position[1] += velocity * m_direction[1];
+	position[2] += velocity * m_direction[2];
+	
+	m_obj.SetPosition(position);
+	* 
+	*/
+	setVelocity(velocity);
+}
+
+function Object::rotate(angle, axis) {
+	m_direction = VectorRotate(angle, axis, m_direction, false);
+}
+
+function Object::setPosition(position) {
+	m_cvmObj.SetPosition(position);
 }
 
 function Object::setVelocity(velocity) {

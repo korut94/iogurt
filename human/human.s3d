@@ -1,7 +1,7 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
-#include "body.s3d"
+#include "../scene/object.s3d"
 #include "def.s3d"
 #include "view.s3d"
 
@@ -9,6 +9,7 @@ class Human
 {
 	var m_parts;
 	
+	getParts();
 	getView();
 	processCommands(queue);
 	processCommand(command);	
@@ -18,10 +19,12 @@ function Human::Human(startPosition) {
 	m_parts = Array(N_PARTS);
 	
 	// Root of the human character
-	var pBody = Body();
-	pBody.setPosition(startPosition);
-	
-	m_parts[BODY_ID] = pBody;
+	m_parts[BODY_ID] = Object();
+	m_parts[BODY_ID].setPosition(startPosition);
+}
+
+function Human::getParts() {
+	return m_parts;
 }
 
 function Human::getView() {
