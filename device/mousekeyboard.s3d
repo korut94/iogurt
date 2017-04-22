@@ -113,7 +113,7 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 		var offY = window.isFullScreen() ? window.getSize().y()/2 : (window.getSize().y()/2) - WM_BORDER;
 		
 		queue.push(Command(Rotate(-(Mouse.X - offX) * ANGLE_SPEED, 0), BODY_ID));
-		queue.push(Command(Rotate(0, -(Mouse.Y - offY) * ANGLE_SPEED), HEAD_ID));
+		queue.push(Command(Rotate(0, (Mouse.Y - offY) * 0.4), HEAD_ID));
 	}
 	
 	// All other events are ignored completely
