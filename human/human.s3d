@@ -12,15 +12,19 @@ class Human
 	getParts();
 	getView();
 	processCommands(queue);
-	processCommand(command);	
+	processCommand(command);
+	setPosition(pos, id);
 };
 
-function Human::Human(startPosition) {
+function Human::Human() {
 	m_parts = Array(N_PARTS);
 	
 	// Root of the human character
 	m_parts[BODY_ID] = Object();
-	m_parts[BODY_ID].setPosition(startPosition);
+	m_parts[HEAD_ID] = Object();
+	
+	// Block the head to the body
+	m_parts[BODY_ID].getCVmObj().AddChild(m_parts[HEAD_ID].getCVmObj());
 }
 
 function Human::getParts() {
@@ -28,11 +32,17 @@ function Human::getParts() {
 }
 
 function Human::getView() {
+	var head = m_parts[HEAD_ID];
 	var body = m_parts[BODY_ID];
 	
 	var pView = View();
-	pView.position = body.getPosition();
-	pView.direction = body.getDirection();
+	pView.position = body.getCVmObj().LocalToWorld(head.getCVmObj().GetPosition());
+	
+	var dirHead = head.getDirection();
+	var dirBody = body.getDirection();
+	
+	// TODO: Give a better result of the direction. The below result is completly random.
+	pView.direction = [dirBody[0], dirHead[1], dirBody[2] - dirHead[1]];
 	
 	return pView;
 }
@@ -45,6 +55,10 @@ function Human::processCommands(queue) {
 	while (!queue.isEmpty()) {
 		processCommand(queue.pop());
 	}
+}
+
+function Human::setPosition(pos, id) {
+	m_parts[id].getCVmObj().setPosition(pos);
 }
 
 #endif // HUMAN_H

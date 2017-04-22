@@ -8,11 +8,6 @@ class Command
 	
 	action();
 	target();
-	isAccepted();
-};
-
-class CmdIgnore {
-	isAccepted();
 };
 
 function Command::Command(action, target) {
@@ -26,14 +21,6 @@ function Command::action() {
 
 function Command::target() {
 	return m_target;
-}
-
-function Command::isAccepted() {
-	return true;
-}
-
-function CmdIgnore::isAccepted() {
-	return false;
 }
 
 #endif // COMMAND_H
