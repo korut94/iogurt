@@ -28,6 +28,12 @@ function Application::Application() {
 	m_queue 	= CommandQueue();
 	m_window 	= Window();
 	m_world 	= World();
+	
+	var parts = m_human.getParts();
+	// Add all the human parts inside the world
+	for (var i = 0; i < len(parts); i++) {
+		m_world.addObject(parts[i]);	
+	}
 }
 
 function Application::event(eventId, wparam, lparam) {
@@ -41,11 +47,7 @@ function Application::init(params) {
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
 	
-	var parts = m_human.getParts();
-	// Add all the human parts inside the world
-	for (var i = 0; i < len(parts); i++) {
-		m_world.addObject(parts[i]);	
-	}
+	m_human.setPosition([0, 2, 0], HEAD_ID);
 }
 
 function Application::render() {
