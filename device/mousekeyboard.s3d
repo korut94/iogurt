@@ -118,7 +118,6 @@ function MouseKeyboard::translate(eventId, wparam, lparam, window) {
 		}
 	} else if (eventId == MOUSE_MOVE) {
 		var offX = window.getSize().x()/2;
-		// The eleven is the possible width of the window's border
 		var offY = window.isFullScreen() ? window.getSize().y()/2 : (window.getSize().y()/2) - WM_BORDER;
 		
 		cmd = Command(Rotate(-(Mouse.X - offX) * ANGLE_SPEED, -(Mouse.Y - offY) * ANGLE_SPEED), BODY_ID);
