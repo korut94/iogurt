@@ -1,7 +1,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "player.s3d"
 #include "command/commandqueue.s3d"
 #include "device/mousekeyboard.s3d"
 #include "graphics/window.s3d"
@@ -21,19 +20,18 @@ class Application
 	render();
 	update();
 	updateView(view);
-	getWindow();
 };
 
 function Application::Application() {
-	m_human 	= Human([0.0, 1.0, -10.0]);
-	m_player 	= Player(MouseKeyboard());
+	m_human 	= Human();
+	m_player 	= MouseKeyboard();
 	m_queue 	= CommandQueue();
 	m_window 	= Window();
 	m_world 	= World();
 }
 
 function Application::event(eventId, wparam, lparam) {
-	m_player.processEvent(m_queue, eventId, wparam, lparam, m_window);
+	m_player.processEvent(eventId, wparam, lparam, m_queue, m_window);
 }
 
 function Application::init(params) {
@@ -48,10 +46,6 @@ function Application::init(params) {
 	for (var i = 0; i < len(parts); i++) {
 		m_world.addObject(parts[i]);	
 	}
-}
-
-function Application::getWindow() {
-	return m_window;
 }
 
 function Application::render() {
