@@ -9,10 +9,8 @@ class Object
 	
 	getCVmObj();
 	getDirection();
-	getPosition();
 	move(velocity, direction);
 	rotate(angle, axis);
-	setPosition(position);
 	setVelocity(velocity);
 	update();
 };
@@ -29,10 +27,6 @@ function Object::getCVmObj() {
 
 function Object::getDirection() {
 	return m_direction;
-}
-
-function Object::getPosition() {
-	return m_cvmObj.GetPosition();
 }
 
 function Object::move(velocity, direction) {
@@ -52,10 +46,6 @@ function Object::move(velocity, direction) {
 
 function Object::rotate(angle, axis) {
 	m_direction = VectorRotate(angle, axis, m_direction, false);
-}
-
-function Object::setPosition(position) {
-	m_cvmObj.SetPosition(position);
 }
 
 function Object::setVelocity(velocity) {
