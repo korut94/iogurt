@@ -1,64 +1,94 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
+#include "../scene/character.s3d"
 #include "../scene/object.s3d"
 #include "def.s3d"
 #include "view.s3d"
 
 class Human
 {
-	var m_parts;
+	var m_character;
+	var m_eye;
 	
-	getParts();
+	getCharacter();
 	getView();
+	/*
+	 * @brief Initialiaze the trasformation of the human parts. Any settings in the
+	 * constructor's body will be missed since when the world attaches the parts
+	 * in its tree, their transformation are resetted. 
+	 */
+	init();
 	processCommands(queue);
 	processCommand(command);
-	setPosition(pos, id);
 };
 
 function Human::Human() {
-	m_parts = Array(N_PARTS);
+	var parts = Array(N_PARTS);
 	
-	// Root of the human character
-	m_parts[BODY_ID] = Object();
-	m_parts[HEAD_ID] = Object();
+	parts[BODY_ID] = Object();
+	parts[HEAD_ID] = Object();
+	m_eye = CVmObj();
 	
 	// Block the head to the body
-	m_parts[BODY_ID].getCVmObj().AddChild(m_parts[HEAD_ID].getCVmObj());
+	parts[BODY_ID].getCVmObj().AddChild(parts[HEAD_ID].getCVmObj());
+	parts[HEAD_ID].getCVmObj().AddChild(m_eye);
+	
+	// Starting the min conrner from the origin allow the definition of the box writing
+	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
+	// by the CVmObj's methods.
+	var meshBody = CVmNewMesh(VRP_BOX, 0, [0,0,0], [5,5,3]);
+	meshBody.CenterBoundingBox();
+	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,1]);
+	meshHead.CenterBoundingBox();
+	
+	parts[BODY_ID].getCVmObj().LinkToMesh(meshBody);
+	parts[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
+	
+	m_character = Character(parts, BODY_ID);
 }
 
-function Human::getParts() {
-	return m_parts;
+function Human::getCharacter() {
+	return m_character;
 }
 
 function Human::getView() {
-	var head = m_parts[HEAD_ID];
-	var body = m_parts[BODY_ID];
+	var trEye = m_eye.GetModelMatrix();
 	
 	var pView = View();
-	pView.position = body.getCVmObj().LocalToWorld(head.getCVmObj().GetPosition());
+	// Get traslation component, the last column of the matrix.
+	pView.position = [trEye[12], trEye[13], trEye[14]];
+	// Alternative method by getting the global position with the sum of the local positions. 
+	// var head = m_character.get(HEAD_ID).getCVmObj();
+	// var body = m_character.get(BODY_ID).getCVmObj();
+	// pView.position = body.LocalToWorld(head.LocalToWorld(m_eye.getCVmObj().GetPosition()));
 	
-	var dirHead = head.getDirection();
-	var dirBody = body.getDirection();
-	
-	// TODO: Give a better result of the direction. The below result is completly random.
-	pView.direction = [dirBody[0], dirHead[1], dirBody[2] - dirHead[1]];
+	// Alternative calculation of the direction:
+	// var dirHead = head.getDirection();
+	// var dirBody = body.getDirection();
+	// pView.direction = [dirBody[0], dirHead[1], dirBody[2] - dirHead[1]];
+	pView.direction = [-trEye[2], trEye[9], trEye[10]];
 	
 	return pView;
 }
 
+function Human::init() {
+	m_character.get(BODY_ID).getCVmObj().setPosition([0, 1, 0]);
+	// The head's position is: one more right, one more up and one more ahead respect the body
+	// size. The value are relative to the size of the body's mesh!
+	m_character.get(HEAD_ID).getCVmObj().SetPosition([0, 5, 0]);
+	// m_eye.getCVmObj().setPosition([-5, 0, -23]);
+	m_eye.setPosition([0, 0.5, 1]);
+}
+
 function Human::processCommand(command) {
-	command.action().apply(m_parts[command.target()]);
+	command.action().apply(m_character.get(command.target()));
 }
 
 function Human::processCommands(queue) {
 	while (!queue.isEmpty()) {
 		processCommand(queue.pop());
 	}
-}
-
-function Human::setPosition(pos, id) {
-	m_parts[id].getCVmObj().setPosition(pos);
 }
 
 #endif // HUMAN_H
