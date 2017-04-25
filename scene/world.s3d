@@ -3,6 +3,33 @@
 
 #define MAX_NUMBER_OBJECTS 1000
 
+function DrawGrid(col, size)
+{
+	/* let's not mess up current OpenGL status */
+	glPushAttrib(GL_LIGHTING_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+	
+	glLineWidth(1);
+	glDisable(GL_LIGHTING);
+	glColor(col);
+	var max = size / 2.0;
+	var min = -max;	
+	var step = size / 10.0;
+	
+	glBegin(GL_LINES);
+		for (var i = min; i <= max; i += step)
+		{
+			glVertex(i, -1, max);
+			glVertex(i, -1, min);
+			
+			glVertex(max, -1, i);
+			glVertex(min, -1, i);
+		}
+	glEnd();
+	
+	/* polite restoration of previous OpenGL status */
+	glPopAttrib();
+}
+
 class World
 {
 	var m_lastIndexObj;
@@ -27,7 +54,12 @@ function World::addObject(obj) {
 }
 
 function World::draw() {
+	SceneBegin();
+	glClearColor(1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	DrawGrid([0.5, 0.5, 0.5], 100);
 	m_root.Draw();
+	SceneEnd();
 }
 
 function World::update() {
