@@ -63,6 +63,7 @@ function Human::getView() {
 	// var body = m_character.get(BODY_ID).getCVmObj();
 	// pView.position = body.LocalToWorld(head.LocalToWorld(m_eye.getCVmObj().GetPosition()));
 	
+	// Get the normalized vector for Z axis
 	pView.direction = [trEye[8], trEye[9], trEye[10]];
 	
 	return pView;
