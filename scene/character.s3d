@@ -1,0 +1,33 @@
+#ifndef CHARACTER_H
+#define CHARACTER_H
+
+class Character
+{
+	var m_parts;
+	var m_idRoot;
+	
+	get(idPart);
+	getCVmObj();
+	update();
+};
+
+function Character::Character(parts, id) {
+	m_parts = parts;
+	m_idRoot = id;
+}
+
+function Character::get(idPart) {
+	return m_parts[idPart];
+}
+
+function Character::getCVmObj() {
+	return m_parts[m_idRoot].getCVmObj();
+}
+
+function Character::update() {
+	for (var i = 0; i < len(m_parts); i++) {
+		m_parts[i].update();
+	}
+}
+
+#endif // CHARACTER_H

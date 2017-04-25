@@ -11,57 +11,14 @@ SET SCENE_FOV  = 60;
 SET SCENE_NEAR = 0.5;
 SET SCENE_FAR  = 1000;
 
-/* Function declarations */
-function DrawGrid(col, size);
-
 function OnInit(params)
 {
 	__application.init(params);
 }
 
 function OnFrame()
-{
+{	
 	__application.render();
-	
-	SceneBegin();
-	glClearColor(1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	DrawGrid([0.5, 0.5, 0.5], 100);
-	
-	glBegin(GL_QUADS);
-	glNormal(0,0,1);
-	glVertex(1.0,1.0,1.0);
-	glVertex(-1.0,1.0,1.0);
-	glVertex(-1.0,-1.0,1.0);
-	glVertex(1.0,-1.0,1.0);
-	
-	glNormal(0,0,-1);
-	glVertex(-1.0,1.0,-1.0);
-	glVertex(1.0,1.0,-1.0);
-	glVertex(1.0,-1.0,-1.0);
-	glVertex(-1.0,-1.0,-1.0);
-	
-	glNormal(1,0,0);
-	glVertex(1.0,1.0,1.0);
-	glVertex(1.0,-1.0,1.0);
-	glVertex(1.0,-1.0,-1.0);
-	glVertex(1.0,1.0,-1.0);
-	
-	glNormal(-1,0,0);
-	glVertex(-1.0,-1.0,1.0);
-	glVertex(-1.0,1.0,1.0);
-	glVertex(-1.0,1.0,-1.0);
-	glVertex(-1.0,-1.0,-1.0);
-	
-	glNormal(0,1,0);
-	glVertex(1.0,1.0,-1.0);
-	glVertex(-1.0,1.0,-1.0);
-	glVertex(-1.0,1.0,1.0);
-	glVertex(1.0,1.0,1.0);
-	glEnd();
-	
-	SceneEnd();
 }
 
 function OnTimer()
@@ -78,30 +35,3 @@ function DownloadReady(RequestID) {}
 function OnDownload() {}
 function OnError(){}
 function OnExit() {}
-
-function DrawGrid(col, size)
-{
-	/* let's not mess up current OpenGL status */
-	glPushAttrib(GL_LIGHTING_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
-	
-	glLineWidth(1);
-	glDisable(GL_LIGHTING);
-	glColor(col);
-	var max = size / 2.0;
-	var min = -max;	
-	var step = size / 10.0;
-	
-	glBegin(GL_LINES);
-		for (var i = min; i <= max; i += step)
-		{
-			glVertex(i, -1, max);
-			glVertex(i, -1, min);
-			
-			glVertex(max, -1, i);
-			glVertex(min, -1, i);
-		}
-	glEnd();
-	
-	/* polite restoration of previous OpenGL status */
-	glPopAttrib();
-}
