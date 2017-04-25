@@ -1,8 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#define FORWARD_V3 [0,0,1]
-
 class Object 
 {
 	var m_cvmObj;
@@ -25,13 +23,7 @@ function Object::getCVmObj() {
 }
 
 function Object::getDirection() {
-	var r = m_cvmObj.GetRotationMatrix();
-	
-	return MatrixMultiplyVector_3([
-		r[0], r[1], r[2],
-		r[4], r[5], r[6],
-		r[8], r[9], r[10]
-	], FORWARD_V3);
+	return m_cvmObj.GetZaxis();
 }
 
 function Object::move(velocity, direction) {
