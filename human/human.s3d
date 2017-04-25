@@ -63,11 +63,7 @@ function Human::getView() {
 	// var body = m_character.get(BODY_ID).getCVmObj();
 	// pView.position = body.LocalToWorld(head.LocalToWorld(m_eye.getCVmObj().GetPosition()));
 	
-	// Alternative calculation of the direction:
-	// var dirHead = head.getDirection();
-	// var dirBody = body.getDirection();
-	// pView.direction = [dirBody[0], dirHead[1], dirBody[2] - dirHead[1]];
-	pView.direction = [-trEye[2], trEye[9], trEye[10]];
+	pView.direction = [trEye[8], trEye[9], trEye[10]];
 	
 	return pView;
 }
@@ -77,8 +73,8 @@ function Human::init() {
 	// The head's position is: one more right, one more up and one more ahead respect the body
 	// size. The value are relative to the size of the body's mesh!
 	m_character.get(HEAD_ID).getCVmObj().SetPosition([0, 5, 0]);
-	// m_eye.getCVmObj().setPosition([-5, 0, -23]);
-	m_eye.setPosition([0, 0.5, 1]);
+	m_eye.setPosition([-5, 0, -23]);
+	// m_eye.setPosition([0, 0.5, 1]);
 }
 
 function Human::processCommand(command) {
