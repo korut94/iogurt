@@ -1,0 +1,13 @@
+#ifndef SELECTIONRAY_H
+#define SELECTIONRAY_H
+
+class SelectionRay
+{
+	onCollision(object);
+};
+
+function SelectionRay::onCollision(object) {
+	OutputLN("Collided!!");
+}
+
+#endif // SELECTIONRAY_H
