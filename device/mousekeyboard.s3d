@@ -63,48 +63,18 @@ function MouseKeyboard::restart() {
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
-			case KEY_D: {
-				if (!m_kbStatus[MAP_KEY_D]) queue.push(Command(Move(0.1, [1, 0, 0]), BODY_ID));
-				m_kbStatus[MAP_KEY_D] = true;
-				break;
-			}
-			case KEY_A: {
-				if (!m_kbStatus[MAP_KEY_A]) queue.push(Command(Move(0.1, [-1, 0, 0]), BODY_ID)); 
-				m_kbStatus[MAP_KEY_A] = true;
-				break;
-			}
 			case KEY_W: {
-				if (!m_kbStatus[MAP_KEY_W]) queue.push(Command(Move(0.1, [0, 0, 1]), BODY_ID));
+				if (!m_kbStatus[MAP_KEY_W]) queue.push(Command(Move(0.1), BODY_ID));
 				m_kbStatus[MAP_KEY_W] = true;
-				break;
-			}
-			case KEY_S: {
-				if (!m_kbStatus[MAP_KEY_S]) queue.push(Command(Move(0.1, [0, 0, -1]), BODY_ID));
-				m_kbStatus[MAP_KEY_S] = true;
 				break;
 			}
 		}
 	// The second condition need to avoid the false positive by the keyboard repetition
 	} else if (eventId == KEY_RELEASED && !KeyPressed(wparam)) {
 		switch (wparam) {
-			case KEY_D: {
-				queue.push(Command(Move(0, [1, 0, 0]), BODY_ID));
-				m_kbStatus[MAP_KEY_D] = false;
-				break;
-			}
-			case KEY_A: {
-				queue.push(Command(Move(0, [-1, 0, 0]), BODY_ID)); 
-				m_kbStatus[MAP_KEY_A] = false;
-				break;
-			}
 			case KEY_W: {
-				queue.push(Command(Move(0, [0, 0, 1]), BODY_ID));
+				queue.push(Command(Move(0), BODY_ID));
 				m_kbStatus[MAP_KEY_W] = false;
-				break;
-			}
-			case KEY_S: {
-				queue.push(Command(Move(0, [0, 0, -1]), BODY_ID));
-				m_kbStatus[MAP_KEY_S] = false;
 				break;
 			}
 		}
