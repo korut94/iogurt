@@ -3,39 +3,36 @@
 
 class Object 
 {
-	var m_cvmObj;
-	var m_velocity;
+	var m_behavior;
+	var m_physicsBody;
+	var m_obj;
 	
+	getBehavior();
+	getBody();
 	getCVmObj();
-	getDirection();
-	move(velocity, direction);
-	setVelocity(velocity);
 	update();
 };
 
-function Object::Object() {
-	m_cvmObj = CVmObj();
-	m_velocity = 0;
+function Object::Object(behavior, physicsBody) {
+	m_behavior = behavior;
+	m_physicsBody = physicsBody;
+	m_obj = CVmObj();
+}
+
+function Object::getBehavior() {
+	return m_behavior;
+}
+
+function Object::getBody() {
+	return m_physicsBody;
 }
 
 function Object::getCVmObj() {
-	return m_cvmObj;
-}
-
-function Object::getDirection() {
-	return m_cvmObj.GetZaxis();
-}
-
-function Object::move(velocity, direction) {
-	setVelocity(velocity);
-}
-
-function Object::setVelocity(velocity) {
-	m_velocity = velocity;
+	return m_obj;
 }
 
 function Object::update() {
-	m_cvmObj.SetPosition(m_cvmObj.GetPosition() + m_velocity * getDirection());
+	m_physicsBody.update(m_obj);
 }
 
 #endif // OBJECT_H
