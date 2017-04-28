@@ -1,0 +1,29 @@
+#ifndef RIGIDBODY_H
+#define RIGIDBODY_H
+
+class RigidBody
+{
+	var m_velocity;
+	
+	getDirection(obj);
+	setVelocity(velocity);
+	update(obj);
+};
+
+function RigidBody::RigidBody() {
+	m_velocity = 0;
+}
+
+function RigidBody::getDirection(obj) {
+	return obj.GetZaxis();
+}
+
+function RigidBody::setVelocity(velocity) {
+	m_velocity = velocity;
+}
+
+function RigidBody::update(obj) {
+	obj.SetPosition(obj.GetPosition() + m_velocity * getDirection(obj));
+}
+
+#endif // RIGIDBODY_H
