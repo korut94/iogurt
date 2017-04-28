@@ -3,6 +3,8 @@
 
 #include "../scene/character.s3d"
 #include "../scene/object.s3d"
+#include "../scene/event/nobehavior.s3d"
+#include "../scene/physics/rigidbody.s3d"
 #include "def.s3d"
 #include "view.s3d"
 
@@ -26,8 +28,8 @@ class Human
 function Human::Human() {
 	var parts = Array(N_PARTS);
 	
-	parts[BODY_ID] = Object();
-	parts[HEAD_ID] = Object();
+	parts[BODY_ID] = Object(NoBehavior(), RigidBody());
+	parts[HEAD_ID] = Object(NoBehavior(), RigidBody());
 	m_eye = CVmObj();
 	
 	// Block the head to the body
