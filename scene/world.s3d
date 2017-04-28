@@ -37,6 +37,7 @@ class World
 	var m_root;
 	
 	addObject(obj);
+	checkCollisions();
 	draw();
 	update();
 };
@@ -53,19 +54,30 @@ function World::addObject(obj) {
 	m_objList[m_lastIndexObj++] = obj;
 }
 
+function World::checkCollisions() {
+	for (var i = 0; i < m_lastIndexObj; i++) {
+		for (var j = i + 1; j < m_lastIndexObj; j++) {
+			if (m_objList[i].getCVmObj().IsCollidingBBox(m_objList[j].getCVmObj())) {
+				m_objList[i].getBehavior().onCollide(m_objList[j]);
+				m_objList[j].getBehavior().onCollide(m_objList[i]);
+			}
+		}
+	}
+}
+
 function World::draw() {
-	SceneBegin();
 	glClearColor(1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	DrawGrid([0.5, 0.5, 0.5], 100);
 	m_root.Draw();
-	SceneEnd();
 }
 
 function World::update() {
 	for (var i = 0; i < m_lastIndexObj; i++) {
 		m_objList[i].update();
 	}
+	
+	checkCollisions();
 }
 
 #endif // WORLD_H
