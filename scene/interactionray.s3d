@@ -1,0 +1,45 @@
+#ifndef INTERACTIONRAY_H
+#define INTERACTIONRAY_H
+
+#include "object.s3d"
+
+function drawInteractionRay(interactionRay) {
+	Output(interactionRay.from()); Output(" "); OutputLN(interactionRay.to());
+	
+	glBegin(GL_LINES);
+	glVertex([0,0,-interactionRay.length()]);
+	glVertex([0,0,0]);
+	glEnd();
+}
+
+class InteractionRay : Object
+{
+	var m_source;
+	
+	from();
+	length();
+	to();
+};
+
+function InteractionRay::InteractionRay(sourceObj) {
+	m_source = sourceObj;
+	m_source.AddChild(InteractionRay::this.getCVmObj());
+	
+	InteractionRay::this.getCVmObj().LinkToCallback("drawInteractionRay", InteractionRay::this);
+}
+
+function InteractionRay::from() {
+	var transform = m_source.GetModelMatrix();
+	return [transform[12], transform[13], transform[14]];
+}
+
+function InteractionRay::length() {
+	return modulus(InteractionRay::this.getCVmObj().GetPosition());
+}
+
+function InteractionRay::to() {
+	var transform = InteractionRay::this.getCVmObj().GetModelMatrix();
+	return [transform[12], transform[13], transform[14]];
+}
+
+#endif // INTERACTIONRAY_H

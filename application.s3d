@@ -1,7 +1,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "command/commandqueue.s3d"
 #include "device/mousekeyboard.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
@@ -11,7 +10,6 @@ class Application
 {
 	var m_human;
 	var m_player;
-	var m_queue;
 	var m_window;
 	var m_world;
 	
@@ -25,15 +23,19 @@ class Application
 function Application::Application() {
 	m_human 	= Human();
 	m_player 	= MouseKeyboard();
-	m_queue 	= CommandQueue();
 	m_window 	= Window();
 	m_world 	= World();
 	
-	m_world.addObject(m_human.getCharacter());
+	m_human.applyTo(m_world);
 }
 
 function Application::event(eventId, wparam, lparam) {
-	m_player.processEvent(eventId, wparam, lparam, m_queue, m_window);
+	m_player.processEvent(
+		eventId,
+		wparam, lparam,
+		m_human.getCommandQueue(),
+		m_window
+	);
 }
 
 function Application::init(params) {
@@ -44,6 +46,11 @@ function Application::init(params) {
 	Light0.Enable();
 	
 	m_human.init();
+	
+	var box = Object();
+	box.getCVmObj().LinkToMesh(CVmNewMesh(VRP_BOX, 0, [0,0,0], [10, 10, 10]));
+	m_world.addRootToDraw(box.getCVmObj());
+	m_world.trackObject(box);
 }
 
 function Application::render() {
@@ -61,7 +68,7 @@ function Application::render() {
 }
 
 function Application::update() {
-	m_human.processCommands(m_queue);
+	m_human.processCommands();
 	m_world.update();
 }
 

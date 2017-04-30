@@ -1,13 +1,47 @@
 #ifndef SELECTIONRAY_H
 #define SELECTIONRAY_H
 
-class SelectionRay
+class BHSelectionRay
 {
 	onCollision(object);
 };
 
-function SelectionRay::onCollision(object) {
-	OutputLN("Collided!!");
+function BHSelectionRay::onCollision(object) {
+	OutputLN(object.getCVmObj().GetPosition());
+}
+
+class SelectionRay
+{
+	var m_aim;
+	var m_ray;
+	
+	applyTo(world);
+	init();
+};
+
+function SelectionRay::SelectionRay(headObj)
+{
+	var meshAim = CVmNewMesh(VRP_CIRCLE, 4, 0.0005, 0);
+	meshAim.Rotate(90, [1,0,0]);
+	
+	m_aim = CVmObj();
+	m_aim.LinkToMesh(meshAim);
+	
+	headObj.AddChild(m_aim);
+	
+	m_ray= InteractionRay(m_aim);
+	m_ray.linkToBehavior(BHSelectionRay());
+}
+
+function SelectionRay::applyTo(world) {
+	world.addInteractionRay(m_ray);
+}
+
+function SelectionRay::init() {
+	// Set the offset from the human's face and the ray
+	m_aim.SetPosition([0, 0, 0.1]);
+	// Set the maximum distance which the ray reaches the target
+	m_ray.getCVmObj().SetPosition([0, 0, 300]);
 }
 
 #endif // SELECTIONRAY_H
