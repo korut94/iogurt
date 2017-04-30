@@ -2,18 +2,21 @@
 #define HUMAN_H
 
 #include "../scene/character.s3d"
+#include "../scene/interactionray.s3d"
 #include "../scene/object.s3d"
-#include "../scene/event/nobehavior.s3d"
 #include "../scene/physics/rigidbody.s3d"
 #include "def.s3d"
 #include "view.s3d"
+#include "gadget/selectionray.s3d"
 
 class Human
 {
 	var m_character;
 	var m_eye;
+	var m_selector;
 	
 	getCharacter();
+	getSelector();
 	getView();
 	/*
 	 * @brief Initialiaze the trasformation of the human parts. Any settings in the
@@ -28,13 +31,17 @@ class Human
 function Human::Human() {
 	var parts = Array(N_PARTS);
 	
-	parts[BODY_ID] = Object(NoBehavior(), RigidBody());
-	parts[HEAD_ID] = Object(NoBehavior(), RigidBody());
+	parts[BODY_ID] = Object();
+	parts[BODY_ID].linkToBody(RigidBody());
+	parts[HEAD_ID] = Object();
+	parts[HEAD_ID].linkToBody(RigidBody());
 	m_eye = CVmObj();
+	m_selector = InteractionRay(parts[HEAD_ID].getCVmObj());
 	
 	// Block the head to the body
 	parts[BODY_ID].getCVmObj().AddChild(parts[HEAD_ID].getCVmObj());
 	parts[HEAD_ID].getCVmObj().AddChild(m_eye);
+	parts[HEAD_ID].getCVmObj().AddChild(m_selector.getCVmObj());
 	
 	// Starting the min conrner from the origin allow the definition of the box writing
 	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
@@ -46,6 +53,7 @@ function Human::Human() {
 	
 	parts[BODY_ID].getCVmObj().LinkToMesh(meshBody);
 	parts[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
+	m_selector.linkToBehavior(SelectionRay());
 	
 	m_character = Character(parts, BODY_ID);
 }
@@ -54,17 +62,16 @@ function Human::getCharacter() {
 	return m_character;
 }
 
+function Human::getSelector() {
+	return m_selector;
+}
+
 function Human::getView() {
 	var trEye = m_eye.GetModelMatrix();
 	
 	var pView = View();
 	// Get traslation component, the last column of the matrix.
 	pView.position = [trEye[12], trEye[13], trEye[14]];
-	// Alternative method by getting the global position with the sum of the local positions. 
-	// var head = m_character.get(HEAD_ID).getCVmObj();
-	// var body = m_character.get(BODY_ID).getCVmObj();
-	// pView.position = body.LocalToWorld(head.LocalToWorld(m_eye.getCVmObj().GetPosition()));
-	
 	// Get the normalized vector for Z axis
 	pView.direction = [trEye[8], trEye[9], trEye[10]];
 	
@@ -78,6 +85,7 @@ function Human::init() {
 	m_character.get(HEAD_ID).getCVmObj().SetPosition([0, 5, 0]);
 	m_eye.setPosition([-5, 0, -23]);
 	// m_eye.setPosition([0, 0.5, 1]);
+	m_selector.getCVmObj().SetPosition([0,0,50]);
 }
 
 function Human::processCommand(command) {
