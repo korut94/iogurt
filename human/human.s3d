@@ -1,7 +1,7 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
-#include "../scene/character.s3d"
+#include "../command/commandqueue.s3d"
 #include "../scene/interactionray.s3d"
 #include "../scene/object.s3d"
 #include "../scene/physics/rigidbody.s3d"
@@ -13,10 +13,11 @@ class Human
 {
 	var m_character;
 	var m_eye;
+	var m_queue;
 	var m_selector;
 	
-	getCharacter();
-	getSelector();
+	applyTo(world);
+	getCommandQueue();
 	getView();
 	/*
 	 * @brief Initialiaze the trasformation of the human parts. Any settings in the
@@ -24,24 +25,23 @@ class Human
 	 * in its tree, their transformation are resetted. 
 	 */
 	init();
-	processCommands(queue);
+	processCommands();
 	processCommand(command);
 };
 
 function Human::Human() {
-	var parts = Array(N_PARTS);
-	
-	parts[BODY_ID] = Object();
-	parts[BODY_ID].linkToBody(RigidBody());
-	parts[HEAD_ID] = Object();
-	parts[HEAD_ID].linkToBody(RigidBody());
+	m_queue = CommandQueue();
 	m_eye = CVmObj();
-	m_selector = InteractionRay(parts[HEAD_ID].getCVmObj());
+	
+	m_character = Array(N_PARTS);
+	m_character[BODY_ID] = Object();
+	m_character[BODY_ID].linkToBody(RigidBody());
+	m_character[HEAD_ID] = Object();
+	m_character[HEAD_ID].linkToBody(RigidBody());
 	
 	// Block the head to the body
-	parts[BODY_ID].getCVmObj().AddChild(parts[HEAD_ID].getCVmObj());
-	parts[HEAD_ID].getCVmObj().AddChild(m_eye);
-	parts[HEAD_ID].getCVmObj().AddChild(m_selector.getCVmObj());
+	m_character[BODY_ID].getCVmObj().AddChild(m_character[HEAD_ID].getCVmObj());
+	m_character[HEAD_ID].getCVmObj().AddChild(m_eye);
 	
 	// Starting the min conrner from the origin allow the definition of the box writing
 	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
@@ -51,19 +51,24 @@ function Human::Human() {
 	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,1]);
 	meshHead.CenterBoundingBox();
 	
-	parts[BODY_ID].getCVmObj().LinkToMesh(meshBody);
-	parts[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
-	m_selector.linkToBehavior(SelectionRay());
+	m_character[BODY_ID].getCVmObj().LinkToMesh(meshBody);
+	m_character[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
 	
-	m_character = Character(parts, BODY_ID);
+	m_selector = SelectionRay(m_character[HEAD_ID].getCVmObj());
 }
 
-function Human::getCharacter() {
-	return m_character;
+function Human::applyTo(world) {
+	world.addRootToDraw(m_character[BODY_ID].GetCVmObj());
+	
+	foreach (var part in m_character) {
+		world.trackObject(part);
+	}
+	
+	m_selector.applyTo(world);
 }
 
-function Human::getSelector() {
-	return m_selector;
+function Human::getCommandQueue() {
+	return m_queue;
 }
 
 function Human::getView() {
@@ -79,22 +84,21 @@ function Human::getView() {
 }
 
 function Human::init() {
-	m_character.get(BODY_ID).getCVmObj().setPosition([0, 1, 0]);
+	m_character[BODY_ID].getCVmObj().setPosition([0, 1, 0]);
 	// The head's position is: one more right, one more up and one more ahead respect the body
 	// size. The value are relative to the size of the body's mesh!
-	m_character.get(HEAD_ID).getCVmObj().SetPosition([0, 5, 0]);
-	m_eye.setPosition([-5, 0, -23]);
-	// m_eye.setPosition([0, 0.5, 1]);
-	m_selector.getCVmObj().SetPosition([0,0,50]);
+	m_character[HEAD_ID].getCVmObj().SetPosition([0, 5, 0]);
+	// m_eye.setPosition([-5, 0, -23]);
+	m_selector.init();
 }
 
 function Human::processCommand(command) {
-	command.action().apply(m_character.get(command.target()));
+	command.action().apply(m_character[command.target()]);
 }
 
-function Human::processCommands(queue) {
-	while (!queue.isEmpty()) {
-		processCommand(queue.pop());
+function Human::processCommands() {
+	while (!m_queue.isEmpty()) {
+		processCommand(m_queue.pop());
 	}
 }
 
