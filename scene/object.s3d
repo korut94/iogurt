@@ -1,6 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "event/nobehavior.s3d"
+#include "physics/ghostbody.s3d"
+
 class Object 
 {
 	var m_behavior;
@@ -10,12 +13,14 @@ class Object
 	getBehavior();
 	getBody();
 	getCVmObj();
+	linkToBehavior(behavior);
+	linkToBody(body);
 	update();
 };
 
-function Object::Object(behavior, physicsBody) {
-	m_behavior = behavior;
-	m_physicsBody = physicsBody;
+function Object::Object() {
+	m_behavior = NoBehavior();
+	m_physicsBody = GhostBody();
 	m_obj = CVmObj();
 }
 
@@ -29,6 +34,14 @@ function Object::getBody() {
 
 function Object::getCVmObj() {
 	return m_obj;
+}
+
+function Object::linkToBehavior(behavior) {
+	m_behavior = behavior;
+}
+
+function Object::linkToBody(body) {
+	m_physicsBody = body;
 }
 
 function Object::update() {
