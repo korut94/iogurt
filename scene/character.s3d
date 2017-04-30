@@ -7,8 +7,8 @@ class Character
 	var m_idRoot;
 	
 	get(idPart);
-	getCVmObj();
-	update();
+	getParts();
+	getRoot();
 };
 
 function Character::Character(parts, id) {
@@ -20,14 +20,12 @@ function Character::get(idPart) {
 	return m_parts[idPart];
 }
 
-function Character::getCVmObj() {
-	return m_parts[m_idRoot].getCVmObj();
+function Character::getParts() {
+	return m_parts;
 }
 
-function Character::update() {
-	for (var i = 0; i < len(m_parts); i++) {
-		m_parts[i].update();
-	}
+function Character::getRoot() {
+	return m_parts[m_idRoot];
 }
 
 #endif // CHARACTER_H
