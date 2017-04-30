@@ -1,8 +1,6 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#define MAX_NUMBER_OBJECTS 1000
-
 function DrawGrid(col, size)
 {
 	/* let's not mess up current OpenGL status */
@@ -32,34 +30,45 @@ function DrawGrid(col, size)
 
 class World
 {
-	var m_lastIndexObj;
-	var m_objList;
+	var m_objectList;
+	var m_rayList;
 	var m_root;
 	
-	addObject(obj);
+	addInteractionRay(ray);
+	/*
+	 * @brief Add the root of a CVmObj to draw all its children and itself
+	 */
+	addRootToDraw(root);
 	checkCollisions();
 	draw();
+	/*
+	 * @brief Attaching the object to update it and check its collision with
+	 * the other objects in the scene.
+	 */
+	trackObject(object);
 	update();
 };
 
 function World::World() {
-	m_objList = Array(MAX_NUMBER_OBJECTS);
+	m_objectList = {};
+	m_rayList = {};
 	m_root = CVmObj();
-	
-	m_lastIndexObj = 0;
 }
 
-function World::addObject(obj) {
-	m_root.AddChild(obj.getCVmObj());
-	m_objList[m_lastIndexObj++] = obj;
+function World::addInteractionRay(ray) {
+	aadd(m_rayList, ray);
+}
+
+function World::addRootToDraw(root) {
+	m_root.AddChild(root);
 }
 
 function World::checkCollisions() {
-	for (var i = 0; i < m_lastIndexObj; i++) {
-		for (var j = i + 1; j < m_lastIndexObj; j++) {
-			if (m_objList[i].getCVmObj().IsCollidingBBox(m_objList[j].getCVmObj())) {
-				m_objList[i].getBehavior().onCollide(m_objList[j]);
-				m_objList[j].getBehavior().onCollide(m_objList[i]);
+	foreach (var ray in m_rayList) {
+		foreach (var object in m_objectList) {
+			if (object.getCVmObj().isColliding(ray.from(), ray.to())) {
+				object.getBehavior().onCollision(ray);
+				ray.getBehavior().onCollision(object);
 			}
 		}
 	}
@@ -72,9 +81,13 @@ function World::draw() {
 	m_root.Draw();
 }
 
+function World::trackObject(object) {
+	aadd(m_objectList, object);
+}
+
 function World::update() {
-	for (var i = 0; i < m_lastIndexObj; i++) {
-		m_objList[i].update();
+	foreach (var object in m_objectList) {
+		object.update();
 	}
 	
 	checkCollisions();
