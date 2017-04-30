@@ -29,7 +29,13 @@ function Application::Application() {
 	m_window 	= Window();
 	m_world 	= World();
 	
-	m_world.addObject(m_human.getCharacter());
+	var humanCharacter = m_human.getCharacter();
+	
+	m_world.addRootToDraw(humanCharacter.getRoot().GetCVmObj());
+	foreach (var part in humanCharacter.getParts()) {
+		m_world.trackObject(part);
+	}
+	m_world.addInteractionRay(m_human.getSelector());
 }
 
 function Application::event(eventId, wparam, lparam) {
