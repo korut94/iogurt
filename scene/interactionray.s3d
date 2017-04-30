@@ -4,7 +4,7 @@
 #include "object.s3d"
 
 function drawInteractionRay(interactionRay) {
-	// Output(interactionRay.from()); Output(" "); OutputLN(interactionRay.to());
+	Output(interactionRay.from()); Output(" "); OutputLN(interactionRay.to());
 	
 	glBegin(GL_LINES);
 	glVertex([0,0,-interactionRay.length()]);
@@ -23,6 +23,8 @@ class InteractionRay : Object
 
 function InteractionRay::InteractionRay(sourceObj) {
 	m_source = sourceObj;
+	m_source.AddChild(InteractionRay::this.getCVmObj());
+	
 	InteractionRay::this.getCVmObj().LinkToCallback("drawInteractionRay", InteractionRay::this);
 }
 
