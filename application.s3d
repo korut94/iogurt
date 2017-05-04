@@ -47,10 +47,24 @@ function Application::init(params) {
 	
 	m_human.init();
 	
+	var meshBox = CVmNewMesh(VRP_BOX, 0, [0,0,0], [5, 5, 5]);
+	var meshBox2 = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,3]);
+	
 	var box = Object();
-	box.getCVmObj().LinkToMesh(CVmNewMesh(VRP_BOX, 0, [0,0,0], [10, 10, 10]));
+	box.getCVmObj().LinkToMesh(meshBox);
+	meshBox.CenterBoundingBox();
+	
+	var box2 = Object();
+	box2.getCVmObj().LinkToMesh(meshBox2);
+	meshBox.CenterBoundingBox();
+	
 	m_world.addRootToDraw(box.getCVmObj());
+	m_world.addRootToDraw(box2.getCVmObj());
 	m_world.trackObject(box);
+	m_world.trackObject(box2);
+	
+	box.getCVmObj().SetPosition([20, 5, 20]);
+	box2.getCVmObj().SetPosition([0, 5, 0]);
 }
 
 function Application::render() {
