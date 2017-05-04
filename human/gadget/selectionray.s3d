@@ -1,6 +1,8 @@
 #ifndef SELECTIONRAY_H
 #define SELECTIONRAY_H
 
+#include "humangadget.s3d"
+
 class BHSelectionRay
 {
 	onCollision(object);
@@ -10,7 +12,7 @@ function BHSelectionRay::onCollision(object) {
 	OutputLN(object.getCVmObj().GetPosition());
 }
 
-class SelectionRay
+class SelectionRay : HumanGadget
 {
 	var m_aim;
 	var m_ray;
@@ -19,15 +21,19 @@ class SelectionRay
 	init();
 };
 
-function SelectionRay::SelectionRay(headObj)
+function SelectionRay::SelectionRay(human)
 {
+	HumanGadget(human);
+	
+	var head = human.getPart(HEAD_ID).getCVmObj();
+	
 	var meshAim = CVmNewMesh(VRP_CIRCLE, 4, 0.0005, 0);
 	meshAim.Rotate(90, [1,0,0]);
 	
 	m_aim = CVmObj();
 	m_aim.LinkToMesh(meshAim);
 	
-	headObj.AddChild(m_aim);
+	head.AddChild(m_aim);
 	
 	m_ray = InteractionRay(m_aim);
 	m_ray.linkToBehavior(BHSelectionRay());
@@ -35,6 +41,7 @@ function SelectionRay::SelectionRay(headObj)
 
 function SelectionRay::applyTo(world) {
 	world.addInteractionRay(m_ray);
+	m_human.applyTo(world);
 }
 
 function SelectionRay::init() {
@@ -42,6 +49,8 @@ function SelectionRay::init() {
 	m_aim.SetPosition([0, 0, 0.1]);
 	// Set the maximum distance which the ray reaches the target
 	m_ray.getCVmObj().SetPosition([0, 0, 300]);
+	
+	m_human.init();
 }
 
 #endif // SELECTIONRAY_H
