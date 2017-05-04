@@ -14,10 +14,10 @@ class Human
 	var m_character;
 	var m_eye;
 	var m_queue;
-	var m_selector;
 	
 	applyTo(world);
 	getCommandQueue();
+	getPart(id);
 	getView();
 	/*
 	 * @brief Initialiaze the trasformation of the human parts. Any settings in the
@@ -53,8 +53,6 @@ function Human::Human() {
 	
 	m_character[BODY_ID].getCVmObj().LinkToMesh(meshBody);
 	m_character[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
-	
-	m_selector = SelectionRay(m_character[HEAD_ID].getCVmObj());
 }
 
 function Human::applyTo(world) {
@@ -63,12 +61,14 @@ function Human::applyTo(world) {
 	foreach (var part in m_character) {
 		world.trackObject(part);
 	}
-	
-	m_selector.applyTo(world);
 }
 
 function Human::getCommandQueue() {
 	return m_queue;
+}
+
+function Human::getPart(id) {
+	return m_character[id];
 }
 
 function Human::getView() {
@@ -89,7 +89,6 @@ function Human::init() {
 	// size. The value are relative to the size of the body's mesh!
 	m_character[HEAD_ID].getCVmObj().SetPosition([0, 5, 0]);
 	// m_eye.setPosition([-5, 0, -23]);
-	m_selector.init();
 }
 
 function Human::processCommand(command) {
