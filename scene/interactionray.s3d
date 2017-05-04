@@ -2,10 +2,9 @@
 #define INTERACTIONRAY_H
 
 #include "object.s3d"
+#include "utility.s3d"
 
 function drawInteractionRay(interactionRay) {
-	Output(interactionRay.from()); Output(" "); OutputLN(interactionRay.to());
-	
 	glBegin(GL_LINES);
 	glVertex([0,0,-interactionRay.length()]);
 	glVertex([0,0,0]);
@@ -16,7 +15,15 @@ class InteractionRay : Object
 {
 	var m_source;
 	
+	distanceFrom(obj);
+	/*
+	 * @brief Return the focus value for an obj as real between -1 and 1 where:
+	 * -1 means that the obj is behind to the source, 0 is parallel to it and 1
+	 * is in front to it.
+	 */
+	focus(obj);
 	from();
+	seesObj(obj);
 	length();
 	to();
 };
@@ -28,9 +35,21 @@ function InteractionRay::InteractionRay(sourceObj) {
 	InteractionRay::this.getCVmObj().LinkToCallback("drawInteractionRay", InteractionRay::this);
 }
 
+function InteractionRay::distanceFrom(obj) {
+	return (globalPosition(obj) - from()) * direction(m_source);
+}
+
+function InteractionRay::focus(obj) {
+	return norm(globalPosition(obj) - from()) * direction(m_source);
+}
+
 function InteractionRay::from() {
 	var transform = m_source.GetModelMatrix();
 	return [transform[12], transform[13], transform[14]];
+}
+
+function InteractionRay::seesObj(obj) {
+	return focus(obj) > 0.85;
 }
 
 function InteractionRay::length() {
