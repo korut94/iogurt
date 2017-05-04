@@ -41,6 +41,7 @@ class World
 	addRootToDraw(root);
 	checkCollisions();
 	draw();
+	moreNear(obj, then);
 	/*
 	 * @brief Attaching the object to update it and check its collision with
 	 * the other objects in the scene.
@@ -65,11 +66,34 @@ function World::addRootToDraw(root) {
 
 function World::checkCollisions() {
 	foreach (var ray in m_rayList) {
-		foreach (var object in m_objectList) {
-			if (object.getCVmObj().isColliding(ray.from(), ray.to())) {
-				object.getBehavior().onCollision(ray);
-				ray.getBehavior().onCollision(object);
+		var i = 0;
+		var goAhead = true;
+		
+		while (goAhead) {
+			i += 1;
+			goAhead = i < len(m_objectList) && (
+				!ray.seesObj(m_objectList[i].getCVmObj())  
+				|| !m_objectList[i].getCVmObj().isColliding(ray.from(), ray.to()));
+		}
+		
+		// There is at least an object selected by the ray and this object is in the
+		// i-est position of m_objectList
+		if (i < len(m_objectList)) {
+			var target = m_objectList[i];
+			
+			for (var j = i + 1; j < len(m_objectList); j++) {
+				var object = m_objectList[j];
+				
+				if (ray.seesObj(object.getCVmObj())
+					// Ignore any objects behind the target but collided by the ray
+					&& ray.distanceFrom(object.getCVmObj()) < ray.distanceFrom(target.getCVmObj())
+					&& object.getCVmObj().isColliding(ray.from(), ray.to())
+				) {
+					target = object;
+				}
 			}
+			
+			ray.getBehavior().onCollision(target);
 		}
 	}
 }
