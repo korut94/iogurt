@@ -29,7 +29,7 @@ function SelectionRay::SelectionRay(headObj)
 	
 	headObj.AddChild(m_aim);
 	
-	m_ray= InteractionRay(m_aim);
+	m_ray = InteractionRay(m_aim);
 	m_ray.linkToBehavior(BHSelectionRay());
 }
 
