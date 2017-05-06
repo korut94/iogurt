@@ -4,6 +4,7 @@
 #include "device/mousekeyboard.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
+#include "human/gadget/hud.s3d"
 #include "human/gadget/selectionray.s3d"
 #include "scene/world.s3d"
 
@@ -22,7 +23,7 @@ class Application
 };
 
 function Application::Application() {
-	m_human 	= SelectionRay(Human());
+	m_human 	= Hud(SelectionRay(Human()));
 	m_player 	= MouseKeyboard();
 	m_window 	= Window();
 	m_world 	= World();
