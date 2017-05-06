@@ -4,6 +4,7 @@
 #include "../command/commandqueue.s3d"
 #include "../scene/interactionray.s3d"
 #include "../scene/object.s3d"
+#include "../scene/utility.s3d"
 #include "../scene/physics/rigidbody.s3d"
 #include "def.s3d"
 #include "view.s3d"
@@ -72,13 +73,11 @@ function Human::getPart(id) {
 }
 
 function Human::getView() {
-	var trEye = m_eye.GetModelMatrix();
-	
 	var pView = View();
 	// Get traslation component, the last column of the matrix.
-	pView.position = [trEye[12], trEye[13], trEye[14]];
+	pView.position = globalPosition(m_eye);
 	// Get the normalized vector for Z axis
-	pView.direction = [trEye[8], trEye[9], trEye[10]];
+	pView.direction = direction(m_eye);
 	
 	return pView;
 }
