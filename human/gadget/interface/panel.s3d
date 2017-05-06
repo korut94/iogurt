@@ -1,0 +1,18 @@
+#ifndef PANEL_H
+#define PANEL_H
+
+#include "../../scene/object.s3d"
+
+class Panel : Object
+{
+	var m_height;
+	var m_width;
+};
+
+function Panel::Panel() {
+	m_height = 5;
+	m_width = 4;
+}
+
+#endif // PANEL_H
+ 
