@@ -1,0 +1,43 @@
+#ifndef HUD_H
+#define HUD_H
+
+#include "humangadget.s3d"
+#include "interface/panel.s3d"
+
+class Hud : HumanGadget
+{
+	var m_center;
+	var m_heigth;
+	
+	addPanel(panel, perPos);
+	applyTo(world);
+	init();
+};
+
+function Hud::Hud(human) {
+	HumanGadget(human);
+	
+	var head = human.getPart(HEAD_ID).getCVmObj();
+	
+	m_center = CVmObj();
+	// Interface's heigth, it should be as height as the window size 
+	m_heigth = 5;
+	
+	head.AddChild(m_center);
+}
+
+function Hud::applyTo(world) {
+	world.addRootToDraw(m_center);
+	
+	m_human.applyTo(world);
+}
+
+function Hud::init() {
+	// Since the interface is a semicircle, the value of the z-axis is
+	// the circle's radius
+	m_center.SetPosition([0,0,8]);
+	
+	m_human.init();
+}
+
+#endif // HUD_H
