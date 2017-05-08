@@ -1,0 +1,16 @@
+#ifndef NODEVICE_H
+#define NODEVICE_H
+
+#include "driver.s3d"
+ 
+class NoDevice : Driver
+{
+	processEvent(eventId, wparam, lparam, queue, window);
+	updateChannelList(list);
+};
+
+function NoDevice::processEvent(eventId, wparam, lparam, queue, window) {}
+
+function NoDevice::updateChannelList(list) {}
+
+#endif // NODEVICE_H
