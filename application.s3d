@@ -1,7 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "device/mousekeyboard.s3d"
+#include "event/dispatcher.s3d"
+#include "event/device/mousekeyboard.s3d"
+#include "event/device/system.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
 #include "human/gadget/hud.s3d"
@@ -10,8 +12,8 @@
 
 class Application 
 {
+	var m_dispatcher;
 	var m_human;
-	var m_player;
 	var m_window;
 	var m_world;
 	
@@ -23,20 +25,24 @@ class Application
 };
 
 function Application::Application() {
-	m_human 	= Hud(SelectionRay(Human()));
-	m_player 	= MouseKeyboard();
-	m_window 	= Window();
-	m_world 	= World();
+	m_dispatcher 	= Dispatcher();
+	m_human 		= Hud(SelectionRay(Human()));
+	m_window 		= Window();
+	m_world 		= World();
+	
+	// Allow the catching of mouse and keyboard events
+	m_dispatcher.addDevice(MouseKeyboard());
+	m_dispatcher.addDevice(System());
 	
 	m_human.applyTo(m_world);
+	m_human.registerTo(m_dispatcher);
 }
 
 function Application::event(eventId, wparam, lparam) {
-	m_player.processEvent(
+	m_dispatcher.processEvent(
 		eventId,
 		wparam, lparam,
-		m_human.getCommandQueue(),
-		m_window
+		m_world.getCommandQueue(), m_window
 	);
 }
 
@@ -79,12 +85,9 @@ function Application::render() {
 	
 	m_world.draw();
 	SceneEnd();
-	
-	m_player.restart();
 }
 
 function Application::update() {
-	m_human.processCommands();
 	m_world.update();
 }
 
