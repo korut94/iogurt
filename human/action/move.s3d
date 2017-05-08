@@ -7,18 +7,20 @@
  */
 class Move
 {
+	var m_target;
 	// Scalar value with the module of the direction vector
 	var m_velocity;
 	
-	apply(target);
+	apply();
 };
 
-function Move::Move(velocity) {
+function Move::Move(target, velocity) {
+	m_target = target;
 	m_velocity = velocity;
 }
 
-function Move::apply(target) {
-	target.getBody().setVelocity(m_velocity);
+function Move::apply() {
+	m_target.getBody().setVelocity(m_velocity);
 }
 
 #endif // MOVE_H
