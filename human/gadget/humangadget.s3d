@@ -6,11 +6,10 @@ class HumanGadget
 	var m_human;
 	
 	applyTo(world);
-	getCommandQueue();
 	getPart(id);
 	getView();
 	init();
-	processCommands();
+	registerTo(dispatcher);
 };
 
 function HumanGadget::HumanGadget(human) {
@@ -19,10 +18,6 @@ function HumanGadget::HumanGadget(human) {
 
 function HumanGadget::applyTo(world) {
 	m_human.applyTo(world);
-}
-
-function HumanGadget::getCommandQueue() {
-	return m_human.getCommandQueue();
 }
 
 function HumanGadget::getPart(id) {
@@ -37,8 +32,8 @@ function HumanGadget::init() {
 	m_human.init();
 }
 
-function HumanGadget::processCommands() {
-	m_human.processCommands();
+function HumanGadget::registerTo(dispatcher) {
+	m_human.registerTo(dispatcher);
 }
 
 #endif // HUMANGADGET_H

@@ -1,14 +1,16 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
-#include "../command/commandqueue.s3d"
-#include "../scene/interactionray.s3d"
 #include "../scene/object.s3d"
 #include "../scene/utility.s3d"
 #include "../scene/physics/rigidbody.s3d"
-#include "def.s3d"
 #include "view.s3d"
-#include "gadget/selectionray.s3d"
+#include "action/move.s3d"
+
+#define N_PARTS 2
+
+#define BODY_ID 	0x00
+#define HEAD_ID		0x01
 
 class Human
 {
@@ -17,7 +19,6 @@ class Human
 	var m_queue;
 	
 	applyTo(world);
-	getCommandQueue();
 	getPart(id);
 	getView();
 	/*
@@ -26,12 +27,10 @@ class Human
 	 * in its tree, their transformation are resetted. 
 	 */
 	init();
-	processCommands();
-	processCommand(command);
+	registerTo(dispatcher);
 };
 
 function Human::Human() {
-	m_queue = CommandQueue();
 	m_eye = CVmObj();
 	
 	m_character = Array(N_PARTS);
@@ -64,10 +63,6 @@ function Human::applyTo(world) {
 	}
 }
 
-function Human::getCommandQueue() {
-	return m_queue;
-}
-
 function Human::getPart(id) {
 	return m_character[id];
 }
@@ -90,14 +85,11 @@ function Human::init() {
 	// m_eye.setPosition([-5, 0, -23]);
 }
 
-function Human::processCommand(command) {
-	command.action().apply(m_character[command.target()]);
-}
-
-function Human::processCommands() {
-	while (!m_queue.isEmpty()) {
-		processCommand(m_queue.pop());
-	}
+function Human::registerTo(dispatcher) {
+	dispatcher.on("KeyPressed_S", Move(m_character[BODY_ID], -0.1));
+	dispatcher.on("KeyPressed_W", Move(m_character[BODY_ID], 0.1));
+	dispatcher.on("KeyReleased_S", Move(m_character[BODY_ID], 0));
+	dispatcher.on("KeyReleased_W", Move(m_character[BODY_ID], 0));
 }
 
 #endif // HUMAN_H
