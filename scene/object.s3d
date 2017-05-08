@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "event/nobehavior.s3d"
+#include "behavior/nobehavior.s3d"
 #include "physics/ghostbody.s3d"
 
 class Object 
