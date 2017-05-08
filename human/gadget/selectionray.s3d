@@ -1,6 +1,7 @@
 #ifndef SELECTIONRAY_H
 #define SELECTIONRAY_H
 
+#include "../../scene/interactionray.s3d"
 #include "humangadget.s3d"
 
 class BHSelectionRay
