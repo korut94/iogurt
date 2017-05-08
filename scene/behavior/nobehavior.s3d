@@ -1,0 +1,11 @@
+#ifndef NOBEHAVIOR_H
+#define NOBEHAVIOR_H
+
+class NoBehavior
+{
+	onCollision(object);
+};
+
+function NoBehavior::onCollision(object) {}
+
+#endif // NOBEHAVIOR_H
