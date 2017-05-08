@@ -4,23 +4,18 @@
 class Command
 {
 	var m_action;
-	var m_target;
+	var m_option;
 	
-	action();
-	target();
+	apply();
 };
 
-function Command::Command(action, target) {
+function Command::Command(action, option) {
 	m_action = action;
-	m_target = target;
+	m_option = option;
 }
 
-function Command::action() {
-	return m_action;
-}
-
-function Command::target() {
-	return m_target;
+function Command::apply() {
+	m_action.apply(m_option);
 }
 
 #endif // COMMAND_H
