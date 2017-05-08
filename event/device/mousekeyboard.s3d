@@ -17,17 +17,19 @@
 #define MAP_KEY_W 		0x03
 #define COUNT_MAP_KEY	4
 
-#define ANGLE_SPEED		0.5
-
 #define WM_BORDER		11
 
-#include "../command/command.s3d"
-#include "../command/action/move.s3d"
-#include "../command/action/rotate.s3d"
-#include "../human/def.s3d"
+#include "../channel.s3d"
+#include "driver.s3d"
 
-class MouseKeyboard
+class MouseKeyboard : Driver
 {	
+	var m_chKeySPressed;
+	var m_chKeyWPressed;
+	var m_chKeySReleased;
+	var m_chKeyWReleased;
+	var m_chMouseMove;
+	
 	/*
 	 * @brief The keyboard status, when an item is true meaning that the relative
 	 * key is hold pressed.
@@ -35,16 +37,12 @@ class MouseKeyboard
 	var m_kbStatus;
 	
 	/*
-	 * @brief The function will be invoked by the application when all events
-	 * have been processed.
-	 */
-	restart();
-	/*
 	 * @brief The function translates all events relative to the mouse and 
 	 * keyboard in human interaction commands and it pushes their into the
 	 * queue commands.
 	 */
 	processEvent(eventId, wparam, lparam, queue, window);
+	updateChannelList(list);
 };
 
 function MouseKeyboard::MouseKeyboard() {
@@ -54,17 +52,25 @@ function MouseKeyboard::MouseKeyboard() {
 	m_kbStatus[MAP_KEY_S] = false;
 	m_kbStatus[MAP_KEY_D] = false;
 	m_kbStatus[MAP_KEY_W] = false;
-}
-
-function MouseKeyboard::restart() {
-	SetCursorPos(0.5, 0.5);
+	
+	m_chKeySPressed		= Channel("KeyPressed_S");
+	m_chKeyWPressed 	= Channel("KeyPressed_W");
+	m_chKeySReleased	= Channel("KeyReleased_S");
+	m_chKeyWReleased 	= Channel("KeyReleased_W");
+	m_chMouseMove		= Channel("MouseMove");
 }
 
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
+			case KEY_S: {
+				if (!m_kbStatus[MAP_KEY_S]) m_chKeySPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_S] = true;
+				break; 
+			}
+			
 			case KEY_W: {
-				if (!m_kbStatus[MAP_KEY_W]) queue.push(Command(Move(0.1), BODY_ID));
+				if (!m_kbStatus[MAP_KEY_W]) m_chKeyWPressed.trigger(queue);
 				m_kbStatus[MAP_KEY_W] = true;
 				break;
 			}
@@ -72,21 +78,43 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 	// The second condition need to avoid the false positive by the keyboard repetition
 	} else if (eventId == KEY_RELEASED && !KeyPressed(wparam)) {
 		switch (wparam) {
+			case KEY_S: {
+				m_chKeySReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_S] = false;
+				break;
+			}
+			
 			case KEY_W: {
-				queue.push(Command(Move(0), BODY_ID));
+				m_chKeyWReleased.trigger(queue);
 				m_kbStatus[MAP_KEY_W] = false;
 				break;
 			}
 		}
 	} else if (eventId == MOUSE_MOVE) {
-		var offX = window.getSize().x()/2;
-		var offY = window.isFullScreen() ? window.getSize().y()/2 : (window.getSize().y()/2) - WM_BORDER;
-		
-		queue.push(Command(Rotate(-(Mouse.X - offX) * ANGLE_SPEED, 0), BODY_ID));
-		queue.push(Command(Rotate(0, (Mouse.Y - offY) * 0.4), HEAD_ID));
+		m_chMouseMove.trigger(queue, {Mouse.X, Mouse.Y, window});
+		/* 
+		 * var offX = window.getSize().x()/2;
+		 * var offY = window.isFullScreen() ? window.getSize().y()/2 : (window.getSize().y()/2) - WM_BORDER;
+		 * queue.push(Command(Rotate(-(Mouse.X - offX) * ANGLE_SPEED, 0), BODY_ID));
+		 * queue.push(Command(Rotate(0, (Mouse.Y - offY) * 0.4), HEAD_ID));
+		 */
+	} else {
+		m_next.processEvent(eventId, wparam, lparam, queue, window);	
 	}
-	
-	// All other events are ignored completely
+}
+
+/*
+function MouseKeyboard::restart() {
+	SetCursorPos(0.5, 0.5);
+}
+*/
+
+function MouseKeyboard::updateChannelList(list) {
+	aadd(list, m_chKeySPressed);
+	aadd(list, m_chKeyWPressed);
+	aadd(list, m_chKeySReleased);
+	aadd(list, m_chKeyWReleased);
+	aadd(list, m_chMouseMove);
 }
 
 #endif // MOUSE_KEYBOARD_H
