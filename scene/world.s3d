@@ -1,6 +1,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "../command/commandqueue.s3d"
+
 function DrawGrid(col, size)
 {
 	/* let's not mess up current OpenGL status */
@@ -31,6 +33,7 @@ function DrawGrid(col, size)
 class World
 {
 	var m_objectList;
+	var m_queue;
 	var m_rayList;
 	var m_root;
 	
@@ -41,7 +44,7 @@ class World
 	addRootToDraw(root);
 	checkCollisions();
 	draw();
-	moreNear(obj, then);
+	getCommandQueue();
 	/*
 	 * @brief Attaching the object to update it and check its collision with
 	 * the other objects in the scene.
@@ -52,6 +55,7 @@ class World
 
 function World::World() {
 	m_objectList = {};
+	m_queue = CommandQueue();
 	m_rayList = {};
 	m_root = CVmObj();
 }
@@ -105,11 +109,19 @@ function World::draw() {
 	m_root.Draw();
 }
 
+function World::getCommandQueue() {
+	return m_queue;
+}
+
 function World::trackObject(object) {
 	aadd(m_objectList, object);
 }
 
 function World::update() {
+	while (!m_queue.isEmpty()) {
+		m_queue.pop().apply();
+	}
+	
 	foreach (var object in m_objectList) {
 		object.update();
 	}
