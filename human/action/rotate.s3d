@@ -7,20 +7,21 @@
  */
 class Rotate
 {
-	var m_angleX;
-	var m_angleY;
+	var m_angVelocity;
+	var m_axis;
+	var m_target;
 	
-	apply(target);
+	apply();
 };
 
-function Rotate::Rotate(angleX, angleY) {
-	m_angleX = angleX;
-	m_angleY = angleY;
+function Rotate::Rotate(target, angularVelocity, axis) {
+	m_angVelocity = angularVelocity;
+	m_axis = axis;
+	m_target = target;
 }
 
-function Rotate::apply(target) {
-	target.getCVmObj().rotate(m_angleX, [0, 1, 0]);
-	target.getCVmObj().rotate(m_angleY, [1, 0, 0]);
+function Rotate::apply() {
+	m_target.getBody().SetAngularVelocity(m_angVelocity, m_axis);
 }
 
 #endif // ROTATE_H

@@ -20,7 +20,7 @@ function Hud::Hud(human) {
 	var head = human.getPart(HEAD_ID).getCVmObj();
 	
 	m_center = CVmObj();
-	// Interface's heigth, it should be as height as the window size 
+	// Interface's heigth, it should be as tall as the window size 
 	m_heigth = 5;
 	
 	head.AddChild(m_center);

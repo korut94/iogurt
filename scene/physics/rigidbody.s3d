@@ -3,19 +3,29 @@
 
 class RigidBody
 {
+	var m_angVelocity;
+	var m_rotAxis;
 	var m_velocity;
 	
 	getDirection(obj);
+	setAngularVelocity(velocity, axis);
 	setVelocity(velocity);
 	update(obj);
 };
 
 function RigidBody::RigidBody() {
+	m_angvelocity = 0;
+	m_rotAxis = [1,0,0];
 	m_velocity = 0;
 }
 
 function RigidBody::getDirection(obj) {
 	return obj.GetZaxis();
+}
+
+function RigidBody::setAngularVelocity(velocity, axis) {
+	m_angVelocity = velocity;
+	m_rotAxis = axis;
 }
 
 function RigidBody::setVelocity(velocity) {
@@ -24,6 +34,7 @@ function RigidBody::setVelocity(velocity) {
 
 function RigidBody::update(obj) {
 	obj.SetPosition(obj.GetPosition() + m_velocity * getDirection(obj));
+	obj.Rotate(m_angVelocity, m_rotAxis);
 }
 
 #endif // RIGIDBODY_H

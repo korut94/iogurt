@@ -1,0 +1,29 @@
+#ifndef CHANGEVIEW_H
+#define CHANGEVIEW_H
+
+class ChangeView
+{
+	var m_alternativePos;
+	var m_eye;
+	var m_isInOriginalPos;
+	
+	apply();
+};
+
+function ChangeView::ChangeView(eye, alternativePos) {
+	m_alternativePos = alternativePos;
+	m_eye = eye;
+	m_isInOriginalPos = true;
+}
+
+function ChangeView::apply() {
+	if (m_isInOriginalPos) {
+		m_eye.SetPosition(m_alternativePos);
+		m_isInOriginalPos = false;
+	} else {
+		m_eye.setPosition([0,0,0]);
+		m_isInOriginalPos = true;
+	}
+}
+
+#endif // CHANGEVIEW_H

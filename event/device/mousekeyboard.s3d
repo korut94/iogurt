@@ -13,9 +13,11 @@
 #define MAP_KEY_D 		0x01
 #define KEY_S			0x53	
 #define MAP_KEY_S 		0x02
+#define KEY_V			0x56
+#define MAP_KEY_V		0x03
 #define KEY_W			0x57	
-#define MAP_KEY_W 		0x03
-#define COUNT_MAP_KEY	4
+#define MAP_KEY_W 		0x04
+#define COUNT_MAP_KEY	5
 
 #define WM_BORDER		11
 
@@ -24,10 +26,18 @@
 
 class MouseKeyboard : Driver
 {	
+	var m_chKeyAPressed;
+	var m_chKeyDPressed;
 	var m_chKeySPressed;
+	var m_chKeyVPressed;
 	var m_chKeyWPressed;
+	
+	var m_chKeyAReleased;
+	var m_chKeyDReleased;
 	var m_chKeySReleased;
+	var m_chKeyVReleased;
 	var m_chKeyWReleased;
+	
 	var m_chMouseMove;
 	
 	/*
@@ -51,11 +61,18 @@ function MouseKeyboard::MouseKeyboard() {
 	m_kbStatus[MAP_KEY_A] = false;
 	m_kbStatus[MAP_KEY_S] = false;
 	m_kbStatus[MAP_KEY_D] = false;
+	m_kbStatus[MAP_KEY_V] = false;
 	m_kbStatus[MAP_KEY_W] = false;
 	
+	m_chKeyAPressed		= Channel("KeyPressed_A");
+	m_chKeyDPressed 	= Channel("KeyPressed_D");
 	m_chKeySPressed		= Channel("KeyPressed_S");
+	m_chKeyVPressed		= Channel("KeyPressed_V");
 	m_chKeyWPressed 	= Channel("KeyPressed_W");
+	m_chKeyAReleased	= Channel("KeyReleased_A");
+	m_chKeyDReleased 	= Channel("KeyReleased_D");
 	m_chKeySReleased	= Channel("KeyReleased_S");
+	m_chKeyVReleased	= Channel("KeyReleased_V");
 	m_chKeyWReleased 	= Channel("KeyReleased_W");
 	m_chMouseMove		= Channel("MouseMove");
 }
@@ -63,10 +80,28 @@ function MouseKeyboard::MouseKeyboard() {
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 	if (eventId == KEY_PRESSED) {
 		switch (wparam) {
+			case KEY_A: {
+				if (!m_kbStatus[MAP_KEY_A]) m_chKeyAPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_A] = true;
+				break; 
+			}
+			
+			case KEY_D: {
+				if (!m_kbStatus[MAP_KEY_D]) m_chKeyDPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_D] = true;
+				break; 
+			}
+			
 			case KEY_S: {
 				if (!m_kbStatus[MAP_KEY_S]) m_chKeySPressed.trigger(queue);
 				m_kbStatus[MAP_KEY_S] = true;
 				break; 
+			}
+			
+			case KEY_V: {
+				if (!m_kbStatus[MAP_KEY_V]) m_chKeyVPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_V] = true;
+				break;
 			}
 			
 			case KEY_W: {
@@ -78,9 +113,27 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 	// The second condition need to avoid the false positive by the keyboard repetition
 	} else if (eventId == KEY_RELEASED && !KeyPressed(wparam)) {
 		switch (wparam) {
+			case KEY_A: {
+				m_chKeyAReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_A] = false;
+				break;
+			}
+			
+			case KEY_D: {
+				m_chKeyDReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_D] = false;
+				break;
+			}
+			
 			case KEY_S: {
 				m_chKeySReleased.trigger(queue);
 				m_kbStatus[MAP_KEY_S] = false;
+				break;
+			}
+			
+			case KEY_V: {
+				m_chKeyVReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_V] = false;
 				break;
 			}
 			
@@ -110,9 +163,15 @@ function MouseKeyboard::restart() {
 */
 
 function MouseKeyboard::updateChannelList(list) {
+	aadd(list, m_chKeyAPressed);
+	aadd(list, m_chKeyDPressed);
 	aadd(list, m_chKeySPressed);
+	aadd(list, m_chKeyVPressed);
 	aadd(list, m_chKeyWPressed);
+	aadd(list, m_chKeyAReleased);
+	aadd(list, m_chKeyDReleased);
 	aadd(list, m_chKeySReleased);
+	aadd(list, m_chKeyVReleased);
 	aadd(list, m_chKeyWReleased);
 	aadd(list, m_chMouseMove);
 }
