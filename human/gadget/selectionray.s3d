@@ -28,7 +28,7 @@ function SelectionRay::SelectionRay(human)
 	
 	var head = human.getPart(HEAD_ID).getCVmObj();
 	
-	var meshAim = CVmNewMesh(VRP_CIRCLE, 4, 0.0005, 0);
+	var meshAim = CVmNewMesh(VRP_CIRCLE, 4, 0.0003, 0);
 	meshAim.Rotate(90, [1,0,0]);
 	
 	m_aim = CVmObj();
