@@ -9,7 +9,7 @@ class HumanGadget
 	getPart(id);
 	getView();
 	init();
-	registerTo(dispatcher);
+	handleInput(dispatcher);
 };
 
 function HumanGadget::HumanGadget(human) {
@@ -32,8 +32,8 @@ function HumanGadget::init() {
 	m_human.init();
 }
 
-function HumanGadget::registerTo(dispatcher) {
-	m_human.registerTo(dispatcher);
+function HumanGadget::handleInput(dispatcher) {
+	m_human.handleInput(dispatcher);
 }
 
 #endif // HUMANGADGET_H
