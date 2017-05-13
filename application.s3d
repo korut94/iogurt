@@ -33,9 +33,6 @@ function Application::Application() {
 	// Allow the catching of mouse and keyboard events
 	m_dispatcher.addDevice(MouseKeyboard());
 	m_dispatcher.addDevice(System());
-	
-	m_human.applyTo(m_world);
-	m_human.registerTo(m_dispatcher);
 }
 
 function Application::event(eventId, wparam, lparam) {
@@ -47,13 +44,17 @@ function Application::event(eventId, wparam, lparam) {
 }
 
 function Application::init(params) {
+	m_window.setFullScreen();
+	
 	/* initialize light */
 	var Light0 = CVmLight();
 	Light0.SetPosition([0.0, 10.0, 10.0]);
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
 	
+	m_human.applyTo(m_world);
 	m_human.init();
+	m_human.handleInput(m_dispatcher);
 	
 	var meshBox = CVmNewMesh(VRP_BOX, 0, [0,0,0], [5, 5, 5]);
 	var meshBox2 = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,3]);
@@ -76,13 +77,11 @@ function Application::init(params) {
 }
 
 function Application::render() {
+	ShowCursor(false);
 	updateView(m_human.getView());
 	
 	SceneBegin();
-	// Getting the actual size (width and heigth) of the viewport
-	var res = glGet(GL_VIEWPORT);
-	m_window.setSize(res[2], res[3]);
-	
+	m_window.updateInfo();
 	m_world.draw();
 	SceneEnd();
 }
