@@ -1,6 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "../scene/utility.s3d"
+
 extern function SetXVRWindowFullScreen;
 
 #define WINDOW_HEIGHT	1
@@ -8,20 +10,33 @@ extern function SetXVRWindowFullScreen;
 
 class Window
 {
+	var m_centerNearPos;
+	var m_centerFarPos;
 	var m_isFullScreen;
 	var m_mouseWindowPos;
 	// Coordinate relative to the pointer over the viewfrustum's far plane
-	var m_mouseWorldFarPos;
+	var m_mouseFarPos;
 	// Coordinate relative to the pointer over the viewfrustum's near plane
-	var m_mouseWorldNearPos;
+	var m_mouseNearPos;
 	// 2D vectory with the shape [width,heigth] 
 	var m_size;
 	
 	getSize();
 	height();
 	isFullScreen();
-	mouseWindowPos();
-	mouseWorldPos(distanceFromNear);
+	mouseWindowPosition();
+	mouseWorldPosition(distanceFromNear);
+	/*
+	 * @brief Get the offset of the cursor in world coordinate respect to the
+	 * coordinate system below:
+	 * - x axis leftward
+	 * - y axis upward
+	 * - z axis foward. 
+	 * The resulting vector keeps the offset long the axis x, the offset long
+	 * the axis y and the value of the distance from near passed by argument as
+	 * z value.
+	 */
+	offMouseWorldPosition(distanceFromNear);
 	setFullScreen();
 	setSize(width, height);
 	updateInfo();
@@ -30,9 +45,11 @@ class Window
 
 function Window::Window() {
 	m_size = [0, 0];
+	m_centerNearPos = [0,0,0];
+	m_centerFarPos = [0,0,0];
 	m_mouseWindowPos = [0,0,0];
-	m_mouseWorldFarPos = [0,0,0];
-	m_mouseWorldNearPos = [0,0,0];
+	m_mouseFarPos = [0,0,0];
+	m_mouseNearPos = [0,0,0];
 	m_isFullScreen = false;
 }
 
@@ -48,14 +65,27 @@ function Window::isFullScreen() {
 	return m_isFullScreen;
 }
 
-function Window::mouseWindowPos() {
+function Window::mouseWindowPosition() {
 	return m_mouseWindowPos;
 }
 
-function Window::mouseWorldPos(distanceFromNear) {
-	var depth = distanceFromNear / modulus(m_mouseWorldFarPos - m_mouseWorldNearPos);
+function Window::mouseWorldPosition(distanceFromNear) {
+	var camera = CameraGetCurrent();
+	var depth = distanceFromNear / (camera.GetZFar() - camera.GetZNear());
 	// Getting the intermediate point by linear interpolation
-	return m_mouseWorldNearPos + depth * (m_mouseWorldFarPos - m_mouseWorldNearPos);
+	return linearInterpolation(m_mouseNearPos, m_mouseFarPos, depth);
+}
+
+function Window::offMouseWorldPosition(distanceFromNear) {
+	var camera = CameraGetCurrent();
+	var depth = distanceFromNear / (camera.GetZFar() - camera.GetZNear());
+	// Offset from the mouse's world coordinates to the center window's world coordinates
+	var offset = linearInterpolation(m_mouseNearPos, m_mouseFarPos, depth) - linearInterpolation(m_centerNearPos, m_centerFarPos, depth);
+	// Independent Orientation oFfset, apply the rotation matrix to make the offset unalterable from
+	// the changes of the camera's orientation.
+	var iof = MatrixMultiplyVector_4(camera.GetRotationMatrix(), [offset.x, offset.y, offset.z, 1.0]);
+	
+	return [-iof.x, iof.y, distanceFromNear];
 }
 
 function Window::setFullScreen() {
@@ -80,8 +110,10 @@ function Window::updateInfo() {
 	
 	m_mouseWindowPos = [Mouse.X, Mouse.Y, 0];
 	// Convert the window mouse coordinate in OpenGL coordinate
-	m_mouseWorldNearPos = gluUnProject([Mouse.X, height() - Mouse.Y, 0.0]);
-	m_mouseWorldFarPos = gluUnProject([Mouse.X, height() - Mouse.Y, 1.0]);
+	m_mouseNearPos = gluUnProject([Mouse.X, height() - Mouse.Y, 0.0]);
+	m_mouseFarPos = gluUnProject([Mouse.X, height() - Mouse.Y, 1.0]);
+	m_centerNearPos = gluUnProject([width() / 2, height() / 2, 0.0]);
+	m_centerFarPos = gluUnProject([width() / 2, height() / 2, 1.0]);
 }
 
 function Window::width() {
