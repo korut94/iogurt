@@ -1,36 +1,61 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "point2d.s3d"
-
 extern function SetXVRWindowFullScreen;
 
-#define WINDOW_HEIGTH	1
+#define WINDOW_HEIGHT	1
 #define WINDOW_WIDTH	0
 
 class Window
 {
+	var m_isFullScreen;
+	var m_mouseWindowPos;
+	// Coordinate relative to the pointer over the viewfrustum's far plane
+	var m_mouseWorldFarPos;
+	// Coordinate relative to the pointer over the viewfrustum's near plane
+	var m_mouseWorldNearPos;
 	// 2D vectory with the shape [width,heigth] 
 	var m_size;
-	var m_isFullScreen;
 	
 	getSize();
+	height();
 	isFullScreen();
+	mouseWindowPos();
+	mouseWorldPos(distanceFromNear);
 	setFullScreen();
-	setSize(width, heigth);
+	setSize(width, height);
+	updateInfo();
+	width();
 };
 
 function Window::Window() {
 	m_size = [0, 0];
+	m_mouseWindowPos = [0,0,0];
+	m_mouseWorldFarPos = [0,0,0];
+	m_mouseWorldNearPos = [0,0,0];
 	m_isFullScreen = false;
 }
 
 function Window::getSize() {
-	return Point2D(m_size[0], m_size[1]);
+	return m_size;
+}
+
+function Window::height() {
+	return m_size.y;
 }
 
 function Window::isFullScreen() {
 	return m_isFullScreen;
+}
+
+function Window::mouseWindowPos() {
+	return m_mouseWindowPos;
+}
+
+function Window::mouseWorldPos(distanceFromNear) {
+	var depth = distanceFromNear / modulus(m_mouseWorldFarPos - m_mouseWorldNearPos);
+	// Getting the intermediate point by linear interpolation
+	return m_mouseWorldNearPos + depth * (m_mouseWorldFarPos - m_mouseWorldNearPos);
 }
 
 function Window::setFullScreen() {
@@ -38,14 +63,29 @@ function Window::setFullScreen() {
 	SetXVRWindowFullScreen(true);
 }
 
-function Window::setSize(width, heigth) {
+function Window::setSize(width, height) {
 	if (width != m_size[WINDOW_WIDTH]) {
 		m_size[WINDOW_WIDTH] = width;	
 	}
 	
-	if (heigth != m_size[WINDOW_HEIGTH]) {
-		m_size[WINDOW_HEIGTH] = heigth;
+	if (height != m_size[WINDOW_HEIGHT]) {
+		m_size[WINDOW_HEIGHT] = height;
 	}
+}
+
+function Window::updateInfo() {
+	// Getting the actual size (width and heigth) from the viewport
+	var viewport = glGet(GL_VIEWPORT);
+	setSize(viewport[2], viewport[3]);
+	
+	m_mouseWindowPos = [Mouse.X, Mouse.Y, 0];
+	// Convert the window mouse coordinate in OpenGL coordinate
+	m_mouseWorldNearPos = gluUnProject([Mouse.X, height() - Mouse.Y, 0.0]);
+	m_mouseWorldFarPos = gluUnProject([Mouse.X, height() - Mouse.Y, 1.0]);
+}
+
+function Window::width() {
+	return m_size.x;
 }
  
 #endif // WINDOW_H
