@@ -3,39 +3,51 @@
 
 #include "humangadget.s3d"
 #include "interface/panel.s3d"
+#include "interface/action/scan.s3d"
 
 class Hud : HumanGadget
 {
 	var m_center;
 	var m_heigth;
+	var m_panel;
+	var m_radius;
 	
 	addPanel(panel, perPos);
 	applyTo(world);
+	handleInput(dispatcher);
 	init();
 };
 
 function Hud::Hud(human) {
 	HumanGadget(human);
 	
-	var head = human.getPart(HEAD_ID).getCVmObj();
+	var body = human.getPart(BODY_ID).getCVmObj();
 	
 	m_center = CVmObj();
 	// Interface's heigth, it should be as tall as the window size 
-	m_heigth = 5;
+	m_heigth = 2.5;
+	m_radius = 2.2;
 	
-	head.AddChild(m_center);
+	body.AddChild(m_center);
+	
+	m_panel = Panel();
+	m_center.AddChild(m_panel.getCVmObj());
 }
 
 function Hud::applyTo(world) {
-	world.addRootToDraw(m_center);
-	
 	m_human.applyTo(world);
+}
+
+function Hud::handleInput(dispatcher) {
+	dispatcher.on("KeyPressed_E", Scan(m_panel, m_radius));
+	
+	m_human.handleInput(dispatcher);
 }
 
 function Hud::init() {
 	// Since the interface is a semicircle, the value of the z-axis is
 	// the circle's radius
-	m_center.SetPosition([0,0,8]);
+	m_center.SetPosition([0,1.4,0]);
 	
 	m_human.init();
 }
