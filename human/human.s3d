@@ -7,12 +7,14 @@
 #include "view.s3d"
 #include "action/changeview.s3d"
 #include "action/move.s3d"
+#include "action/movehand.s3d"
 #include "action/rotate.s3d"
 
-#define N_PARTS 2
+#define N_PARTS 3
 
 #define BODY_ID 	0x00
 #define HEAD_ID		0x01
+#define HAND_DX_ID	0x02
 
 class Human
 {
@@ -29,7 +31,7 @@ class Human
 	 * in its tree, their transformation are resetted. 
 	 */
 	init();
-	registerTo(dispatcher);
+	handleInput(dispatcher);
 };
 
 function Human::Human() {
@@ -40,25 +42,32 @@ function Human::Human() {
 	m_character[BODY_ID].linkToBody(RigidBody());
 	m_character[HEAD_ID] = Object();
 	m_character[HEAD_ID].linkToBody(RigidBody());
+	m_character[HAND_DX_ID] = Object();
+	m_character[HAND_DX_ID].linkToBody(RigidBody());
 	
 	// Block the head to the body
 	m_character[BODY_ID].getCVmObj().AddChild(m_character[HEAD_ID].getCVmObj());
+	// m_character[HEAD_ID].getCVmObj().AddChild(m_character[HAND_DX_ID].getCVmObj());
 	m_character[HEAD_ID].getCVmObj().AddChild(m_eye);
 	
 	// Starting the min conrner from the origin allow the definition of the box writing
 	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
 	// by the CVmObj's methods.
-	var meshBody = CVmNewMesh(VRP_BOX, 0, [0,0,0], [5,5,3]);
+	var meshBody = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1.5,1.5,0.5]);
 	meshBody.CenterBoundingBox();
-	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,1]);
+	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1,1,0.35]);
 	meshHead.CenterBoundingBox();
+	var meshHandDx = CVmNewMesh(VRP_SPHERE, 30, 0.05, 1);
+	meshHandDx.CenterBoundingBox();
 	
 	m_character[BODY_ID].getCVmObj().LinkToMesh(meshBody);
 	m_character[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
+	m_character[HAND_DX_ID].getCVmObj().LinkToMesh(meshHandDx);
 }
 
 function Human::applyTo(world) {
 	world.addRootToDraw(m_character[BODY_ID].GetCVmObj());
+	world.addRootToDraw(m_character[HAND_DX_ID].GetCVmObj());
 	
 	foreach (var part in m_character) {
 		world.trackObject(part);
@@ -83,19 +92,20 @@ function Human::init() {
 	m_character[BODY_ID].getCVmObj().setPosition([0, 1, 0]);
 	// The head's position is: one more right, one more up and one more ahead respect the body
 	// size. The value are relative to the size of the body's mesh!
-	m_character[HEAD_ID].getCVmObj().SetPosition([0, 5, 0]);
+	m_character[HEAD_ID].getCVmObj().SetPosition([0, 1.5, 0]);
 }
 
-function Human::registerTo(dispatcher) {
+function Human::handleInput(dispatcher) {
 	dispatcher.on("KeyPressed_UP", 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
 	dispatcher.on("KeyPressed_DOWN", 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
 	dispatcher.on("KeyPressed_LEFT", 	Rotate(m_character[HEAD_ID], 0.4, [0,1,0]));
 	dispatcher.on("KeyPressed_RIGHT", 	Rotate(m_character[HEAD_ID], -0.4, [0,1,0]));
 	dispatcher.on("KeyPressed_A", 		Rotate(m_character[BODY_ID], 0.5, [0,1,0]));
 	dispatcher.on("KeyPressed_D", 		Rotate(m_character[BODY_ID], -0.5, [0,1,0]));
-	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.1));
-	dispatcher.on("KeyPressed_V", 		ChangeView(m_eye, [-5, 0, -23]));
-	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.1));
+	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.05));
+	dispatcher.on("KeyPressed_V", 		ChangeView(m_eye, [-2.5, 0, -8]));
+	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.05));
+	dispatcher.on("MouseMove",			MoveHand(m_character[HAND_DX_ID], m_eye));
 	
 	dispatcher.on("KeyReleased_UP", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
 	dispatcher.on("KeyReleased_DOWN", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
