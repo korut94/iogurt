@@ -28,7 +28,7 @@ function SelectionRay::SelectionRay(human)
 	
 	var head = human.getPart(HEAD_ID).getCVmObj();
 	
-	var meshAim = CVmNewMesh(VRP_CIRCLE, 4, 0.0003, 0);
+	var meshAim = CVmNewMesh(VRP_CIRCLE, 20, 0.0002, 0);
 	meshAim.Rotate(90, [1,0,0]);
 	
 	m_aim = CVmObj();
@@ -47,7 +47,7 @@ function SelectionRay::applyTo(world) {
 
 function SelectionRay::init() {
 	// Set the offset from the human's face and the ray
-	m_aim.SetPosition([0, 0, 0.1]);
+	m_aim.SetPosition([0, 0, 0.11]);
 	// Set the maximum distance which the ray reaches the target
 	m_ray.getCVmObj().SetPosition([0, 0, 300]);
 	
