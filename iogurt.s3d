@@ -8,7 +8,7 @@ var __application = Application();
 
 /* Set global scene parameters */
 SET SCENE_FOV  = 60;
-SET SCENE_NEAR = 0.01;
+SET SCENE_NEAR = 0.1;
 SET SCENE_FAR  = 1000;
 
 function OnInit(params)
