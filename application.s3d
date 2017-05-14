@@ -8,6 +8,7 @@
 #include "human/human.s3d"
 #include "human/gadget/hud.s3d"
 #include "human/gadget/selectionray.s3d"
+#include "human/gadget/watcherray.s3d"
 #include "scene/world.s3d"
 
 class Application 
@@ -26,7 +27,7 @@ class Application
 
 function Application::Application() {
 	m_dispatcher 	= Dispatcher();
-	m_human 		= Hud(SelectionRay(Human()));
+	m_human 		= Hud(SelectionRay(WatcherRay(Human())));
 	m_window 		= Window();
 	m_world 		= World();
 	
@@ -44,7 +45,8 @@ function Application::event(eventId, wparam, lparam) {
 }
 
 function Application::init(params) {
-	m_window.setFullScreen();
+	// m_window.setFullScreen();
+	SetClearColor(1, 1, 1);
 	
 	/* initialize light */
 	var Light0 = CVmLight();
