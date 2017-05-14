@@ -2,7 +2,12 @@
 #define MOUSE_KEYBOARD_H
 
 #define LINE_CONSTANT 	0x10000
+
 #define MOUSE_MOVE 		0x0200
+#define ML_PRESSED		0x0201
+#define ML_RELEASED		0x0202
+#define MR_PRESSED		0x0207
+#define MR_RELEASED		0x0208
 
 #define KEY_PRESSED 	0x0100
 #define KEY_RELEASED	0x0101
@@ -60,6 +65,12 @@ class MouseKeyboard : Driver
 	
 	var m_chMouseMove;
 	
+	var m_chMouseLPressed;
+	var m_chMouseRPressed;
+	
+	var m_chMouseLReleased;
+	var m_chMouseRReleased;
+	
 	/*
 	 * @brief The keyboard status, when an item is true meaning that the relative
 	 * key is hold pressed.
@@ -110,6 +121,10 @@ function MouseKeyboard::MouseKeyboard() {
 	m_chKeyVReleased		= Channel("KeyReleased_V");
 	m_chKeyWReleased 		= Channel("KeyReleased_W");
 	m_chMouseMove			= Channel("MouseMove");
+	m_chMouseLPressed		= Channel("MousePressed_L");
+	m_chMouseRPressed		= Channel("MousePressed_R");
+	m_chMouseLReleased		= Channel("MouseReleased_L");
+	m_chMouseRReleased		= Channel("MouseReleased_R");
 }
 
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
@@ -239,9 +254,17 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 			}
 		}
 	} else if (eventId == MOUSE_MOVE) {
-		m_chMouseMove.trigger(queue, {window});
+		m_chMouseMove.trigger(queue, {window, wparam});
+	} else if (eventId == ML_PRESSED) {
+		m_chMouseLPressed.trigger(queue);
+	} else if (eventId == MR_PRESSED) {
+		m_chMouseRPressed.trigger(queue);
+	} else if (eventId == ML_RELEASED) {
+		m_chMouseLReleased.trigger(queue);
+	} else if (eventId == MR_RELEASED) {
+		m_chMouseRReleased.trigger(queue);
 	} else {
-		m_next.processEvent(eventId, wparam, lparam, queue, window);	
+		m_next.processEvent(eventId, wparam, lparam, queue, window);
 	}
 }
 
@@ -267,6 +290,10 @@ function MouseKeyboard::updateChannelList(list) {
 	aadd(list, m_chKeyVReleased);
 	aadd(list, m_chKeyWReleased);
 	aadd(list, m_chMouseMove);
+	aadd(list, m_chMouseLPressed);
+	aadd(list, m_chMouseRPressed);
+	aadd(list, m_chMouseLReleased);
+	aadd(list, m_chMouseRReleased);
 }
 
 #endif // MOUSE_KEYBOARD_H
