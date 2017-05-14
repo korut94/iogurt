@@ -10,15 +10,16 @@ class Panel : Object
 };
 
 function Panel::Panel() {
-	m_height = 1.2;
-	m_width = 1.5;
+	m_height = 0.7;
+	m_width = 1.2;
 	
 	var mesh = CVmNewMesh(VRP_PLANE, 0, [0,0,0], [m_width, m_height, 0], 2, 0);
 	mesh.Rotate(180, [0,1,0]);
 	
-	Panel::this.getCVmObj().LinkToMesh(mesh);
-	
+	this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
+	
+	this.getCVmObj().SetID(1);
 }
 
 #endif // PANEL_H

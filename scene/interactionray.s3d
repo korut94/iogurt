@@ -23,8 +23,8 @@ class InteractionRay : Object
 	 */
 	focus(obj);
 	from();
-	seesObj(obj);
 	length();
+	seesObj(obj);
 	to();
 };
 
@@ -32,7 +32,7 @@ function InteractionRay::InteractionRay(sourceObj) {
 	m_source = sourceObj;
 	m_source.AddChild(InteractionRay::this.getCVmObj());
 	
-	// InteractionRay::this.getCVmObj().LinkToCallback("drawInteractionRay", InteractionRay::this);
+	InteractionRay::this.getCVmObj().LinkToCallback("drawInteractionRay", InteractionRay::this);
 }
 
 function InteractionRay::distanceFrom(obj) {

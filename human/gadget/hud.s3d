@@ -26,7 +26,7 @@ function Hud::Hud(human) {
 	m_center = CVmObj();
 	// Interface's heigth, it should be as tall as the window size 
 	m_heigth = 2.5;
-	m_radius = 2.2;
+	m_radius = 1.5;
 	
 	body.AddChild(m_center);
 	
@@ -35,6 +35,7 @@ function Hud::Hud(human) {
 }
 
 function Hud::applyTo(world) {
+	world.trackObject(m_panel);
 	m_human.applyTo(world);
 }
 
@@ -47,7 +48,7 @@ function Hud::handleInput(dispatcher) {
 function Hud::init() {
 	// Since the interface is a semicircle, the value of the z-axis is
 	// the circle's radius
-	m_center.SetPosition([0,1.4,0]);
+	m_center.SetPosition([0,1.5,0]);
 	
 	m_human.init();
 }
