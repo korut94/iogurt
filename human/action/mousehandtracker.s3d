@@ -1,0 +1,45 @@
+#ifndef MOUSEHANDTRACKER_H
+#define MOUSEHANDTRACKER_H
+
+#include "../../event/tracker/mousetracker.s3d"
+
+class MouseHandTracker : MouseTracker
+{
+	var m_ahead;
+	var m_depth;
+	var m_offAhead;
+	var m_offMouse;
+	var m_target;
+	
+	apply();
+	buttonLPressed();
+	buttonLReleased();
+	moveCursor(options);
+};
+
+function MouseHandTracker::MouseHandTracker(target, ahead) {
+	m_ahead = ahead;
+	m_depth = target.getCVmObj().GetPosition().z;
+	m_offAhead = 0;
+	m_offMouse = [0,0,m_depth];
+	m_target = target;
+}
+
+function MouseHandTracker::apply() {
+	m_target.getCVmObj().SetPosition([m_offMouse.x, m_offMouse.y, m_offMouse.z + m_offAhead]);
+}
+
+function MouseHandTracker::buttonLPressed() {
+	m_offAhead = m_ahead;
+}
+
+function MouseHandTracker::buttonLReleased() {
+	m_offAhead = 0;
+}
+
+function MouseHandTracker::moveCursor(options) {
+	var window = options[0];
+	m_offMouse = window.offMouseWorldPosition(m_depth);
+}
+
+#endif // MOUSEHANDTRACKER_H
