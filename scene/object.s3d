@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "behavior/nobehavior.s3d"
+#include "behavior/behavior.s3d"
 #include "physics/ghostbody.s3d"
 
 class Object 
@@ -19,7 +19,7 @@ class Object
 };
 
 function Object::Object() {
-	m_behavior = NoBehavior();
+	m_behavior = Behavior();
 	m_physicsBody = GhostBody();
 	m_obj = CVmObj();
 }
