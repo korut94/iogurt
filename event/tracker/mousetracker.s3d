@@ -1,0 +1,55 @@
+#ifndef MOUSETRACKER_H
+#define MOUSETRACKER_H
+
+class CursorTracker
+{
+	var m_tracker;
+	
+	apply(options);
+};
+
+function CursorTracker::CursorTracker(tracker) {
+	m_tracker = tracker;
+}
+
+function CursorTracker::apply(options) {
+	m_tracker.moveCursor(options);
+	m_tracker.apply();
+}
+
+class ButtonLTracker
+{
+	var m_status;
+	var m_tracker;
+	
+	apply();
+};
+
+function ButtonLTracker::ButtonLTracker(tracker, status)
+{
+	m_status = status;
+	m_tracker = tracker;
+}
+
+function ButtonLTracker::apply() {
+	if (m_status) m_tracker.buttonLPressed();
+	else m_tracker.buttonLReleased();
+	
+	m_tracker.apply();
+}
+
+class MouseTracker
+{
+	buttonL(pressed);
+	cursor();
+};
+
+function MouseTracker::buttonL(pressed) {
+	return ButtonLTracker(this, pressed);
+}
+
+function MouseTracker::cursor() {
+	return CursorTracker(this);
+}
+
+#endif // MOUSETRACKER_H
