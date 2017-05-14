@@ -19,7 +19,7 @@ function Panel::Panel() {
 	this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
 	
-	// this.getCVmObj().SetID(1);
+	this.getCVmObj().SetID(1);
 }
 
 #endif // PANEL_H
