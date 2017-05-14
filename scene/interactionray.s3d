@@ -25,6 +25,7 @@ class InteractionRay : Object
 	from();
 	length();
 	seesObj(obj);
+	setLenght(lenght);
 	to();
 };
 
@@ -53,6 +54,10 @@ function InteractionRay::seesObj(obj) {
 
 function InteractionRay::length() {
 	return modulus(InteractionRay::this.getCVmObj().GetPosition());
+}
+
+function InteractionRay::setLenght(lenght) {
+	InteractionRay::this.getCVmObj().SetPosition([0,0,lenght]);
 }
 
 function InteractionRay::to() {

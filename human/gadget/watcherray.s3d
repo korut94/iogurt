@@ -50,7 +50,7 @@ function WatcherRay::init() {
 	// Set the offset from the human's face and the ray
 	m_aim.SetPosition([0, 0, 0.11]);
 	// Set the maximum distance which the ray can reaching the target
-	m_ray.getCVmObj().SetPosition([0, 0, 300]);
+	m_ray.setLenght(300);
 	
 	m_human.init();
 }

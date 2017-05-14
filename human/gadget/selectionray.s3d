@@ -38,7 +38,7 @@ function SelectionRay::applyTo(world) {
 }
 
 function SelectionRay::init() {
-	m_ray.getCVmObj().SetPosition([0,0,0.5]);
+	m_ray.setLenght(0.5);
 	
 	m_human.init();
 }
