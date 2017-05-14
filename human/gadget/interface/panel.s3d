@@ -18,8 +18,6 @@ function Panel::Panel() {
 	
 	Panel::this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
-	
-	// Panel::this.getCVmObj().SetID(1);
 }
 
 #endif // PANEL_H
