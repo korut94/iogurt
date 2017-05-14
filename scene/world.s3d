@@ -71,13 +71,14 @@ function World::addRootToDraw(root) {
 function World::checkCollisions() {
 	foreach (var ray in m_rayList) {
 		var i = 0;
-		var goAhead = true;
+		var next = true;
 		
-		while (goAhead) {
-			i += 1;
-			goAhead = i < len(m_objectList) && (
+		while (next) {
+			next = i < len(m_objectList) && (
 				!ray.seesObj(m_objectList[i].getCVmObj())  
 				|| !m_objectList[i].getCVmObj().isColliding(ray.from(), ray.to()));
+				
+			if (next) i++;
 		}
 		
 		// There is at least an object selected by the ray and this object is in the
@@ -89,7 +90,7 @@ function World::checkCollisions() {
 				var object = m_objectList[j];
 				
 				if (ray.seesObj(object.getCVmObj())
-					// Ignore any objects behind the target but collided by the ray
+					// Ignore any objects behind the target but collided with the ray
 					&& ray.distanceFrom(object.getCVmObj()) < ray.distanceFrom(target.getCVmObj())
 					&& object.getCVmObj().isColliding(ray.from(), ray.to())
 				) {
@@ -103,8 +104,6 @@ function World::checkCollisions() {
 }
 
 function World::draw() {
-	glClearColor(1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
 	DrawGrid([0.5, 0.5, 0.5], 100);
 	m_root.Draw();
 }
