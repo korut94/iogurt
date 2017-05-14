@@ -6,7 +6,7 @@
 class Channel
 {
 	var m_name;
-	var m_subscribers;
+	var m_subscriber;
 	
 	getName();
 	subscribe(action);
@@ -15,7 +15,7 @@ class Channel
 
 function Channel::Channel(name) {
 	m_name = name;
-	m_subscribers = {};
+	m_subscriber = VOID;
 }
 
 function Channel::getName() {
@@ -23,12 +23,12 @@ function Channel::getName() {
 }
 
 function Channel::subscribe(action) {
-	aadd(m_subscribers, action);
+	m_subscriber = action;
 }
 
 function Channel::trigger(queue, opts) {
-	foreach (var action in m_subscribers) {
-		queue.push(Command(action, opts));
+	if (m_subscriber != VOID) {
+		queue.push(command(m_subscriber, opts));
 	}
 }
 
