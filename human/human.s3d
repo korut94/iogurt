@@ -7,7 +7,7 @@
 #include "view.s3d"
 #include "action/changeview.s3d"
 #include "action/move.s3d"
-#include "action/movehand.s3d"
+#include "action/mousehandtracker.s3d"
 #include "action/rotate.s3d"
 
 #define N_PARTS 3
@@ -20,7 +20,6 @@ class Human
 {
 	var m_character;
 	var m_eye;
-	var m_queue;
 	
 	applyTo(world);
 	getPart(id);
@@ -47,17 +46,17 @@ function Human::Human() {
 	
 	// Block the head to the body
 	m_character[BODY_ID].getCVmObj().AddChild(m_character[HEAD_ID].getCVmObj());
-	// m_character[HEAD_ID].getCVmObj().AddChild(m_character[HAND_DX_ID].getCVmObj());
+	m_character[HEAD_ID].getCVmObj().AddChild(m_character[HAND_DX_ID].getCVmObj());
 	m_character[HEAD_ID].getCVmObj().AddChild(m_eye);
 	
-	// Starting the min conrner from the origin allow the definition of the box writing
+	// Starting the min corner from the origin allow the definition of the box writing
 	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
 	// by the CVmObj's methods.
 	var meshBody = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1.5,1.5,0.5]);
 	meshBody.CenterBoundingBox();
 	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1,1,0.35]);
 	meshHead.CenterBoundingBox();
-	var meshHandDx = CVmNewMesh(VRP_SPHERE, 30, 0.05, 1);
+	var meshHandDx = CVmNewMesh(VRP_SPHERE, 30, 0.02, 1);
 	meshHandDx.CenterBoundingBox();
 	
 	m_character[BODY_ID].getCVmObj().LinkToMesh(meshBody);
@@ -67,7 +66,6 @@ function Human::Human() {
 
 function Human::applyTo(world) {
 	world.addRootToDraw(m_character[BODY_ID].GetCVmObj());
-	world.addRootToDraw(m_character[HAND_DX_ID].GetCVmObj());
 	
 	foreach (var part in m_character) {
 		world.trackObject(part);
@@ -93,9 +91,12 @@ function Human::init() {
 	// The head's position is: one more right, one more up and one more ahead respect the body
 	// size. The value are relative to the size of the body's mesh!
 	m_character[HEAD_ID].getCVmObj().SetPosition([0, 1.5, 0]);
+	m_character[HAND_DX_ID].getCVmObj().SetPosition([0, 0, 1.3]);
 }
 
 function Human::handleInput(dispatcher) {
+	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.15);
+	
 	dispatcher.on("KeyPressed_UP", 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
 	dispatcher.on("KeyPressed_DOWN", 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
 	dispatcher.on("KeyPressed_LEFT", 	Rotate(m_character[HEAD_ID], 0.4, [0,1,0]));
@@ -105,7 +106,8 @@ function Human::handleInput(dispatcher) {
 	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.05));
 	dispatcher.on("KeyPressed_V", 		ChangeView(m_eye, [-2.5, 0, -8]));
 	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.05));
-	dispatcher.on("MouseMove",			MoveHand(m_character[HAND_DX_ID], m_eye));
+	dispatcher.on("MouseMove",			tracker.cursor());
+	dispatcher.on("MousePressed_L",		tracker.buttonL(true));
 	
 	dispatcher.on("KeyReleased_UP", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
 	dispatcher.on("KeyReleased_DOWN", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
@@ -115,6 +117,7 @@ function Human::handleInput(dispatcher) {
 	dispatcher.on("KeyReleased_D", 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
 	dispatcher.on("KeyReleased_S", 		Move(m_character[BODY_ID], 0));
 	dispatcher.on("KeyReleased_W", 		Move(m_character[BODY_ID], 0));
+	dispatcher.on("MouseReleased_L",	tracker.buttonL(false));
 }
 
 #endif // HUMAN_H
