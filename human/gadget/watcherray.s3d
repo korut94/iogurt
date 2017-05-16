@@ -2,16 +2,16 @@
 #define WATCHERRAY_H
 
 #include "../../scene/interactionray.s3d"
-#include "../../scene/behavior/behavior.s3d"
+#include "../../scene/behavior/mono.s3d"
 #include "humangadget.s3d"
 
-class BHWatcherRay : Behavior
+class BHWatcherRay : Mono
 {
 	onCollision(object);
 };
 
 function BHWatcherRay::onCollision(object) {
-	OutputLN(object.getCVmObj().GetPosition());
+	// Output("Watcher: "); OutputLN(object.getCVmObj().GetPosition());
 }
 
 class WatcherRay : HumanGadget
