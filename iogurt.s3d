@@ -33,5 +33,5 @@ function OnEvent(eventID, wparam, lparam)
 
 function DownloadReady(RequestID) {}
 function OnDownload() {}
-function OnError(){}
+function OnError() {}
 function OnExit() {}
