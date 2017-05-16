@@ -3,7 +3,6 @@
 
 #include "humangadget.s3d"
 #include "interface/panel.s3d"
-#include "interface/action/scan.s3d"
 
 class Hud : HumanGadget
 {
@@ -12,10 +11,21 @@ class Hud : HumanGadget
 	var m_panel;
 	var m_radius;
 	
-	addPanel(panel, perPos);
 	applyTo(world);
 	handleInput(dispatcher);
 	init();
+	/*
+	 * @brief Turn the panel around the center with a determinded radius. The
+	 * step determines the panel places where:
+	 * - with 0 the panel is putted in the left side from the center
+	 * - with 1 the panel is putted in the right side from the center
+	 * - any values from 0 and 1 get a intermedia position (e.g. with 0.5 the panel
+	 * will show itself forward the view)
+	 * 
+	 * In any case, the panel will be rotate so to have its front face looking
+	 * the hud's center point.
+	 */
+	movePanel(panel, step);
 };
 
 function Hud::Hud(human) {
@@ -24,13 +34,9 @@ function Hud::Hud(human) {
 	var body = human.getPart(BODY_ID).getCVmObj();
 	
 	m_center = CVmObj();
-	// Interface's heigth, it should be as tall as the window size 
-	m_heigth = 2.5;
-	m_radius = 1.5;
-	
 	body.AddChild(m_center);
 	
-	m_panel = Panel();
+	m_panel = Panel(Hud::this);
 	m_center.AddChild(m_panel.getCVmObj());
 }
 
@@ -40,17 +46,26 @@ function Hud::applyTo(world) {
 }
 
 function Hud::handleInput(dispatcher) {
-	dispatcher.on("KeyPressed_E", Scan(m_panel, m_radius));
-	
 	m_human.handleInput(dispatcher);
 }
 
 function Hud::init() {
+	// Interface's heigth, it should be as tall as the window size 
+	m_heigth = 2.5;
+	m_radius = 1.5;
+	
 	// Since the interface is a semicircle, the value of the z-axis is
 	// the circle's radius
-	m_center.SetPosition([0,1.5,0]);
+	m_center.SetPosition([0, 1.5, 0]);
+	
+	movePanel(m_panel, 0.5);
 	
 	m_human.init();
+}
+
+function Hud::movePanel(panel, step) {
+	panel.getCVmObj().SetPosition(m_radius * [cos(PI * step), 0, sin(PI * step)]);
+	panel.getCVmObj().SetRotation(180.0 * (0.5 - step), [0,1,0]);
 }
 
 #endif // HUD_H
