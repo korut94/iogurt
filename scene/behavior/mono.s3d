@@ -1,0 +1,25 @@
+#ifndef MONO_H
+#define MONO_H
+
+class Mono
+{
+	onCollision(object, contactPoint);
+	onCollisionEnter(object, contactPoint);
+	onCollisionExit(object);
+	onEnter(pointer, contactPoint);
+	onExit();
+	onHover(pointer, contactPoint);
+	onPress(pointer, contactPoint);
+	onRelease(pointer, contactPoint);
+};
+
+function Mono::onCollision(object, contactPoint) {}
+function Mono::onCollisionEnter(object, contactPoint) {}
+function Mono::onCollisionExit(object) {}
+function Mono::onEnter(pointer, contactPoint) {}
+function Mono::onExit() {}
+function Mono::onHover(pointer, contactPoint) {}
+function Mono::onPress(pointer, contactPoint) {}
+function Mono::onRelease(pointer, contactPoint) {}
+
+#endif // MONO_H
