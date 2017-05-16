@@ -2,14 +2,20 @@
 #define PANEL_H
 
 #include "../../../scene/object.s3d"
+#include "behavior/bhpanel.s3d"
 
 class Panel : Object
 {
 	var m_height;
+	var m_hud;
 	var m_width;
+	
+	moveStep(step);
 };
 
-function Panel::Panel() {
+function Panel::Panel(hud) {
+	m_hud = hud;
+	
 	m_height = 0.7;
 	m_width = 1.2;
 	
@@ -18,6 +24,12 @@ function Panel::Panel() {
 	
 	Panel::this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
+	
+	Panel::this.linkToBehavior(BHPanel(Panel::this));
+}
+
+function Panel::moveStep(step) {
+	m_hud.movePanel(Panel::this, step);
 }
 
 #endif // PANEL_H
