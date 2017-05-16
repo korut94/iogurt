@@ -1,0 +1,43 @@
+#ifndef BHWIDGET_H
+#define BHWIDGET_H
+
+#include "../../../../scene/behavior/mono.s3d"
+
+class BHWidget : Mono
+{
+	var m_distanceFromPointer;
+	var m_sensPress;
+	var m_wasPressed;
+	
+	var m_widget;
+	
+	onEnter(pointer, contactPoint);
+	onHover(pointer, contactPoint);
+};
+
+function BHWidget::BHWidget(widget) {
+	m_distanceFromPointer = 0;
+	m_sensPress = 0.01;
+	m_wasPressed = false;
+	
+	m_widget = widget;
+}
+
+function BHWidget::onEnter(pointer, contactPoint) {
+	m_distanceFromPointer = (globalPosition(m_widget.getCVmObj()) - pointer)  * forward(m_widget.getCVmObj());
+}
+
+function BHWidget::onHover(pointer, contactPoint) {
+	var distance = (globalPosition(m_widget.getCVmObj()) - pointer)  * forward(m_widget.getCVmObj());
+		
+	if (distance + m_sensPress < m_distanceFromPointer) {
+		m_wasPressed = true;
+		this.onPress(pointer, contactPoint);
+	} else if (m_wasPressed) {
+		m_wasPressed = false;
+		this.onRelease(pointer, contactPoint);
+	}
+}
+
+
+#endif // BHWIDGET_H
