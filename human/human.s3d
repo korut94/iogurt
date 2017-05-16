@@ -66,10 +66,12 @@ function Human::Human() {
 
 function Human::applyTo(world) {
 	world.addRootToDraw(m_character[BODY_ID].GetCVmObj());
+	world.trackObject(m_character[BODY_ID]);
+	world.trackObject(m_character[HEAD_ID]);
 	
-	foreach (var part in m_character) {
-		world.trackObject(part);
-	}
+	// NOTE: The systemt doens't track the hand because for the actual collision detection
+	// algorithm it always collides with the watcher ray and it occludes the other elements of the
+	// world since it is the closest object from the watcher ray.
 }
 
 function Human::getPart(id) {
@@ -81,7 +83,7 @@ function Human::getView() {
 	// Get traslation component, the last column of the matrix.
 	pView.position = globalPosition(m_eye);
 	// Get the normalized vector for Z axis
-	pView.direction = direction(m_eye);
+	pView.direction = forward(m_eye);
 	
 	return pView;
 }
@@ -95,7 +97,7 @@ function Human::init() {
 }
 
 function Human::handleInput(dispatcher) {
-	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.15);
+	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.1);
 	
 	dispatcher.on("KeyPressed_UP", 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
 	dispatcher.on("KeyPressed_DOWN", 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
