@@ -1,0 +1,24 @@
+#ifndef BHBUTTON_H
+#define BHBUTTON_H
+
+#include "bhwidget.s3d"
+
+class BHButton : BHWidget
+{
+	onPress(depth);
+	onRelease();
+};
+
+function BHButton::BHButton(button) {
+	BHWidget(button);
+}
+
+function BHButton::onPress(depth) {
+	OutputLN({"Press button! Depth: ", depth});
+}
+
+function BHButton::onRelease() {
+	OutputLN("Release button!");
+}
+
+#endif // BHBUTTON_H
