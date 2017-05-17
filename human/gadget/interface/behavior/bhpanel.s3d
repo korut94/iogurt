@@ -6,8 +6,7 @@
 class BHPanel : BHWidget
 {
 	var m_firstPress;
-	var m_step;
-	var m_newStep;
+	var m_prevStep;
 	var m_start;
 	
 	onPress(pointer, contactPoint);
@@ -18,8 +17,7 @@ function BHPanel::BHPanel(panel) {
 	BHWidget(panel);
 	
 	m_firstPress = true;
-	m_step = 0.5;
-	m_newStep = 0.5;
+	m_prevStep = m_widget.getStep();
 	m_start = [0,0,0];
 }
 
@@ -32,14 +30,13 @@ function BHPanel::onPress(pointer, contactPoint) {
 		// 1 moving rightward, -1 leftward so multiply it per -1 we get: -1 moving righward, 1 leftward.
 		// Remember that the panel has as reference axis: x = leftward, y = upward, z = backward
 		var dir = -sign(delta * rightward(m_widget.getCVmObj()));
-		m_newStep = m_step + dir * modulus(delta)/3;
-		m_widget.moveStep(m_newStep);
+		m_widget.setStep(m_prevStep + (dir * modulus(delta)) / (2 * m_widget.hud().distanceFromUser()));
 	}
 }
 
 function BHPanel::onRelease(pointer, contactPoint) {
 	m_firstPress = true;
-	m_step = m_newStep;
+	m_prevStep = m_widget.getStep();
 }
 
 #endif // BHPANEL_H

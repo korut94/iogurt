@@ -10,7 +10,10 @@ class Panel : Object
 	var m_hud;
 	var m_width;
 	
-	moveStep(step);
+	getStep();
+	hud();
+	init();
+	setStep(step);
 };
 
 function Panel::Panel(hud) {
@@ -24,12 +27,22 @@ function Panel::Panel(hud) {
 	
 	Panel::this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
-	
+}
+
+function Panel::getStep() {
+	return m_hud.getStep(Panel::this);
+}
+
+function Panel::hud() {
+	return m_hud;
+}
+
+function Panel::init() {
 	Panel::this.linkToBehavior(BHPanel(Panel::this));
 }
 
-function Panel::moveStep(step) {
-	m_hud.movePanel(Panel::this, step);
+function Panel::setStep(step) {
+	m_hud.setStep(Panel::this, step);
 }
 
 #endif // PANEL_H
