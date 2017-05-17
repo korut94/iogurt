@@ -1,0 +1,32 @@
+#ifndef TOBJHANDLE_H
+#define TOBJHANDLE_H
+
+#include "../button.s3d"
+#include "../panel.s3d"
+
+class TObjHandle : Panel
+{
+	var m_button;
+	
+	applyTo(world);
+	init();
+};
+
+function TObjHandle::TObjHandle(hud, width, height) {
+	m_button = Button(0.2, 0.1, "Press", [0.07, 0.07], [-0.09, -0.01, 0]);
+	TObjHandle::this.getCVmObj().AddChild(m_button.getCVmObj());
+}
+
+function TObjHandle::applyTo(world) {
+	world.trackObject(TObjHandle::this);
+	world.trackObject(m_button);
+}
+
+function TObjHandle::init() {
+	Panel::this.init();
+	m_button.getCVmObj().SetPosition([-0.4, -0.25, -0.01]);
+	
+	m_button.init();
+}
+
+#endif // TOBJHANDLE_H
