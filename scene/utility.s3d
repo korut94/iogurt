@@ -49,4 +49,9 @@ function sign(number) {
 	return (number < 0.0) ? -1 : 1;
 }
 
+function upward(obj) {
+	var transform = obj.GetModelMatrix();
+	return [transform[4], transform[5], transform[6]];
+}
+
 #endif // UTILITY_H
