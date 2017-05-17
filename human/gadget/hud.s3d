@@ -44,7 +44,7 @@ function Hud::Hud(human) {
 }
 
 function Hud::applyTo(world) {
-	world.trackObject(m_panel);
+	m_panel.applyTo(world);
 	m_human.applyTo(world);
 }
 
