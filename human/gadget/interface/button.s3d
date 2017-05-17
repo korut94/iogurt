@@ -1,0 +1,33 @@
+#ifndef BUTTON_H
+#define BUTTON_H
+
+#include "../../../scene/object.s3d"
+#include "behavior/bhbutton.s3d"
+
+class Button : Object
+{
+	var m_height;
+	var m_width;
+	
+	init();
+};
+
+function Button::Button() {
+	m_height = 0.1;
+	m_width = 0.2;
+	
+	var mesh = CVmNewMesh(VRP_PLANE, 0, [0,0,0], [m_width, m_height, 0], 2, 0);
+	mesh.Rotate(180, [0,1,0]);
+	var material = CVmMaterial();
+	material.Ambient = [1.0, 0, 0, 1.0];
+	mesh.ForceMaterial(material);
+	
+	Button::this.getCVmObj().LinkToMesh(mesh);
+	mesh.CenterBoundingBox();
+}
+
+function Button::init() {
+	Button::this.linkToBehavior(BHButton(Button::this));
+}
+
+#endif // BUTTON_H
