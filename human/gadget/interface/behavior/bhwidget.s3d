@@ -6,7 +6,9 @@
 class BHWidget : Mono
 {
 	var m_distanceFromPointer;
+	var m_firstPress;
 	var m_sensPress;
+	var m_start;
 	var m_wasPressed;
 	
 	var m_widget;
@@ -17,7 +19,9 @@ class BHWidget : Mono
 
 function BHWidget::BHWidget(widget) {
 	m_distanceFromPointer = 0;
+	m_firstPress = true;
 	m_sensPress = 0.01;
+	m_start = [0,0,0];
 	m_wasPressed = false;
 	
 	m_widget = widget;
@@ -29,15 +33,28 @@ function BHWidget::onEnter(pointer, contactPoint) {
 
 function BHWidget::onHover(pointer, contactPoint) {
 	var distance = (globalPosition(m_widget.getCVmObj()) - pointer)  * forward(m_widget.getCVmObj());
-		
-	if (distance + m_sensPress < m_distanceFromPointer) {
+	
+	// Check press behavior	
+	if (m_sensPress < m_distanceFromPointer - distance) {
 		m_wasPressed = true;
-		this.onPress(pointer, contactPoint);
+		this.onPress(m_distanceFromPointer - distance, contactPoint);
+		
+		// Check drag behavior
+		if (m_firstPress) {
+			m_firstPress = false;
+			m_start = contactPoint;
+		} else {
+			var delta = contactPoint - m_start;
+			// Get the right and up components from the vector delta. Remember that the interface is yawed
+			// by 180 degree so the panel's right is the user's left and viceversa.
+			this.onDrag(-delta * rightward(m_widget.getCVmObj()), delta * upward(m_widget.getCVmObj()));
+		}
+	// Check release behavior
 	} else if (m_wasPressed) {
 		m_wasPressed = false;
-		this.onRelease(pointer, contactPoint);
+		m_firstPress = true;
+		this.onRelease(contactPoint);
 	}
 }
-
 
 #endif // BHWIDGET_H
