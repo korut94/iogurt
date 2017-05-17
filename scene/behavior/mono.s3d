@@ -6,20 +6,22 @@ class Mono
 	onCollision(object, contactPoint);
 	onCollisionEnter(object, contactPoint);
 	onCollisionExit(object);
+	onDrag(deltaRight, deltaUp);
 	onEnter(pointer, contactPoint);
 	onExit();
 	onHover(pointer, contactPoint);
-	onPress(pointer, contactPoint);
-	onRelease(pointer, contactPoint);
+	onPress(depth, contactPoint);
+	onRelease(contactPoint);
 };
 
 function Mono::onCollision(object, contactPoint) {}
 function Mono::onCollisionEnter(object, contactPoint) {}
 function Mono::onCollisionExit(object) {}
+function Mono::onDrag(deltaRight, deltaUp) {}
 function Mono::onEnter(pointer, contactPoint) {}
 function Mono::onExit() {}
 function Mono::onHover(pointer, contactPoint) {}
-function Mono::onPress(pointer, contactPoint) {}
-function Mono::onRelease(pointer, contactPoint) {}
+function Mono::onPress(contactPoint, depth) {}
+function Mono::onRelease(contactPoint) {}
 
 #endif // MONO_H
