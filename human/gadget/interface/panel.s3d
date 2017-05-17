@@ -2,14 +2,17 @@
 #define PANEL_H
 
 #include "../../../scene/object.s3d"
+#include "button.s3d"
 #include "behavior/bhpanel.s3d"
 
 class Panel : Object
 {
+	var m_button;
 	var m_height;
 	var m_hud;
 	var m_width;
 	
+	applyTo(world);
 	getStep();
 	hud();
 	init();
@@ -27,6 +30,14 @@ function Panel::Panel(hud) {
 	
 	Panel::this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
+	
+	m_button = Button();
+	Panel::this.getCVmObj().AddChild(m_button.getCVmObj());
+}
+
+function Panel::applyTo(world) {
+	world.trackObject(Panel::this);
+	world.trackObject(m_button);
 }
 
 function Panel::getStep() {
@@ -39,6 +50,9 @@ function Panel::hud() {
 
 function Panel::init() {
 	Panel::this.linkToBehavior(BHPanel(Panel::this));
+	
+	m_button.getCVmObj().SetPosition([-0.4, -0.25, -0.05]);
+	m_button.init();
 }
 
 function Panel::setStep(step) {
