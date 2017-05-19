@@ -2,12 +2,11 @@
 #define HUD_H
 
 #include "humangadget.s3d"
-#include "interface/panel.s3d"
+#include "interface/mywidget/mobjhandle.s3d"
 
 class Hud : HumanGadget
 {
 	var m_center;
-	var m_heigth;
 	var m_panel;
 	var m_radius;
 	var m_step;
@@ -39,7 +38,7 @@ function Hud::Hud(human) {
 	m_center = CVmObj();
 	body.AddChild(m_center);
 	
-	m_panel = Panel(Hud::this);
+	m_panel = MObjHandle(Hud::this, 0.9, 0.83);
 	m_center.AddChild(m_panel.getCVmObj());
 }
 
@@ -61,8 +60,6 @@ function Hud::handleInput(dispatcher) {
 }
 
 function Hud::init() {
-	// Interface's heigth, it should be as tall as the window size 
-	m_heigth = 2.5;
 	m_radius = 1.5;
 	
 	// Since the interface is a semicircle, the value of the z-axis is
