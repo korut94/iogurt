@@ -20,7 +20,7 @@ class BHWidget : Mono
 function BHWidget::BHWidget(widget) {
 	m_distanceFromPointer = 0;
 	m_firstPress = true;
-	m_sensPress = 0.01;
+	m_sensPress = 0.05;
 	m_start = [0,0,0];
 	m_wasPressed = false;
 	
