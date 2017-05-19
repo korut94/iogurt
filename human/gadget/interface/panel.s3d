@@ -1,43 +1,27 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "../../../scene/object.s3d"
-#include "button.s3d"
 #include "behavior/bhpanel.s3d"
 
 class Panel : Object
 {
-	var m_button;
-	var m_height;
 	var m_hud;
-	var m_width;
 	
-	applyTo(world);
 	getStep();
 	hud();
-	init();
 	setStep(step);
 };
 
-function Panel::Panel(hud) {
+function Panel::Panel(hud, width, height) {
 	m_hud = hud;
 	
-	m_height = 0.7;
-	m_width = 1.2;
-	
-	var mesh = CVmNewMesh(VRP_PLANE, 0, [0,0,0], [m_width, m_height, 0], 2, 0);
+	var mesh = CVmNewMesh(VRP_PLANE, 0, [0,0,0], [width, height, 0], 2, 0);
 	mesh.Rotate(180, [0,1,0]);
 	
 	Panel::this.getCVmObj().LinkToMesh(mesh);
 	mesh.CenterBoundingBox();
 	
-	m_button = Button();
-	Panel::this.getCVmObj().AddChild(m_button.getCVmObj());
-}
-
-function Panel::applyTo(world) {
-	world.trackObject(Panel::this);
-	world.trackObject(m_button);
+	Panel::this.linkToBehavior(BHPanel(Panel::this));
 }
 
 function Panel::getStep() {
@@ -46,13 +30,6 @@ function Panel::getStep() {
 
 function Panel::hud() {
 	return m_hud;
-}
-
-function Panel::init() {
-	Panel::this.linkToBehavior(BHPanel(Panel::this));
-	
-	m_button.getCVmObj().SetPosition([-0.4, -0.25, -0.05]);
-	m_button.init();
 }
 
 function Panel::setStep(step) {
