@@ -18,12 +18,13 @@ function OnInit(params)
 
 function OnFrame()
 {	
+	__application.update();
 	__application.render();
 }
 
 function OnTimer()
 {
-	__application.update();
+	// __application.update();
 }
 
 function OnEvent(eventID, wparam, lparam)
