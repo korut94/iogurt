@@ -1,0 +1,43 @@
+#ifndef MOBJSETTER_H
+#define MOBJSETTER_H
+
+#include "../../../../scene/object.s3d"
+#include "../button.s3d"
+#include "../label.s3d"
+
+class MObjSetter : Object
+{
+	var m_btnDec;
+	var m_btnInc;
+	var m_lblProp;
+	var m_lblValue;
+	
+	applyTo(world);
+	init();
+};
+
+function MObjSetter::MObjSetter(propName) {
+	m_btnDec = Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.02, 0.02, 0.02]));
+	m_btnInc = Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.02, 0.02, 0.02]));
+	m_lblValue = Label("000.00", [0.03, 0.03]);
+	m_lblProp = Label(propName + ": ", [0.03, 0.03], [0.8, 0.8, 0.8]);
+	
+	MObjSetter::this.getCVmObj().AddChild(m_btnDec.getCVmObj());
+	MObjSetter::this.getCVmObj().AddChild(m_btnInc.getCVmObj());
+	MObjSetter::this.getCVmObj().AddChild(m_lblProp.getCVmObj());
+	MObjSetter::this.getCVmObj().AddChild(m_lblValue.getCVmObj());
+}
+
+function MObjSetter::applyTo(world) {
+	world.trackObject(m_btnDec);
+	world.trackObject(m_btnInc);
+}
+
+function MObjSetter::init() {
+	m_btnDec.getCVmObj().SetPosition([0.06, 0, -0.01]);
+	m_btnInc.getCVmObj().SetPosition([-0.06, 0, -0.01]);
+	m_lblValue.getCVmObj().SetPosition([0.04, -0.01, -0.01]);
+	m_lblProp.getCVmObj().SetPosition([0.105, -0.01, -0.01]);
+}
+
+#endif // MOBJSETTER_H
