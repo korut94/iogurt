@@ -1,0 +1,24 @@
+#ifndef LABEL_H
+#define LABEL_H
+
+#include "../../../scene/object.s3d"
+
+class Label : Object
+{
+	
+};
+
+function Label::Label(text, scale, color, position)
+{
+	color = (color == VOID) ? [1,1,1] : color;
+	
+	var txt = CVmText(text, 0, 0, "Arial");
+	txt.SetColor(color.x, color.y, color.z);
+	txt.SetScale(scale.x, scale.y);
+	txt.SetPosition(position);
+	
+	Label::this.getCVmObj().LinkToText(txt);
+	Label::this.getCVmObj().Rotate(180, [0,1,0]);
+}
+
+#endif // LABEL_H
