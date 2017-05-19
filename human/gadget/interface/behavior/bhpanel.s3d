@@ -8,17 +8,21 @@ class BHPanel : BHWidget
 	var m_prevStep;
 	
 	onDrag(deltaRight, deltaUp);
+	onEnter(pointer, contactPoint);
 	onRelease();
 };
 
 function BHPanel::BHPanel(panel) {
 	BHWidget(panel);
-	
-	m_prevStep = m_widget.getStep();
 }
 
 function BHPanel::onDrag(deltaRight, deltaUp) {
 	m_widget.setStep(m_prevStep + deltaRight / (2 * m_widget.hud().distanceFromUser()));
+}
+
+function BHPanel::onEnter(pointer, contactPoint) {
+	BHWidget::this.onEnter(pointer, contactPoint);
+	m_prevStep = m_widget.getStep();
 }
 
 function BHPanel::onRelease() {
