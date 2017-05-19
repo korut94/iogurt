@@ -5,7 +5,7 @@
 
 class BHButton : BHWidget
 {
-	onPress(depth);
+	onPress();
 	onRelease();
 };
 
@@ -13,8 +13,8 @@ function BHButton::BHButton(button) {
 	BHWidget(button);
 }
 
-function BHButton::onPress(depth) {
-	OutputLN({"Press button! Depth: ", depth});
+function BHButton::onPress() {
+	OutputLN("Press button!");
 }
 
 function BHButton::onRelease() {
