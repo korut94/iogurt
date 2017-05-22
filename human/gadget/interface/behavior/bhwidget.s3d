@@ -14,6 +14,7 @@ class BHWidget : Mono
 	var m_widget;
 	
 	onEnter(pointer, contactPoint);
+	onExit();
 	onHover(pointer, contactPoint);
 };
 
@@ -29,6 +30,12 @@ function BHWidget::BHWidget(widget) {
 
 function BHWidget::onEnter(pointer, contactPoint) {
 	m_distanceFromPointer = (globalPosition(m_widget.getCVmObj()) - pointer)  * forward(m_widget.getCVmObj());
+}
+
+function BHWidget::onExit() {
+	m_wasPressed = false;
+	m_firstPress = true;
+	this.onRelease();
 }
 
 function BHWidget::onHover(pointer, contactPoint) {
