@@ -105,9 +105,9 @@ function Human::handleInput(dispatcher) {
 	dispatcher.on("KeyPressed_RIGHT", 	Rotate(m_character[HEAD_ID], -0.4, [0,1,0]));
 	dispatcher.on("KeyPressed_A", 		Rotate(m_character[BODY_ID], 0.5, [0,1,0]));
 	dispatcher.on("KeyPressed_D", 		Rotate(m_character[BODY_ID], -0.5, [0,1,0]));
-	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.05));
+	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.15));
 	dispatcher.on("KeyPressed_V", 		ChangeView(m_eye, [-2.5, 0, -8]));
-	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.05));
+	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.15));
 	dispatcher.on("MouseMove",			tracker.cursor());
 	dispatcher.on("MousePressed_L",		tracker.buttonL(true));
 	
