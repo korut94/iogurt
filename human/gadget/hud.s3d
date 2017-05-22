@@ -62,10 +62,7 @@ function Hud::handleInput(dispatcher) {
 function Hud::init() {
 	m_radius = 1.5;
 	
-	// Since the interface is a semicircle, the value of the z-axis is
-	// the circle's radius
 	m_center.SetPosition([0, 1.5, 0]);
-	
 	setStep(m_panel, 0.5);
 	
 	m_panel.init();
