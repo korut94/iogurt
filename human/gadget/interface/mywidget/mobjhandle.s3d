@@ -3,21 +3,16 @@
 
 #include "../frame.s3d"
 #include "../panel.s3d"
+#include "mobjhandlerotate.s3d"
+#include "mobjhandlescale.s3d"
 #include "mobjhandletranslate.s3d"
 
 class MObjHandle : Panel
 {
 	var m_frameMap;
 	var m_frameSetting;
-	var m_lblRotate;
-	var m_lblScale;
-	var m_setterRX;
-	var m_setterRY;
-	var m_setterRZ;
-	var m_setterSX;
-	var m_setterSY;
-	var m_setterSZ;
-	
+	var m_handleRotate;
+	var m_handleScale;
 	var m_handleTranslate;
 	
 	applyTo(world);
@@ -29,64 +24,36 @@ function MObjHandle::MObjHandle(hud, width, height) {
 	m_frameSetting = Frame(0.25, 0.8, 0.01);
 	
 	m_handleTranslate = MObjHandleTranslate();
-	m_lblRotate = Label("Rotate", [0.04, 0.04, 0.04], [0.9, 0.9, 0.9]);
-	m_lblScale = Label("Scale", [0.04, 0.04, 0.04], [0.9,0.9,0.9]);
-	m_setterRX = MObjSetter("X");
-	m_setterRY = MObjSetter("Y");
-	m_setterRZ = MObjSetter("Z");
-	m_setterSX = MObjSetter("X");
-	m_setterSY = MObjSetter("Y");
-	m_setterSZ = MObjSetter("Z");
+	m_handleRotate = MObjHandleRotate();
+	m_handleScale = MObjHandleScale();
 	
-	m_frameSetting.getCVmObj().AddChild(m_lblRotate.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_lblScale.getCVmObj());
 	m_frameSetting.getCVmObj().AddChild(m_handleTranslate.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterRX.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterRY.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterRZ.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterSX.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterSY.getCVmObj());
-	m_frameSetting.getCVmObj().AddChild(m_setterSZ.getCVmObj());
+	m_frameSetting.getCVmObj().AddChild(m_handleRotate.getCVmObj());
+	m_frameSetting.getCVmObj().AddChild(m_handleScale.getCVmObj());
 	
 	MObjHandle::this.getCVmObj().AddChild(m_frameMap.getCVmObj());
 	MObjHandle::this.getCVmObj().AddChild(m_frameSetting.getCVmObj());
 }
 
 function MObjHandle::applyTo(world) {
+	m_handleRotate.applyTo(world);
+	m_handleScale.applyTo(world);
 	m_handleTranslate.applyTo(world);
-	m_setterRX.applyTo(world);
-	m_setterRY.applyTo(world);
-	m_setterRZ.applyTo(world);
-	m_setterSX.applyTo(world);
-	m_setterSY.applyTo(world);
-	m_setterSZ.applyTo(world);
 	
 	world.trackObject(MObjHandle::this);
 }
 
 function MObjHandle::init() {
+	m_handleRotate.init();
+	m_handleScale.init();
 	m_handleTranslate.init();
-	m_setterRX.init();
-	m_setterRY.init();
-	m_setterRZ.init();
-	m_setterSX.init();
-	m_setterSY.init();
-	m_setterSZ.init();
 	
 	m_frameMap.getCVmObj().SetPosition([0.127, 0, -0.01]);
 	m_frameSetting.getCVmObj().SetPosition([-0.31, 0, -0.01]);
 	
 	m_handleTranslate.getCVmObj().SetPosition([-0.01, 0.28, -0.01]);
-	
-	m_lblRotate.getCVmObj().SetPosition([0, 0.08, -0.01]);
-	m_setterRX.getCVmObj().SetPosition([0, 0.04, -0.01]);
-	m_setterRY.getCVmObj().SetPosition([0, 0, -0.01]);
-	m_setterRZ.getCVmObj().SetPosition([0, -0.04, -0.01]);
-	
-	m_lblScale.getCVmObj().SetPosition([0, -0.19, -0.01]);
-	m_setterSX.getCVmObj().SetPosition([0, -0.23, -0.01]);
-	m_setterSY.getCVmObj().SetPosition([0, -0.27, -0.01]);
-	m_setterSZ.getCVmObj().SetPosition([0, -0.31, -0.01]);
+	m_handleRotate.getCVmObj().SetPosition([-0.01, 0.11, -0.01]);
+	m_handleScale.getCVmObj().SetPosition([-0.01, -0.06, -0.01]);
 }
 
 #endif // MOBJHANDLE_H
