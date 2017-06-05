@@ -12,6 +12,7 @@ class Mono
 	onHover(pointer, contactPoint);
 	onPress(depth, contactPoint);
 	onRelease(contactPoint);
+	onWatch();
 };
 
 function Mono::onCollision(object, contactPoint) {}
@@ -23,5 +24,6 @@ function Mono::onExit() {}
 function Mono::onHover(pointer, contactPoint) {}
 function Mono::onPress(contactPoint, depth) {}
 function Mono::onRelease(contactPoint) {}
+function Mono::onWatch() {}
 
 #endif // MONO_H
