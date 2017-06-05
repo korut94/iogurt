@@ -1,6 +1,9 @@
 #ifndef MOUSE_KEYBOARD_H
 #define MOUSE_KEYBOARD_H
 
+#include "../channel.s3d"
+#include "driver.s3d"
+
 #define MOUSE_MOVE 		0x0200
 #define MOUSE_WHEEL		0x020A
 #define ML_PRESSED		0x0201
@@ -33,8 +36,27 @@
 #define MAP_KEY_W 		0x05
 #define COUNT_MAP_KEY	10
 
-#include "../channel.s3d"
-#include "driver.s3d"
+var KEY_PRESSED_A 		= Event();
+var KEY_PRESSED_D 		= Event();
+var KEY_PRESSED_E 		= Event();
+var KEY_PRESSED_S 		= Event();
+var KEY_PRESSED_V 		= Event();
+var KEY_PRESSED_W 		= Event();
+var KEY_PRESSED_DOWN 	= Event();
+var KEY_PRESSED_LEFT 	= Event();
+var KEY_PRESSED_RIGHT	= Event();
+var KEY_PRESSED_UP		= Event();
+
+var KEY_RELEASED_A		= Event();
+var KEY_RELEASED_D		= Event();
+var KEY_RELEASED_E		= Event();
+var	KEY_RELEASED_S		= Event();
+var KEY_RELEASED_V		= Event();
+var KEY_RELEASED_W		= Event();
+var KEY_RELEASED_DOWN	= Event();
+var KEY_RELEASED_LEFT	= Event();
+var KEY_RELEASED_RIGHT	= Event();
+var KEY_RELEASED_UP		= Event();
 
 class MouseKeyboard : Driver
 {	
@@ -98,32 +120,32 @@ function MouseKeyboard::MouseKeyboard() {
 	m_kbStatus[MAP_KEY_RIGHT] 	= false;
 	m_kbStatus[MAP_KEY_DOWN] 	= false;
 	
-	m_chKeyLEFTPressed		= Channel("KeyPressed_LEFT");
-	m_chKeyUPPressed 		= Channel("KeyPressed_UP");
-	m_chKeyRIGHTPressed		= Channel("KeyPressed_RIGHT");
-	m_chKeyDOWNPressed		= Channel("KeyPressed_DOWN");
-	m_chKeyAPressed			= Channel("KeyPressed_A");
-	m_chKeyDPressed 		= Channel("KeyPressed_D");
-	m_chKeyEPressed			= Channel("KeyPressed_E");
-	m_chKeySPressed			= Channel("KeyPressed_S");
-	m_chKeyVPressed			= Channel("KeyPressed_V");
-	m_chKeyWPressed 		= Channel("KeyPressed_W");
-	m_chKeyLEFTReleased		= Channel("KeyReleased_LEFT");
-	m_chKeyUPReleased 		= Channel("KeyReleased_UP");
-	m_chKeyDOWNReleased		= Channel("KeyReleased_DOWN");
-	m_chKeyRIGHTReleased	= Channel("KeyReleased_RIGHT");
-	m_chKeyAReleased		= Channel("KeyReleased_A");
-	m_chKeyDReleased 		= Channel("KeyReleased_D");
-	m_chKeyEReleased		= Channel("KeyReleased_E");
-	m_chKeySReleased		= Channel("KeyReleased_S");
-	m_chKeyVReleased		= Channel("KeyReleased_V");
-	m_chKeyWReleased 		= Channel("KeyReleased_W");
-	m_chMouseMove			= Channel("MouseMove");
-	m_chMouseWheel			= Channel("MouseWheel");
-	m_chMouseLPressed		= Channel("MousePressed_L");
-	m_chMouseRPressed		= Channel("MousePressed_R");
-	m_chMouseLReleased		= Channel("MouseReleased_L");
-	m_chMouseRReleased		= Channel("MouseReleased_R");
+	m_chKeyLEFTPressed		= Channel(KEY_PRESSED_LEFT);
+	m_chKeyUPPressed 		= Channel(KEY_PRESSED_UP);
+	m_chKeyRIGHTPressed		= Channel(KEY_PRESSED_RIGHT);
+	m_chKeyDOWNPressed		= Channel(KEY_PRESSED_DOWN);
+	m_chKeyAPressed			= Channel(KEY_PRESSED_A);
+	m_chKeyDPressed 		= Channel(KEY_PRESSED_D);
+	m_chKeyEPressed			= Channel(KEY_PRESSED_E);
+	m_chKeySPressed			= Channel(KEY_PRESSED_S);
+	m_chKeyVPressed			= Channel(KEY_PRESSED_V);
+	m_chKeyWPressed 		= Channel(KEY_PRESSED_W);
+	m_chKeyLEFTReleased		= Channel(KEY_RELEASED_LEFT);
+	m_chKeyUPReleased 		= Channel(KEY_RELEASED_UP);
+	m_chKeyDOWNReleased		= Channel(KEY_RELEASED_DOWN);
+	m_chKeyRIGHTReleased	= Channel(KEY_RELEASED_RIGHT);
+	m_chKeyAReleased		= Channel(KEY_RELEASED_A);
+	m_chKeyDReleased 		= Channel(KEY_RELEASED_D);
+	m_chKeyEReleased		= Channel(KEY_RELEASED_E);
+	m_chKeySReleased		= Channel(KEY_RELEASED_S);
+	m_chKeyVReleased		= Channel(KEY_RELEASED_V);
+	m_chKeyWReleased 		= Channel(KEY_RELEASED_W);
+	m_chMouseMove			= Channel(MOUSE_MOVE);
+	m_chMouseWheel			= Channel(MOUSE_WHEEL);
+	m_chMouseLPressed		= Channel(ML_PRESSED);
+	m_chMouseRPressed		= Channel(MR_PRESSED);
+	m_chMouseLReleased		= Channel(ML_RELEASED);
+	m_chMouseRReleased		= Channel(MR_RELEASED);
 }
 
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
