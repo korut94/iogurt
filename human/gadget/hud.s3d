@@ -60,7 +60,7 @@ function Hud::handleInput(dispatcher) {
 }
 
 function Hud::init() {
-	m_radius = 1.5;
+	m_radius = 1.8;
 	
 	m_center.SetPosition([0, 1.5, 0]);
 	setStep(m_panel, 0.5);
