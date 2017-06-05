@@ -4,12 +4,12 @@
 #include "../channel.s3d"
 #include "driver.s3d"
 
-#define MOUSE_MOVE 		0x0200
-#define MOUSE_WHEEL		0x020A
-#define ML_PRESSED		0x0201
-#define ML_RELEASED		0x0202
-#define MR_PRESSED		0x0207
-#define MR_RELEASED		0x0208
+#define MOUSE_MOVE 			0x0200
+#define MOUSE_WHEEL			0x020A
+#define MOUSE_PRESSED_L		0x0201
+#define MOUSE_RELEASED_L	0x0202
+#define MOUSE_PRESSED_R		0x0207
+#define MOUSE_RELEASED_R	0x0208
 
 #define KEY_PRESSED 	0x0100
 #define KEY_RELEASED	0x0101
@@ -142,10 +142,10 @@ function MouseKeyboard::MouseKeyboard() {
 	m_chKeyWReleased 		= Channel(KEY_RELEASED_W);
 	m_chMouseMove			= Channel(MOUSE_MOVE);
 	m_chMouseWheel			= Channel(MOUSE_WHEEL);
-	m_chMouseLPressed		= Channel(ML_PRESSED);
-	m_chMouseRPressed		= Channel(MR_PRESSED);
-	m_chMouseLReleased		= Channel(ML_RELEASED);
-	m_chMouseRReleased		= Channel(MR_RELEASED);
+	m_chMouseLPressed		= Channel(MOUSE_PRESSED_L);
+	m_chMouseRPressed		= Channel(MOUSE_PRESSED_R);
+	m_chMouseLReleased		= Channel(MOUSE_RELEASED_L);
+	m_chMouseRReleased		= Channel(MOUSE_RELEASED_R);
 }
 
 function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
@@ -278,13 +278,13 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 		m_chMouseMove.trigger(queue, {window, wparam});
 	} else if (eventId == MOUSE_WHEEL) {
 		m_chMouseWheel.trigger(queue, wparam);		
-	} else if (eventId == ML_PRESSED) {
+	} else if (eventId == MOUSE_PRESSED_L) {
 		m_chMouseLPressed.trigger(queue);
-	} else if (eventId == MR_PRESSED) {
+	} else if (eventId == MOUSE_PRESSED_R) {
 		m_chMouseRPressed.trigger(queue);
-	} else if (eventId == ML_RELEASED) {
+	} else if (eventId == MOUSE_RELEASED_L) {
 		m_chMouseLReleased.trigger(queue);
-	} else if (eventId == MR_RELEASED) {
+	} else if (eventId == MOUSE_RELEASED_R) {
 		m_chMouseRReleased.trigger(queue);
 	} else {
 		m_next.processEvent(eventId, wparam, lparam, queue, window);
