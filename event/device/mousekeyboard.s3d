@@ -1,9 +1,8 @@
 #ifndef MOUSE_KEYBOARD_H
 #define MOUSE_KEYBOARD_H
 
-#define LINE_CONSTANT 	0x10000
-
 #define MOUSE_MOVE 		0x0200
+#define MOUSE_WHEEL		0x020A
 #define ML_PRESSED		0x0201
 #define ML_RELEASED		0x0202
 #define MR_PRESSED		0x0207
@@ -34,8 +33,6 @@
 #define MAP_KEY_W 		0x05
 #define COUNT_MAP_KEY	10
 
-#define WM_BORDER		11
-
 #include "../channel.s3d"
 #include "driver.s3d"
 
@@ -64,6 +61,7 @@ class MouseKeyboard : Driver
 	var m_chKeyWReleased;
 	
 	var m_chMouseMove;
+	var m_chMouseWheel;
 	
 	var m_chMouseLPressed;
 	var m_chMouseRPressed;
@@ -121,6 +119,7 @@ function MouseKeyboard::MouseKeyboard() {
 	m_chKeyVReleased		= Channel("KeyReleased_V");
 	m_chKeyWReleased 		= Channel("KeyReleased_W");
 	m_chMouseMove			= Channel("MouseMove");
+	m_chMouseWheel			= Channel("MouseWheel");
 	m_chMouseLPressed		= Channel("MousePressed_L");
 	m_chMouseRPressed		= Channel("MousePressed_R");
 	m_chMouseLReleased		= Channel("MouseReleased_L");
@@ -255,6 +254,8 @@ function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
 		}
 	} else if (eventId == MOUSE_MOVE) {
 		m_chMouseMove.trigger(queue, {window, wparam});
+	} else if (eventId == MOUSE_WHEEL) {
+		m_chMouseWheel.trigger(queue, wparam);		
 	} else if (eventId == ML_PRESSED) {
 		m_chMouseLPressed.trigger(queue);
 	} else if (eventId == MR_PRESSED) {
@@ -290,6 +291,7 @@ function MouseKeyboard::updateChannelList(list) {
 	aadd(list, m_chKeyVReleased);
 	aadd(list, m_chKeyWReleased);
 	aadd(list, m_chMouseMove);
+	aadd(list, m_chMouseWheel);
 	aadd(list, m_chMouseLPressed);
 	aadd(list, m_chMouseRPressed);
 	aadd(list, m_chMouseLReleased);
