@@ -11,7 +11,7 @@ class BHWatcherRay : Mono
 };
 
 function BHWatcherRay::onCollision(object) {
-	// Output("Watcher: "); OutputLN(object.getCVmObj().GetPosition());
+	object.getBehavior().onWatch();
 }
 
 class WatcherRay : HumanGadget
