@@ -3,6 +3,7 @@
 
 #include "event/dispatcher.s3d"
 #include "event/device/mousekeyboard.s3d"
+#include "event/device/sceneevent.s3d"
 #include "event/device/system.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
@@ -10,6 +11,7 @@
 #include "human/gadget/selectionray.s3d"
 #include "human/gadget/watcherray.s3d"
 #include "scene/world.s3d"
+#include "scene/entity/cube.s3d"
 
 class Application 
 {
@@ -31,6 +33,7 @@ function Application::Application() {
 	m_window 		= Window();
 	m_world 		= World();
 	
+	m_dispatcher.addDevice(SceneEvent());
 	// Allow the catching of mouse and keyboard events
 	m_dispatcher.addDevice(MouseKeyboard());
 	m_dispatcher.addDevice(System());
@@ -58,16 +61,8 @@ function Application::init(params) {
 	m_human.init();
 	m_human.handleInput(m_dispatcher);
 	
-	var meshBox = CVmNewMesh(VRP_BOX, 0, [0,0,0], [5, 5, 5]);
-	var meshBox2 = CVmNewMesh(VRP_BOX, 0, [0,0,0], [3,3,3]);
-	
-	var box = Object();
-	box.getCVmObj().LinkToMesh(meshBox);
-	meshBox.CenterBoundingBox();
-	
-	var box2 = Object();
-	box2.getCVmObj().LinkToMesh(meshBox2);
-	meshBox.CenterBoundingBox();
+	var box = Cube(5, 5, 5);
+	var box2 = Cube(3, 3, 3);
 	
 	m_world.addRootToDraw(box.getCVmObj());
 	m_world.addRootToDraw(box2.getCVmObj());
