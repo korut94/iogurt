@@ -1,0 +1,22 @@
+#ifndef CALLER_H
+#define CALLER_H
+
+class Caller
+{
+	var m_object;
+	var m_method;
+	
+	apply(opts);
+};
+
+function Caller::Caller(object, m) {
+	m_object = object;
+	m_method = m;
+}
+
+function Caller::apply(opts) {
+	m_object.__Call(m_method, opts);
+}
+
+
+#endif // CALLER_H
