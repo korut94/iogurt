@@ -5,8 +5,13 @@
 
 class BHButton : BHWidget
 {
+	var m_actionOnPress;
+	var m_actionOnRelease;
+	
 	onPress();
 	onRelease();
+	setOnPress(action);
+	setOnRelease(action);
 };
 
 function BHButton::BHButton(button) {
@@ -14,11 +19,23 @@ function BHButton::BHButton(button) {
 }
 
 function BHButton::onPress() {
-	OutputLN("Press button!");
+	if (m_actionOnPress != VOID) {
+		m_actionOnPress.apply();
+	}
 }
 
 function BHButton::onRelease() {
-	OutputLN("Release button!");
+	if (m_actionOnRelease != VOID) {
+		m_actionOnRelease.apply();
+	}
+}
+
+function BHButton::setOnPress(action) {
+	m_actionOnPress = action;
+}
+
+function BHButton::setOnRelease(action) {
+	m_actionOnRelease = action;
 }
 
 #endif // BHBUTTON_H
