@@ -100,26 +100,26 @@ function Human::init() {
 function Human::handleInput(dispatcher) {
 	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.05);
 	
-	dispatcher.on("KeyPressed_UP", 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
-	dispatcher.on("KeyPressed_DOWN", 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
-	dispatcher.on("KeyPressed_LEFT", 	Rotate(m_character[HEAD_ID], 0.4, [0,1,0]));
-	dispatcher.on("KeyPressed_RIGHT", 	Rotate(m_character[HEAD_ID], -0.4, [0,1,0]));
-	dispatcher.on("KeyPressed_A", 		Rotate(m_character[BODY_ID], 0.5, [0,1,0]));
-	dispatcher.on("KeyPressed_D", 		Rotate(m_character[BODY_ID], -0.5, [0,1,0]));
-	dispatcher.on("KeyPressed_S", 		Move(m_character[BODY_ID], -0.15));
-	dispatcher.on("KeyPressed_V", 		ChangeView(m_eye, [-2.5, 0, -8]));
-	dispatcher.on("KeyPressed_W", 		Move(m_character[BODY_ID], 0.15));
-	dispatcher.on("MouseMove",			Caller(tracker, "onMouseMove"));
-	dispatcher.on("MouseWheel",			Caller(tracker, "onWheel"));
+	dispatcher.on(KEY_PRESSED_UP, 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_DOWN, 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_LEFT, 	Rotate(m_character[HEAD_ID], 0.4, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_RIGHT, 	Rotate(m_character[HEAD_ID], -0.4, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_A, 		Rotate(m_character[BODY_ID], 0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_D, 		Rotate(m_character[BODY_ID], -0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_S, 		Move(m_character[BODY_ID], -0.15));
+	dispatcher.on(KEY_PRESSED_V, 		ChangeView(m_eye, [-2.5, 0, -8]));
+	dispatcher.on(KEY_PRESSED_W, 		Move(m_character[BODY_ID], 0.15));
+	dispatcher.on(MOUSE_MOVE,			Caller(tracker, "onMouseMove"));
+	dispatcher.on(MOUSE_WHEEL,			Caller(tracker, "onWheel"));
 	
-	dispatcher.on("KeyReleased_UP", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
-	dispatcher.on("KeyReleased_DOWN", 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
-	dispatcher.on("KeyReleased_LEFT", 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
-	dispatcher.on("KeyReleased_RIGHT", 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
-	dispatcher.on("KeyReleased_A", 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
-	dispatcher.on("KeyReleased_D", 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
-	dispatcher.on("KeyReleased_S", 		Move(m_character[BODY_ID], 0));
-	dispatcher.on("KeyReleased_W", 		Move(m_character[BODY_ID], 0));
+	dispatcher.on(KEY_RELEASED_UP, 		Rotate(m_character[HEAD_ID], 0, [1,0,0]));
+	dispatcher.on(KEY_RELEASED_DOWN, 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
+	dispatcher.on(KEY_RELEASED_LEFT, 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_RIGHT, 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_A, 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_D, 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_S, 		Move(m_character[BODY_ID], 0));
+	dispatcher.on(KEY_RELEASED_W, 		Move(m_character[BODY_ID], 0));
 }
 
 #endif // HUMAN_H
