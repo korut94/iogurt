@@ -1,0 +1,33 @@
+#ifndef SCENE_EVENT_H
+#define SCENE_EVENT_H
+
+#include "../channel.s3d"
+#include "driver.s3d"
+
+var OBJECT_WATCHED = Event();
+
+class SceneEvent : Driver
+{
+	var m_chObjectWatched;
+	
+	processEvent(eventId, wparam, lparam, queue, window);
+	updateChannelList(list);
+};
+
+function SceneEvent::SceneEvent() {
+	m_chObjectWatched = Channel(OBJECT_WATCHED);
+}
+
+function SceneEvent::processEvent(eventId, wparam, lparam, queue, window) {
+	if (eventId == OBJECT_WATCHED) {
+		m_chObjectWatched.trigger(queue, wparam);
+	} else {
+		m_next.processEvent(eventId, wparam, lparam, queue, window);
+	}
+}
+
+function SceneEvent::updateChannelList(list) {
+	aadd(list, m_chObjectWatched);
+}
+
+#endif // SCENE_EVENT_H
