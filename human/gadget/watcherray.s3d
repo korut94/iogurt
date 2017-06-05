@@ -7,11 +7,30 @@
 
 class BHWatcherRay : Mono
 {
+	var m_elapsedTime;
+	
 	onCollision(object);
+	onCollisionEnter(object);
+	onCollisionExit(object);
 };
 
+function BHWatcherRay::BHWatcherRay() {
+	m_elapsedTime = 0;
+}
+
 function BHWatcherRay::onCollision(object) {
-	object.getBehavior().onWatch();
+	if (GetTime() - m_elapsedTime > 1500) {
+		object.getBehavior().onWatch();	
+	}
+}
+
+function BHWatcherRay::onCollisionEnter(object) {
+	m_elapsedTime = GetTime();
+}
+
+function BHWatcherRay::onCollisionExit(object) {
+	object.getBehavior().onUnWatch();
+	m_elapsedTime = 0;
 }
 
 class WatcherRay : HumanGadget
