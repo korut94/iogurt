@@ -1,0 +1,208 @@
+#ifndef MOBJPREVIEW_H
+#define MOBJPREVIEW_H
+
+#include "../../../../scene/object.s3d"
+
+#include "../label.s3d"
+#include "../touch.s3d"
+
+function drawBoundingBox(obj) {
+	obj.DrawBoundingBox(VR_WIREFRAME);
+}
+
+class RotatePrevMesh
+{
+	var m_prevRight;
+	var m_prevUp;
+	var m_sizeSurface;
+	var m_target;
+	
+	rBack();
+	clear();
+	rDown();
+	rFront(); 
+	rLeft();
+	rRight();
+	rotate(opts);
+	rTop();
+};
+
+function RotatePrevMesh::RotatePrevMesh(target, sizeSurface) {
+	m_prevRight = 0;
+	m_prevUp = 0;
+	m_sizeSurface = sizeSurface;
+	m_target = target;
+}
+
+function RotatePrevMesh::rBack() {
+	m_target.SetRotation(180, [0,1,0]);
+}
+
+function RotatePrevMesh::clear() {
+	m_prevRight = 0;
+	m_prevUp = 0;
+}
+
+function RotatePrevMesh::rDown() {
+	m_target.SetRotation(-90, [1,0,0]);
+}
+
+function RotatePrevMesh::rFront() {
+	m_target.SetRotation(0, [1,0,0]);
+}
+
+function RotatePrevMesh::rLeft() {
+	m_target.SetRotation(90, [0,1,0]);
+}
+
+function RotatePrevMesh::rRight() {
+	m_target.SetRotation(-90, [0,1,0]);
+}
+
+function RotatePrevMesh::rotate(opts) {
+	var deltaRight = opts[0];
+	var deltaUp = opts[1];
+	
+	m_target.RotateABS((90.0 * (deltaRight - m_prevRight)) / (m_sizeSurface/2), [0,1,0]);
+	m_target.RotateABS((90.0 * (deltaUp - m_prevUp)) / (m_sizeSurface/2), [1,0,0]);
+	
+	m_prevRight = deltaRight;
+	m_prevUp = deltaUp;
+}
+
+function RotatePrevMesh::rTop() {
+	m_target.SetRotation(90, [1,0,0]);
+}
+
+class MObjPreview : Object
+{
+	var m_btnBack;
+	var m_btnBottom;
+	var m_btnFront;
+	var m_btnLeft;
+	var m_btnRight;
+	var m_btnTop;
+	
+	var m_lblBack;
+	var m_lblBottom;
+	var m_lblFront;
+	var m_lblLeft;
+	var m_lblRight;
+	var m_lblTitle;
+	var m_lblView;
+	var m_lblTop;
+	
+	var m_meshPreview;
+	var m_objTarget;
+	var m_preview;
+	var m_scaleFactor;
+	var m_touchPlane;
+	
+	applyTo(world);
+	init();
+};
+
+function MObjPreview::MObjPreview(obj) {
+	m_objTarget = obj;
+	m_scaleFactor = 0.35;
+	m_meshPreview = CVmObj();
+	m_preview = CVmObj();
+	m_touchPlane = Touch(m_scaleFactor, m_scaleFactor);
+	
+	m_btnBack 	= Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	m_btnBottom = Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	m_btnFront 	= Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	m_btnLeft 	= Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	m_btnRight 	= Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	m_btnTop 	= Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.045, 0.045, 0.02]));
+	
+	m_lblBack 	= Label("B", [0.045, 0.045]);
+	m_lblBottom = Label("D", [0.045, 0.045]);
+	m_lblFront 	= Label("F", [0.045, 0.045]);
+	m_lblLeft 	= Label("L", [0.045, 0.045]);
+	m_lblRight 	= Label("R", [0.045, 0.045]);
+	m_lblTop 	= Label("T", [0.045, 0.045]);
+	
+	m_lblTitle = Label("Object ID: " + str(m_objTarget.GetID()), [0.07,0.07]);
+	m_lblView = Label("View: ", [0.05, 0.05], [0.8, 0.8, 0.8]);
+	
+	var rotateAction = RotatePrevMesh(m_meshPreview, m_scaleFactor);
+	
+	m_btnBack.linkToOnRelease(Caller(rotateAction, "rBack"));
+	m_btnBottom.linkToOnRelease(Caller(rotateAction, "rDown"));
+	m_btnFront.linkToOnRelease(Caller(rotateAction, "rFront"));
+	m_btnLeft.linkToOnRelease(Caller(rotateAction, "rLeft"));
+	m_btnRight.linkToOnRelease(Caller(rotateAction, "rRight"));
+	m_btnTop.linkToOnRelease(Caller(rotateAction, "rTop"));
+	m_touchPlane.linkToOnDrag(Caller(rotateAction, "rotate"));
+	m_touchPlane.linkToOnRelease(Caller(rotateAction, "clear"));
+	
+	var mesh = obj.GetMesh();
+	mesh.CenterBoundingBox();
+	
+	m_meshPreview.LinkToMesh(mesh);
+	m_meshPreview.Rotate(180, [0,1,0]);
+	
+	m_preview.AddChild(m_touchPlane.getCVmObj());
+	m_preview.AddChild(m_meshPreview);
+	
+	m_btnBack.getCVmObj().AddChild(m_lblBack.getCVmObj());
+	m_btnBottom.getCVmObj().AddChild(m_lblBottom.getCVmObj());
+	m_btnFront.getCVmObj().AddChild(m_lblFront.getCVmObj());
+	m_btnLeft.getCVmObj().AddChild(m_lblLeft.getCVmObj());
+	m_btnRight.getCVmObj().AddChild(m_lblRight.getCVmObj());
+	m_btnTop.getCVmObj().AddChild(m_lblTop.getCVmObj());
+	
+	MObjPreview::this.getCVmObj().AddChild(m_preview);
+	MObjPreview::this.getCVmObj().AddChild(m_btnBack.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_btnBottom.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_btnFront.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_btnLeft.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_btnRight.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_btnTop.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_lblTitle.getCVmObj());
+	MObjPreview::this.getCVmObj().AddChild(m_lblView.getCVmObj());
+}
+
+function MObjPreview::applyTo(world) {
+	world.trackObject(m_btnBack);
+	world.trackObject(m_btnBottom);
+	world.trackObject(m_btnFront);
+	world.trackObject(m_btnLeft);
+	world.trackObject(m_btnRight);
+	world.trackObject(m_btnTop);
+	world.trackObject(m_touchPlane);
+}
+
+function MObjPreview::init() {
+	m_lblTitle.getCVmObj().SetPosition([0.295, 0.33, 0]);
+	m_lblView.getCVmObj().SetPosition([0.295, 0.26, 0]);
+	
+	m_btnBack.getCVmObj().SetPosition([0.13, 0.271, 0]);
+	m_lblBack.getCVmObj().SetPosition([0.01, -0.018, -0.03]);
+	
+	m_btnBottom.getCVmObj().SetPosition([0.06, 0.271, 0]);
+	m_lblBottom.getCVmObj().SetPosition([0.01, -0.018, -0.03]);
+	
+	m_btnFront.getCVmObj().SetPosition([-0.01, 0.271, 0]);
+	m_lblFront.getCVmObj().SetPosition([0.01, -0.018, -0.03]);
+	
+	m_btnLeft.getCVmObj().SetPosition([-0.08, 0.271, 0]);
+	m_lblLeft.getCVmObj().SetPosition([0.01, -0.018, -0.03]);
+	
+	m_btnRight.getCVmObj().SetPosition([-0.15, 0.271, 0]);
+	m_lblRight.getCVmObj().SetPosition([0.014, -0.018, -0.03]);
+	
+	m_btnTop.getCVmObj().SetPosition([-0.22, 0.271, 0]);
+	m_lblTop.getCVmObj().SetPosition([0.013, -0.018, -0.03]);
+	
+	m_preview.SetPosition([0, -0.05, -(m_scaleFactor/2 + 0.005)]);
+	m_touchPlane.getCVmObj().SetPosition([0, 0, -(m_scaleFactor/2 + 0.0001)]);
+	
+	var bBoxPre = m_meshPreview.GetMesh().GetBoundingBox();
+	var preMeshSize = 2 * [bBoxPre[3], bBoxPre[4], bBoxPre[5]];
+	
+	m_meshPreview.SetScale(m_scaleFactor/max(preMeshSize));
+}
+
+#endif // MOBJPREVIEW_H
