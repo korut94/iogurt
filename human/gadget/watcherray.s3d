@@ -19,7 +19,7 @@ function BHWatcherRay::BHWatcherRay() {
 }
 
 function BHWatcherRay::onCollision(object) {
-	if (GetTime() - m_elapsedTime > 1500) {
+	if (GetTime() - m_elapsedTime > 1200) {
 		object.getBehavior().onWatch();	
 	}
 }
