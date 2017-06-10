@@ -40,6 +40,7 @@ class World
 	
 	addCollisionPair(ray, object);
 	addInteractionRay(ray);
+	addObject(object);
 	/*
 	 * @brief Add the root of a CVmObj to draw all its children and itself
 	 */
@@ -47,6 +48,7 @@ class World
 	checkCollisions();
 	draw();
 	getCommandQueue();
+	handleInput(dispatcher);
 	removeCollisionPair(idPair);
 	/*
 	 * @brief Attaching the object to update it and check its collision with
@@ -71,6 +73,11 @@ function World::addInteractionRay(ray) {
 
 function World::addCollisionPair(ray, object) {
 	aadd(m_collisionPair, {ray, object});
+}
+
+function World::addObject(object) {
+	object.applyTo(World::this);
+	object.init();
 }
 
 function World::addRootToDraw(root) {
@@ -148,6 +155,10 @@ function World::draw() {
 
 function World::getCommandQueue() {
 	return m_queue;
+}
+
+function World::handleInput(dispatcher) {
+	dispatcher.on(ADD_OBJECT, Caller(World::this, "addObject"));
 }
 
 function World::removeCollisionPair(idPair) {
