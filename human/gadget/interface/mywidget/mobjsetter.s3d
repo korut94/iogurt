@@ -14,6 +14,8 @@ class MObjSetter : Object
 	
 	applyTo(world);
 	init();
+	linkToDecrement(action);
+	linkToIncrement(action);
 };
 
 function MObjSetter::MObjSetter(propName) {
@@ -38,6 +40,14 @@ function MObjSetter::init() {
 	m_btnInc.getCVmObj().SetPosition([-0.06, 0, -0.01]);
 	m_lblValue.getCVmObj().SetPosition([0.04, -0.01, -0.01]);
 	m_lblProp.getCVmObj().SetPosition([0.105, -0.01, -0.01]);
+}
+
+function MObjSetter::linkToDecrement(action) {
+	m_btnDec.linkToOnPress(action);
+}
+
+function MObjSetter::linkToIncrement(action) {
+	m_btnInc.linkToOnPress(action);
 }
 
 #endif // MOBJSETTER_H
