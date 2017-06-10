@@ -11,6 +11,8 @@ class Hud : HumanGadget
 	var m_radius;
 	var m_step;
 	
+	addHandlePanel(object);
+	
 	applyTo(world);
 	distanceFromUser();
 	getStep(panel);
@@ -31,19 +33,22 @@ class Hud : HumanGadget
 };
 
 function Hud::Hud(human) {
-	HumanGadget(human);
+	m_radius = 1.8;	
+	m_center = CVmObj();
 	
 	var body = human.getPart(BODY_ID).getCVmObj();
-	
-	m_center = CVmObj();
 	body.AddChild(m_center);
+}
+
+function Hud::addHandlePanel(object) {
+	var handle = MObjHandle(Hud::this, 0.9, 0.83, object);
+	m_center.AddChild(handle.getCVmObj());
 	
-	m_panel = MObjHandle(Hud::this, 0.9, 0.83);
-	m_center.AddChild(m_panel.getCVmObj());
+	setStep(handle, 0.6);
+	EventSend(ADD_OBJECT, handle);
 }
 
 function Hud::applyTo(world) {
-	m_panel.applyTo(world);
 	m_human.applyTo(world);
 }
 
@@ -56,16 +61,13 @@ function Hud::getStep(panel) {
 }
 
 function Hud::handleInput(dispatcher) {
+	dispatcher.on(OBJECT_WATCHED, Caller(Hud::this, "addHandlePanel"));
+	
 	m_human.handleInput(dispatcher);
 }
 
 function Hud::init() {
-	m_radius = 1.8;
-	
 	m_center.SetPosition([0, 1.5, 0]);
-	setStep(m_panel, 0.5);
-	
-	m_panel.init();
 	m_human.init();
 }
 
