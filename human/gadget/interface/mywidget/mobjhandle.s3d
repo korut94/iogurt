@@ -21,23 +21,15 @@ class MObjHandle : Panel
 	init();
 };
 
-function MObjHandle::MObjHandle(hud, width, height) {
+function MObjHandle::MObjHandle(hud, width, height, object) {
 	m_frameMap = Frame(0.615, 0.8, 0.01);
 	m_frameSetting = Frame(0.25, 0.8, 0.01);
 	
-	m_handleTranslate = MObjHandleTranslate();
+	m_handleTranslate = MObjHandleTranslate(object.getCVmObj());
 	m_handleRotate = MObjHandleRotate();
 	m_handleScale = MObjHandleScale();
 	
-	var mesh = CVmNewMesh(VRP_BOX, 4, [0,0,0], [4,5,3]);
-	var material = CVmMaterial();
-	material.Ambient = [0, 1, 0, 1];
-	mesh.ForceMaterial(material);
-	var obj = CVmObj();
-	obj.LinkToMesh(mesh);
-	obj.SetID(3);
-	
-	m_preview = MObjPreview(obj);
+	m_preview = MObjPreview(object.getCVmObj());
 	
 	m_frameSetting.getCVmObj().AddChild(m_handleTranslate.getCVmObj());
 	m_frameSetting.getCVmObj().AddChild(m_handleRotate.getCVmObj());
