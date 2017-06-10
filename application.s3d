@@ -57,9 +57,10 @@ function Application::init(params) {
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
 	
-	m_human.applyTo(m_world);
-	m_human.init();
+	m_world.addObject(m_human);
+	
 	m_human.handleInput(m_dispatcher);
+	m_world.handleInput(m_dispatcher);
 	
 	var box = Cube(5, 5, 5);
 	var box2 = Cube(3, 3, 3);
