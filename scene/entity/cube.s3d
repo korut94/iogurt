@@ -6,13 +6,15 @@
 
 class BHCube : Mono
 {
+	var m_cube;
 	var m_isAlreadyWatched;
 	
 	onUnWatch();
 	onWatch();
 };
 
-function BHCube::BHCube() {
+function BHCube::BHCube(cube) {
+	m_cube = cube;
 	m_isAlreadyWatched = false;
 }
 
@@ -22,8 +24,8 @@ function BHCube::onUnWatch() {
 
 function BHCube::onWatch() {
 	if (!m_isAlreadyWatched) {
-		EventSend(OBJECT_WATCHED, this);
-		m_isAlreadyWatched = true;	
+		EventSend(OBJECT_WATCHED, m_cube);
+		m_isAlreadyWatched = true;
 	}
 }
 
@@ -33,8 +35,10 @@ function Cube::Cube(width, height, depth) {
 	var mesh = CVmNewMesh(VRP_BOX, 0, [0,0,0], [width, height, depth]);
 	mesh.CenterBoundingBox();
 	
+	Cube::this.getCVmObj().SetID(3);
+	
 	Cube::this.getCVmObj().LinkToMesh(mesh);
-	Cube::this.linkToBehavior(BHCube());
+	Cube::this.linkToBehavior(BHCube(Cube::this));
 }
 
 #endif // ENTITY_CUBE_H
