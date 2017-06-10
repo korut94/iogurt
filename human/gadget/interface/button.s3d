@@ -6,6 +6,7 @@
 
 class Button : Object
 {
+	linkToOnPress(action);
 	linkToOnRelease(action);
 };
 
@@ -19,6 +20,10 @@ function Button::Button(mesh) {
 	mesh.CenterBoundingBox();
 	
 	Button::this.linkToBehavior(BHButton(Button::this));
+}
+
+function Button::linkToOnPress(action) {
+	Button::this.getBehavior().setOnPress(action);
 }
 
 function Button::linkToOnRelease(action) {
