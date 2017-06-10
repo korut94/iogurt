@@ -104,7 +104,7 @@ class MObjPreview : Object
 
 function MObjPreview::MObjPreview(obj) {
 	m_objTarget = obj;
-	m_scaleFactor = 0.35;
+	m_scaleFactor = 0.3;
 	m_meshPreview = CVmObj();
 	m_preview = CVmObj();
 	m_touchPlane = Touch(m_scaleFactor, m_scaleFactor);
