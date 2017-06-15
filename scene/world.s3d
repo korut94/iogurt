@@ -92,12 +92,11 @@ function World::checkCollisions() {
 				
 		while (next && i < len(m_objectList)) {
 			next = 	!ray.seesObj(m_objectList[i].getCVmObj())
-					|| (!m_objectList[i].getCVmObj().isColliding(ray.from(), ray.to())
 					// The ray intersection doens't work for child object because their geometry
 					// trasfromation are setted with relative values. A conversion in global geometry
 					// is needed to detect intersections with the rays correctely.
-					&& !toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &cPoint));
-				
+					|| !toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &cPoint);
+					
 			if (next) {
 				var id = 0;
 				
@@ -122,8 +121,7 @@ function World::checkCollisions() {
 				if (ray.seesObj(object.getCVmObj())
 					// Ignore any objects behind the target but collided with the ray
 					&& ray.distanceFrom(object.getCVmObj()) < ray.distanceFrom(target.getCVmObj())
-					&& (object.getCVmObj().isColliding(ray.from(), ray.to())
-					|| toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &otherCPoint))
+					&& toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &otherCPoint)
 				) {
 					var id = 0;
 					if ((id = wasCollided(ray, target)) != -1) {

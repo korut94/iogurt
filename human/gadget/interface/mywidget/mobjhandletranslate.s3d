@@ -56,15 +56,15 @@ function MObjHandleTranslate::init() {
 }
 
 function MObjHandleTranslate::translateX() {
-	m_target.Move([0.1, 0, 0]);
+	m_target.SetPosition(m_target.GetPosition() + [0.1,0,0]);
 }
 
 function MObjHandleTranslate::translateY() {
-	m_target.Move([0, 1, 0]);
+	m_target.SetPosition(m_target.GetPosition() + [0,0.1,0]);
 }
 
 function MObjHandleTranslate::translateZ() {
-	m_target.Move([0, 0, 1]);
+	m_target.SetPosition(m_target.GetPosition() + [0,0,0.1]);
 }
 
 #endif // MOBJHANDLETRANSLATE_H

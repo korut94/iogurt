@@ -1,0 +1,42 @@
+#ifndef PYRAMID_H
+#define PYRAMID_H
+
+#include "../object.s3d"
+#include "../behavior/mono.s3d"
+
+class BHPyramid : Mono
+{
+	var m_pyramid;
+	var m_isAlreadyWatched;
+	
+	onUnWatch();
+	onWatch();
+};
+
+function BHPyramid::BHPyramid(pyramid) {
+	m_pyramid = pyramid;
+	m_isAlreadyWatched = false;
+}
+
+function BHPyramid::onUnWatch() {
+	m_isAlreadyWatched = false; 
+}
+
+function BHPyramid::onWatch() {
+	if (!m_isAlreadyWatched) {
+		EventSend(OBJECT_WATCHED, m_pyramid);
+		m_isAlreadyWatched = true;
+	}
+}
+
+class Pyramid : Object {};
+
+function Pyramid::Pyramid(base, height) {
+	var mesh = CVmNewMesh(VRP_CONE, 30, base, height, 1);
+	mesh.CenterBoundingBox();
+	
+	Pyramid::this.getCVmObj().LinkToMesh(mesh);
+	Pyramid::this.linkToBehavior(BHPyramid(Pyramid::this));
+}
+
+#endif // PYRAMID_H

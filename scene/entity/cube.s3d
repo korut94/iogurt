@@ -35,7 +35,7 @@ function Cube::Cube(width, height, depth) {
 	var mesh = CVmNewMesh(VRP_BOX, 0, [0,0,0], [width, height, depth]);
 	mesh.CenterBoundingBox();
 	
-	Cube::this.getCVmObj().SetID(3);
+	// Cube::this.getCVmObj().SetID(3);
 	
 	Cube::this.getCVmObj().LinkToMesh(mesh);
 	Cube::this.linkToBehavior(BHCube(Cube::this));

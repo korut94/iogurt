@@ -33,7 +33,7 @@ class Hud : HumanGadget
 };
 
 function Hud::Hud(human) {
-	m_radius = 1.8;	
+	m_radius = 2;	
 	m_center = CVmObj();
 	
 	var body = human.getPart(BODY_ID).getCVmObj();
