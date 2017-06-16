@@ -53,10 +53,7 @@ function InteractionRay::length() {
 }
 
 function InteractionRay::seesObj(obj) {
-	var delta = modulus(globalPosition(obj) - from()) / length();
-	// var delta = globalPosition(obj) * direction(obj) - globalPosition(m_source) * direction(m_source);
-	
-	return focus(obj) > delta;
+	return focus(obj) > 0.98;
 }
 
 function InteractionRay::setLenght(lenght) {
