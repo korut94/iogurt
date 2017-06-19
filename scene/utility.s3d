@@ -6,6 +6,14 @@ function forward(obj) {
 	return [transform[8], transform[9], transform[10]];
 }
 
+function fromMatrix4ToMatrix3(m4) {
+	return [
+		m4[0], m4[1], m4[2],
+		m4[4], m4[5], m4[6],
+		m4[8], m4[9], m4[10]
+	];
+}
+
 function globalPosition(obj) {
 	var transform = obj.GetModelMatrix();
 	return [transform[12], transform[13], transform[14]];
@@ -48,6 +56,33 @@ function min(v) {
 function rightward(obj) {
 	var transform = obj.GetModelMatrix();
 	return [transform[0], transform[1], transform[2]];
+}
+
+function rotationMatrixX(angle) {
+	return [
+		1, 0, 0, 0,
+		0, cos(angle), sin(angle), 0,
+		0, -sin(angle), cos(angle), 0,
+		0, 0, 0, 1
+	];
+}
+
+function rotationMatrixY(angle) {
+	return [
+		cos(angle), 0, -sin(angle), 0,
+		0, 1, 0, 0,
+		sin(angle), 0, cos(angle), 0,
+		0, 0, 0, 1 
+	];
+}
+
+function rotationMatrixZ(angle) {
+	return [
+		cos(angle), sin(angle), 0, 0,
+		-sin(angle), cos(angle), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	];
 }
 
 function sign(number) {
