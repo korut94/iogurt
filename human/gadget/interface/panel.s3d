@@ -9,7 +9,7 @@ class Panel : Object
 	
 	getStep();
 	hud();
-	setStep(step);
+	setStep(step, vertical);
 };
 
 function Panel::Panel(hud, width, height) {
@@ -32,8 +32,8 @@ function Panel::hud() {
 	return m_hud;
 }
 
-function Panel::setStep(step) {
-	m_hud.setStep(Panel::this, step);
+function Panel::setStep(step, vertical) {
+	m_hud.setStep(Panel::this, step, vertical);
 }
 
 #endif // PANEL_H
