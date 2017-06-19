@@ -1,0 +1,99 @@
+#ifndef MOBJHANDLEROTATE_H
+#define MOBJHANDLEROTATE_H
+
+#include "../../../../scene/object.s3d"
+#include "../frame.s3d"
+#include "../label.s3d"
+#include "mobjsetter.s3d"
+
+class MObjHandleRotate : Object
+{
+	var m_lbl;
+	var m_setterX;
+	var m_setterY;
+	var m_setterZ;
+	var m_target;
+	
+	applyTo(world);
+	displayX();
+	displayY();
+	displayZ();
+	init();
+	removeFrom(world);
+	rotate(opts);
+};
+
+function MObjHandleRotate::MObjHandleRotate(obj) {
+	m_lbl = Label("Rotate", [0.035, 0.035, 0.035], [0.9, 0.9, 0.9]);
+	m_target = obj;
+	m_setterX = MObjSetter(
+		"X",
+		Caller(MObjHandleRotate::this, "rotate", {1, [1,0,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {-1, [1,0,0]}),
+		Caller(MObjHandleRotate::this, "displayX")
+	);
+	m_setterY = MObjSetter(
+		"Y",
+		Caller(MObjHandleRotate::this, "rotate", {1, [0,1,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {-1, [0,1,0]}),
+		Caller(MObjHandleRotate::this, "displayY")
+	);
+	m_setterZ = MObjSetter(
+		"Z",
+		Caller(MObjHandleRotate::this, "rotate", {1, [0,0,1]}),
+		Caller(MObjHandleRotate::this, "rotate", {-1, [0,0,1]}),
+		Caller(MObjHandleRotate::this, "displayZ")
+	);
+	
+	MObjHandleRotate::this.getCVmObj().AddChild(m_lbl.getCVmObj());
+	MObjHandleRotate::this.getCVmObj().AddChild(m_setterX.getCVmObj());
+	MObjHandleRotate::this.getCVmObj().AddChild(m_setterY.getCVmObj());
+	MObjHandleRotate::this.getCVmObj().AddChild(m_setterZ.getCVmObj());
+}
+
+function MObjHandleRotate::applyTo(world) {
+	m_setterX.applyTo(world);
+	m_setterY.applyTo(world);
+	m_setterZ.applyTo(world);
+}
+
+function MObjHandleRotate::displayX() {
+	return QuaternionToEuler(
+		Matrix3ToQuaternion(fromMatrix4ToMatrix3(globalRotation(m_target)))
+	)[0];
+}
+
+function MObjHandleRotate::displayY() {
+	return QuaternionToEuler(
+		Matrix3ToQuaternion(fromMatrix4ToMatrix3(globalRotation(m_target)))
+	)[1];
+}
+
+function MObjHandleRotate::displayZ() {
+	return QuaternionToEuler(
+		Matrix3ToQuaternion(fromMatrix4ToMatrix3(globalRotation(m_target)))
+	)[2];
+}
+
+function MObjHandleRotate::init() {
+	m_setterX.init();
+	m_setterY.init();
+	m_setterZ.init();
+	
+	m_lbl.getCVmObj().SetPosition([0.07, 0.07, 0]);
+	m_setterX.getCVmObj().SetPosition([0, 0.04, 0]);
+	// m_setterY.getCVmObj().SetPosition([0, 0, 0]);
+	m_setterZ.getCVmObj().SetPosition([0, -0.04, 0]);
+}
+
+function MObjHandleRotate::removeFrom(world) {
+	m_setterX.removeFrom(world);
+	m_setterY.removeFrom(world);
+	m_setterZ.removeFrom(world);
+}
+
+function MObjHandleRotate::rotate(opts) {
+	m_target.RotateABS(opts[0], opts[1]);
+}
+
+#endif // MOBJHANDLEROTATE_H

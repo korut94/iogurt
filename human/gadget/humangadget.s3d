@@ -1,0 +1,44 @@
+#ifndef HUMANGADGET_H
+#define HUMANGADGET_H
+
+class HumanGadget
+{
+	var m_human;
+	
+	applyTo(world);
+	getPart(id);
+	getView();
+	init();
+	handleInput(dispatcher);
+	removeFrom(world);
+};
+
+function HumanGadget::HumanGadget(human) {
+	m_human = human;
+}
+
+function HumanGadget::applyTo(world) {
+	m_human.applyTo(world);
+}
+
+function HumanGadget::getPart(id) {
+	return m_human.getPart(id);
+}
+
+function HumanGadget::getView() {
+	return m_human.getView();
+}
+
+function HumanGadget::init() {
+	m_human.init();
+}
+
+function HumanGadget::handleInput(dispatcher) {
+	m_human.handleInput(dispatcher);
+}
+
+function HumanGadget::removeFrom(world) {
+	m_human.removeFrom(world);
+}
+
+#endif // HUMANGADGET_H

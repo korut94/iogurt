@@ -1,0 +1,41 @@
+#ifndef BHTOUCH_H
+#define BHTOUCH_H
+
+#include "bhwidget.s3d"
+
+class BHTouch : BHWidget
+{
+	var m_actionOnDrag;
+	var m_actionOnRelease;
+	
+	onDrag(deltaRight, deltaUp);
+	onRelease();
+	setOnDrag(action);
+	setOnRelease(action);
+};
+
+function BHTouch::BHTouch(touch) {
+	BHWidget(touch);
+}
+
+function BHTouch::onDrag(deltaRight, deltaUp) {
+	if (m_actionOnDrag != VOID) {
+		m_actionOnDrag.apply({deltaRight, deltaUp});
+	}
+}
+
+function BHTouch::onRelease() {
+	if (m_actionOnRelease != VOID) {
+		m_actionOnRelease.apply();
+	}
+}
+
+function BHTouch::setOnDrag(action) {
+	m_actionOnDrag = action;
+}
+
+function BHTouch::setOnRelease(action) {
+	m_actionOnRelease = action;
+}
+
+#endif // BHTOUCH_H

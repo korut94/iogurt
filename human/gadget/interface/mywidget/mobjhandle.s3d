@@ -1,0 +1,78 @@
+#ifndef MOBJHANDLE_H
+#define MOBJHANDLE_H
+
+#include "../frame.s3d"
+#include "../panel.s3d"
+#include "mobjhandlerotate.s3d"
+#include "mobjhandlescale.s3d"
+#include "mobjhandletranslate.s3d"
+#include "mobjpreview.s3d"
+
+class MObjHandle : Panel
+{
+	var m_frameMap;
+	var m_frameSetting;
+	var m_handleRotate;
+	var m_handleScale;
+	var m_handleTranslate;
+	var m_preview;
+	
+	applyTo(world);
+	init();
+	removeFrom(world);
+};
+
+function MObjHandle::MObjHandle(hud, width, height, object) {
+	m_frameMap = Frame(0.615, 0.8, 0.01);
+	m_frameSetting = Frame(0.25, 0.8, 0.01);
+	
+	m_handleTranslate = MObjHandleTranslate(object.getCVmObj());
+	m_handleRotate = MObjHandleRotate(object.getCVmObj());
+	m_handleScale = MObjHandleScale(object.getCVmObj());
+	
+	m_preview = MObjPreview(object.getCVmObj());
+	
+	m_frameSetting.getCVmObj().AddChild(m_handleTranslate.getCVmObj());
+	m_frameSetting.getCVmObj().AddChild(m_handleRotate.getCVmObj());
+	m_frameSetting.getCVmObj().AddChild(m_handleScale.getCVmObj());
+	
+	m_frameMap.getCVmObj().AddChild(m_preview.getCVmObj());
+		
+	MObjHandle::this.getCVmObj().AddChild(m_frameMap.getCVmObj());
+	MObjHandle::this.getCVmObj().AddChild(m_frameSetting.getCVmObj());
+}
+
+function MObjHandle::applyTo(world) {
+	m_handleRotate.applyTo(world);
+	m_handleScale.applyTo(world);
+	m_handleTranslate.applyTo(world);
+	m_preview.applyTo(world);
+	
+	world.trackObject(MObjHandle::this);
+}
+
+function MObjHandle::init() {
+	m_handleRotate.init();
+	m_handleScale.init();
+	m_handleTranslate.init();
+	m_preview.init();
+	
+	m_frameMap.getCVmObj().SetPosition([0.127, 0, -0.01]);
+	m_frameSetting.getCVmObj().SetPosition([-0.31, 0, -0.01]);
+	
+	m_handleTranslate.getCVmObj().SetPosition([-0.01, 0.28, -0.01]);
+	m_handleRotate.getCVmObj().SetPosition([-0.01, 0.11, -0.01]);
+	m_handleScale.getCVmObj().SetPosition([-0.01, -0.06, -0.01]);
+	
+	m_preview.getCVmObj().SetPosition([-0.01, 0, -0.01]);
+}
+
+function MObjHandle::removeFrom(world) {
+	m_handleRotate.removeFrom(world);
+	m_handleScale.removeFrom(world);
+	m_handleTranslate.removeFrom(world);
+	m_preview.removeFrom(world);
+	Object::this.removeFrom(world);
+}
+
+#endif // MOBJHANDLE_H

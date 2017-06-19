@@ -1,0 +1,31 @@
+#ifndef CALLER_H
+#define CALLER_H
+
+class Caller
+{
+	var m_object;
+	var m_method;
+	var m_param;
+	
+	apply(opts);
+};
+
+function Caller::Caller(object, m, param) {
+	m_object = object;
+	m_method = m;
+	m_param = param;
+}
+
+function Caller::apply(opts) {
+	if (opts != VOID && m_param != VOID) {
+		for (var i = 0; i < len(m_param); i++) {
+			aadd(opts, m_param[i]);	
+		}
+	} else if (m_param != VOID) {
+		opts = m_param;
+	}
+	
+	return m_object.__Call(m_method, opts);
+}
+
+#endif // CALLER_H
