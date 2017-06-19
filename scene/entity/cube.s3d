@@ -7,26 +7,16 @@
 class BHCube : Mono
 {
 	var m_cube;
-	var m_isAlreadyWatched;
 	
-	onUnWatch();
 	onWatch();
 };
 
 function BHCube::BHCube(cube) {
 	m_cube = cube;
-	m_isAlreadyWatched = false;
-}
-
-function BHCube::onUnWatch() {
-	m_isAlreadyWatched = false; 
 }
 
 function BHCube::onWatch() {
-	if (!m_isAlreadyWatched) {
-		EventSend(OBJECT_WATCHED, m_cube);
-		m_isAlreadyWatched = true;
-	}
+	EventSend(OBJECT_WATCHED, m_cube);
 }
 
 class Cube : Object {};

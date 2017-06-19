@@ -29,7 +29,6 @@ function BHWatcherRay::onCollisionEnter(object) {
 }
 
 function BHWatcherRay::onCollisionExit(object) {
-	object.getBehavior().onUnWatch();
 	m_elapsedTime = 0;
 }
 
