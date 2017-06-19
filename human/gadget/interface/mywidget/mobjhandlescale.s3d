@@ -15,6 +15,7 @@ class MObjHandleScale : Object
 	applyTo(world);
 	display();
 	init();
+	removeFrom(world);
 	scale(opts);
 };
 
@@ -45,6 +46,10 @@ function MObjHandleScale::init() {
 	
 	m_lbl.getCVmObj().SetPosition([0.06, 0.07, 0]);
 	m_setter.getCVmObj().SetPosition([0, 0.04, 0]);
+}
+
+function MObjHandleScale::removeFrom(world) {
+	m_setter.removeFrom(world);
 }
 
 function MObjHandleScale::scale(opts) {

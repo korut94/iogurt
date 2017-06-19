@@ -32,6 +32,7 @@ class Human
 	 */
 	init();
 	handleInput(dispatcher);
+	removeFrom(world);
 };
 
 function Human::Human() {
@@ -121,5 +122,7 @@ function Human::handleInput(dispatcher) {
 	dispatcher.on(KEY_RELEASED_S, 		Move(m_character[BODY_ID], 0));
 	dispatcher.on(KEY_RELEASED_W, 		Move(m_character[BODY_ID], 0));
 }
+
+function Human::removeFrom(world) {}
 
 #endif // HUMAN_H

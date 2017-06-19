@@ -56,6 +56,7 @@ class World
 	 * the other objects in the scene.
 	 */
 	trackObject(object);
+	untrackObjectWithId(id);
 	update();
 	wasCollided(ray, object);
 };
@@ -69,6 +70,7 @@ function World::World() {
 }
 
 function World::addInteractionRay(ray) {
+	ray.SetId(len(m_rayList));
 	aadd(m_rayList, ray);
 }
 
@@ -166,11 +168,16 @@ function World::removeCollisionPair(idPair) {
 }
 
 function World::removeObject(object) {
-	
+	object.removeFrom(World::this);
 }
 
 function World::trackObject(object) {
+	object.setId(len(m_objectList));
 	aadd(m_objectList, object);
+}
+
+function World::untrackObjectWithId(id) {
+	adel(m_objectList, id);
 }
 
 function World::update() {

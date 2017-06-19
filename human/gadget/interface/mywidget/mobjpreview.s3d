@@ -100,6 +100,7 @@ class MObjPreview : Object
 	
 	applyTo(world);
 	init();
+	removeFrom(world);
 };
 
 function MObjPreview::MObjPreview(obj) {
@@ -203,6 +204,16 @@ function MObjPreview::init() {
 	var preMeshSize = 2 * [bBoxPre[3], bBoxPre[4], bBoxPre[5]];
 	
 	m_meshPreview.SetScale(m_scaleFactor/max(preMeshSize));
+}
+
+function MObjPreview::removeFrom(world) {
+	m_btnBack.removeFrom(world);
+	m_btnBottom.removeFrom(world);
+	m_btnFront.removeFrom(world);
+	m_btnLeft.removeFrom(world);
+	m_btnRight.removeFrom(world);
+	m_btnTop.removeFrom(world);
+	m_touchPlane.removeFrom(world);
 }
 
 #endif // MOBJPREVIEW_H

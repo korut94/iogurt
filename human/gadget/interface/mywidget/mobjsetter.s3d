@@ -20,6 +20,7 @@ class MObjSetter : Object
 	decrement(opts);
 	init();
 	updateDigest(value);
+	removeFrom(world);
 };
 
 function MObjSetter::MObjSetter(propName, inc, dec, change) {
@@ -62,6 +63,11 @@ function MObjSetter::decrement(opts) {
 function MObjSetter::increment(opts) {
 	m_actionIncrement.apply(opts);
 	updateDigest(m_actionChange.apply());
+}
+
+function MObjSetter::removeFrom(world) {
+	m_btnDec.removeFrom(world);
+	m_btnInc.removeFrom(world);
 }
 
 function MObjSetter::updateDigest(value) {

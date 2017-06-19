@@ -7,14 +7,18 @@
 class Object 
 {
 	var m_behavior;
+	var m_id;
 	var m_physicsBody;
 	var m_obj;
 	
 	getBehavior();
 	getBody();
 	getCVmObj();
+	getId();
 	linkToBehavior(behavior);
 	linkToBody(body);
+	removeFrom(world);
+	setId(id);
 	update();
 };
 
@@ -36,12 +40,24 @@ function Object::getCVmObj() {
 	return m_obj;
 }
 
+function Object::getId() {
+	return m_id;
+}
+
 function Object::linkToBehavior(behavior) {
 	m_behavior = behavior;
 }
 
 function Object::linkToBody(body) {
 	m_physicsBody = body;
+}
+
+function Object::removeFrom(world) {
+	world.untrackObjectWithId(m_id);
+}
+
+function Object::setId(id) {
+	m_id = id;
 }
 
 function Object::update() {

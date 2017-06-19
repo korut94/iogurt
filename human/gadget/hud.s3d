@@ -8,13 +8,11 @@ class Hud : HumanGadget
 {
 	var m_center;
 	var m_deadLine;
-	var m_interfaceBusy;
+	var m_panel;
 	var m_radius;
 	var m_step;
 	
 	addHandlePanel(object);
-	
-	applyTo(world);
 	distanceFromUser();
 	getStep(panel);
 	handleInput(dispatcher);
@@ -30,12 +28,11 @@ class Hud : HumanGadget
 	 * In any case, the panel will be rotate so to have its front face looking
 	 * the hud's center point.
 	 */
-	setStep(panel, step, vertical);
+	setStep(step, vertical);
 };
 
 function Hud::Hud(human) {
-	m_deadLine = 0.5;
-	m_interfaceBusy = false;
+	m_deadLine = 0.4;
 	m_radius = 2;
 	m_center = CVmObj();
 	
@@ -44,18 +41,13 @@ function Hud::Hud(human) {
 }
 
 function Hud::addHandlePanel(object) {
-	if (!m_interfaceBusy) {
-		var handle = MObjHandle(Hud::this, 0.9, 0.83, object);
-		m_center.AddChild(handle.getCVmObj());
+	if (m_panel == VOID) {
+		m_panel = MObjHandle(Hud::this, 0.9, 0.83, object);
+		m_center.AddChild(m_panel.getCVmObj());
 	
-		setStep(handle, 0.6, 0);
-		EventSend(ADD_OBJECT, handle);	
-		m_interfaceBusy = true;
+		setStep(0.6, 0);
+		EventSend(ADD_OBJECT, m_panel);
 	}
-}
-
-function Hud::applyTo(world) {
-	m_human.applyTo(world);
 }
 
 function Hud::distanceFromUser() {
@@ -77,18 +69,18 @@ function Hud::init() {
 	m_human.init();
 }
 
-function Hud::setStep(panel, step, vertical) {
-	panel.getCVmObj().SetPosition(m_radius * [cos(PI * step), 0, sin(PI * step)]);
-	panel.getCVmObj().Move([0,vertical,0]);
-	panel.getCVmObj().SetRotation(180.0 * (0.5 - step), [0,1,0]);
+function Hud::setStep(step, vertical) {
+	m_panel.getCVmObj().SetPosition(m_radius * [cos(PI * step), 0, sin(PI * step)]);
+	m_panel.getCVmObj().Move([0,vertical,0]);
+	m_panel.getCVmObj().SetRotation(180.0 * (0.5 - step), [0,1,0]);
 	
-	if (panel.getCVmObj().GetPosition()[1] > m_deadLine ||
-		panel.getCVmObj().GetPosition()[1] < -m_deadLine
+	if (m_panel.getCVmObj().GetPosition()[1] > m_deadLine ||
+		m_panel.getCVmObj().GetPosition()[1] < -m_deadLine
 	) {
-		EventSend(REMOVE_OBJECT, panel);
-		panel.getBehavior().onClose();
-		m_center.RemoveChild(panel.getCVmObj());
-		m_interfaceBusy = false;
+		EventSend(REMOVE_OBJECT, m_panel);
+		m_panel.getBehavior().onClose();
+		m_center.RemoveChild(m_panel.getCVmObj());
+		m_panel = VOID;
 	}
 	
 	m_step = step;

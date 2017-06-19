@@ -19,6 +19,7 @@ class MObjHandleTranslate : Object
 	displayY();
 	displayZ();
 	init();
+	removeFrom(world);
 	translate(opts);
 };
 
@@ -77,6 +78,12 @@ function MObjHandleTranslate::init() {
 	m_setterX.getCVmObj().SetPosition([0, 0.04, 0]);
 	// m_setterY.getCVmObj().SetPosition([0, 0, 0]);
     m_setterZ.getCVmObj().SetPosition([0, -0.04, 0]);
+}
+
+function MObjHandleTranslate::removeFrom(world) {
+	m_setterX.removeFrom(world);
+	m_setterY.removeFrom(world);
+	m_setterZ.removeFrom(world);
 }
 
 function MObjHandleTranslate::translate(opts) {

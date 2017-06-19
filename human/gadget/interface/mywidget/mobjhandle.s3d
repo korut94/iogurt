@@ -19,6 +19,7 @@ class MObjHandle : Panel
 	
 	applyTo(world);
 	init();
+	removeFrom(world);
 };
 
 function MObjHandle::MObjHandle(hud, width, height, object) {
@@ -64,6 +65,14 @@ function MObjHandle::init() {
 	m_handleScale.getCVmObj().SetPosition([-0.01, -0.06, -0.01]);
 	
 	m_preview.getCVmObj().SetPosition([-0.01, 0, -0.01]);
+}
+
+function MObjHandle::removeFrom(world) {
+	m_handleRotate.removeFrom(world);
+	m_handleScale.removeFrom(world);
+	m_handleTranslate.removeFrom(world);
+	m_preview.removeFrom(world);
+	Object::this.removeFrom(world);
 }
 
 #endif // MOBJHANDLE_H

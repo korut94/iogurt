@@ -10,6 +10,7 @@ class HumanGadget
 	getView();
 	init();
 	handleInput(dispatcher);
+	removeFrom(world);
 };
 
 function HumanGadget::HumanGadget(human) {
@@ -34,6 +35,10 @@ function HumanGadget::init() {
 
 function HumanGadget::handleInput(dispatcher) {
 	m_human.handleInput(dispatcher);
+}
+
+function HumanGadget::removeFrom(world) {
+	m_human.removeFrom(world);
 }
 
 #endif // HUMANGADGET_H

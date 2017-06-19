@@ -5,6 +5,13 @@
 #include "../../scene/behavior/mono.s3d"
 #include "humangadget.s3d"
 
+function drawInteractionRay(interactionRay) {
+	glBegin(GL_LINES);
+	glVertex([0,0,-interactionRay.length()]);
+	glVertex([0,0,0]);
+	glEnd();
+}
+
 class BHSelectionRay : Mono
 {
 	var m_ray;
@@ -45,6 +52,8 @@ function SelectionRay::SelectionRay(human) {
 	
 	m_ray = InteractionRay(hand);
 	m_ray.LinkToBehavior(BHSelectionRay(m_ray));
+	
+	m_ray.getCVmObj().LinkToCallback("drawInteractionRay", m_ray);
 }
 
 function SelectionRay::applyTo(world) {
