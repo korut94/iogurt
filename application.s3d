@@ -1,17 +1,23 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "command/commandqueue.s3d"
-#include "device/mousekeyboard.s3d"
+#include "event/dispatcher.s3d"
+#include "event/device/mousekeyboard.s3d"
+#include "event/device/sceneevent.s3d"
+#include "event/device/system.s3d"
 #include "graphics/window.s3d"
 #include "human/human.s3d"
+#include "human/gadget/hud.s3d"
+#include "human/gadget/selectionray.s3d"
+#include "human/gadget/watcherray.s3d"
 #include "scene/world.s3d"
+#include "scene/entity/cube.s3d"
+#include "scene/entity/pyramid.s3d"
 
 class Application 
 {
+	var m_dispatcher;
 	var m_human;
-	var m_player;
-	var m_queue;
 	var m_window;
 	var m_world;
 	
@@ -23,45 +29,63 @@ class Application
 };
 
 function Application::Application() {
-	m_human 	= Human();
-	m_player 	= MouseKeyboard();
-	m_queue 	= CommandQueue();
-	m_window 	= Window();
-	m_world 	= World();
+	m_dispatcher 	= Dispatcher();
+	m_human 		= Hud(SelectionRay(WatcherRay(Human())));
+	m_window 		= Window();
+	m_world 		= World();
 	
-	m_world.addObject(m_human.getCharacter());
+	m_dispatcher.addDevice(SceneEvent());
+	// Allow the catching of mouse and keyboard events
+	m_dispatcher.addDevice(MouseKeyboard());
+	m_dispatcher.addDevice(System());
 }
 
 function Application::event(eventId, wparam, lparam) {
-	m_player.processEvent(eventId, wparam, lparam, m_queue, m_window);
+	m_dispatcher.processEvent(
+		eventId,
+		wparam, lparam,
+		m_world.getCommandQueue(), m_window
+	);
 }
 
 function Application::init(params) {
+	// m_window.setFullScreen();
+	SetClearColor(1, 1, 1);
+	
 	/* initialize light */
 	var Light0 = CVmLight();
 	Light0.SetPosition([0.0, 10.0, 10.0]);
 	Light0.SetDiffuse(1, 1, 1);
 	Light0.Enable();
 	
-	m_human.init();
+	m_world.addObject(m_human);
+	
+	m_human.handleInput(m_dispatcher);
+	m_world.handleInput(m_dispatcher);
+	
+	var box = Cube(5, 5, 5);
+	var box2 = Pyramid(1, 3);
+	
+	m_world.addRootToDraw(box.getCVmObj());
+	m_world.addRootToDraw(box2.getCVmObj());
+	m_world.trackObject(box);
+	m_world.trackObject(box2);
+	
+	box.getCVmObj().SetPosition([20, 5, 20]);
+	box2.getCVmObj().SetPosition([0, 5, 0]);
 }
 
 function Application::render() {
+	ShowCursor(false);
 	updateView(m_human.getView());
 	
-	// This block gets the actual size (width and heigth) of the viewport
 	SceneBegin();
-	var res = glGet(GL_VIEWPORT);
-	m_window.setSize(res[2], res[3]);
-	SceneEnd();
-	
+	m_window.updateInfo();
 	m_world.draw();
-	
-	m_player.restart();
+	SceneEnd();
 }
 
 function Application::update() {
-	m_human.processCommands(m_queue);
 	m_world.update();
 }
 

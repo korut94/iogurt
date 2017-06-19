@@ -8,7 +8,7 @@ var __application = Application();
 
 /* Set global scene parameters */
 SET SCENE_FOV  = 60;
-SET SCENE_NEAR = 0.5;
+SET SCENE_NEAR = 0.1;
 SET SCENE_FAR  = 1000;
 
 function OnInit(params)
@@ -18,12 +18,13 @@ function OnInit(params)
 
 function OnFrame()
 {	
+	__application.update();
 	__application.render();
 }
 
 function OnTimer()
 {
-	__application.update();
+	// __application.update();
 }
 
 function OnEvent(eventID, wparam, lparam)
@@ -33,5 +34,5 @@ function OnEvent(eventID, wparam, lparam)
 
 function DownloadReady(RequestID) {}
 function OnDownload() {}
-function OnError(){}
+function OnError() {}
 function OnExit() {}

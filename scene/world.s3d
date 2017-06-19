@@ -1,7 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#define MAX_NUMBER_OBJECTS 1000
+#include "../command/commandqueue.s3d"
 
 function DrawGrid(col, size)
 {
@@ -32,40 +32,176 @@ function DrawGrid(col, size)
 
 class World
 {
-	var m_lastIndexObj;
-	var m_objList;
+	var m_collisionPair;
+	var m_objectList;
+	var m_queue;
+	var m_rayList;
 	var m_root;
 	
-	addObject(obj);
+	addCollisionPair(ray, object);
+	addInteractionRay(ray);
+	addObject(object);
+	/*
+	 * @brief Add the root of a CVmObj to draw all its children and itself
+	 */
+	addRootToDraw(root);
+	checkCollisions();
 	draw();
+	getCommandQueue();
+	handleInput(dispatcher);
+	removeCollisionPair(idPair);
+	removeObject(object);
+	/*
+	 * @brief Attaching the object to update it and check its collision with
+	 * the other objects in the scene.
+	 */
+	trackObject(object);
+	untrackObjectWithId(id);
 	update();
+	wasCollided(ray, object);
 };
 
 function World::World() {
-	m_objList = Array(MAX_NUMBER_OBJECTS);
+	m_collisionPair = {};
+	m_objectList = {};
+	m_queue = CommandQueue();
+	m_rayList = {};
 	m_root = CVmObj();
-	
-	m_lastIndexObj = 0;
 }
 
-function World::addObject(obj) {
-	m_root.AddChild(obj.getCVmObj());
-	m_objList[m_lastIndexObj++] = obj;
+function World::addInteractionRay(ray) {
+	ray.SetId(len(m_rayList));
+	aadd(m_rayList, ray);
+}
+
+function World::addCollisionPair(ray, object) {
+	aadd(m_collisionPair, {ray, object});
+}
+
+function World::addObject(object) {
+	object.applyTo(World::this);
+	object.init();
+}
+
+function World::addRootToDraw(root) {
+	m_root.AddChild(root);
+}
+
+function World::checkCollisions() {
+	foreach (var ray in m_rayList) {
+		var i = 0;
+		var next = true;
+		var cPoint = [0,0,0];
+				
+		while (next && i < len(m_objectList)) {
+			next = 	!ray.seesObj(m_objectList[i].getCVmObj())
+					// The ray intersection doens't work for child object because their geometry
+					// trasfromation are setted with relative values. A conversion in global geometry
+					// is needed to detect intersections with the rays correctely.
+					|| !toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &cPoint);
+					
+			if (next) {
+				var id = 0;
+				
+				if ((id = wasCollided(ray, m_objectList[i])) != -1) {
+					removeCollisionPair(id);
+					ray.getBehavior().onCollisionExit(m_objectList[i]);
+				}
+				
+				i++;
+			}
+		}
+		
+		// There is at least an object selected by the ray and this object is in the
+		// i-est position of m_objectList
+		if (i < len(m_objectList)) {
+			var target = m_objectList[i];
+			var otherCPoint = [0,0,0];
+			
+			for (var j = i + 1; j < len(m_objectList); j++) {
+				var object = m_objectList[j];
+				
+				if (ray.seesObj(object.getCVmObj())
+					// Ignore any objects behind the target but collided with the ray
+					&& ray.distanceFrom(object.getCVmObj()) < ray.distanceFrom(target.getCVmObj())
+					&& toGlobal(m_objectList[i].getCVmObj()).isColliding(ray.from(), ray.to(), &otherCPoint)
+				) {
+					var id = 0;
+					if ((id = wasCollided(ray, target)) != -1) {
+						removeCollisionPair(id);
+						ray.getBehavior().onCollisionExit(target);
+					}
+					
+					target = object;
+					cPoint = otherCPoint;
+				}
+			}
+			
+			if (wasCollided(ray, target) == -1) {
+				addCollisionPair(ray, target);	
+				ray.getBehavior().onCollisionEnter(target, cPoint);
+			}
+			
+			ray.getBehavior().onCollision(target, cPoint);
+		}
+	}
 }
 
 function World::draw() {
-	SceneBegin();
-	glClearColor(1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_NORMALIZE);
+	
 	DrawGrid([0.5, 0.5, 0.5], 100);
 	m_root.Draw();
-	SceneEnd();
+}
+
+function World::getCommandQueue() {
+	return m_queue;
+}
+
+function World::handleInput(dispatcher) {
+	dispatcher.on(ADD_OBJECT, Caller(World::this, "addObject"));
+	dispatcher.on(REMOVE_OBJECT, Caller(World::this, "removeObject"));
+}
+
+function World::removeCollisionPair(idPair) {
+	adel(m_collisionPair, idPair);
+}
+
+function World::removeObject(object) {
+	object.removeFrom(World::this);
+}
+
+function World::trackObject(object) {
+	object.setId(len(m_objectList));
+	aadd(m_objectList, object);
+}
+
+function World::untrackObjectWithId(id) {
+	adel(m_objectList, id);
 }
 
 function World::update() {
-	for (var i = 0; i < m_lastIndexObj; i++) {
-		m_objList[i].update();
+	while (!m_queue.isEmpty()) {
+		m_queue.pop().apply();
 	}
+	
+	foreach (var object in m_objectList) {
+		object.update();
+	}
+	
+	checkCollisions();
+}
+
+function World::wasCollided(ray, object) {
+	var i = 0;
+	var found = false;
+	
+	while (!found && i < len(m_collisionPair)) {
+		found = (m_collisionPair[i][0] == ray && m_collisionPair[i][1] == object);
+		i++;
+	}
+	
+	return (found) ? i - 1 : -1;
 }
 
 #endif // WORLD_H

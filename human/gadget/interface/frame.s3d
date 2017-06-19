@@ -1,0 +1,22 @@
+#ifndef FRAME_H
+#define FRAME_H
+
+#include "../../../scene/object.s3d"
+
+class Frame : Object
+{
+	
+};
+
+function Frame::Frame(width, height, depth) {
+	var mesh = CVmNewMesh(VRP_BOX, 0, [0,0,0], [width, height, depth]);
+	mesh.Rotate(180, [0,1,0]);
+	var material = CVmMaterial();
+	material.Diffuse = [0.2, 0.2, 0.2, 1];
+	mesh.ForceMaterial(material);
+	
+	Frame::this.getCVmObj().LinkToMesh(mesh);
+	mesh.CenterBoundingBox();
+}
+
+#endif // FRAME_H

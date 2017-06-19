@@ -1,0 +1,47 @@
+#ifndef DISPATCHER_H
+#define DISPATCHER_H
+
+#include "device/nodevice.s3d"
+
+class Dispatcher
+{
+	var m_channels;
+	var m_system;
+	
+	addDevice(driver);
+	on(event, action);
+	processEvent(eventId, wparam, lparam, queue, window);
+};
+
+function Dispatcher::Dispatcher() {
+	m_channels = {};
+	m_system = NoDevice();
+}
+
+function Dispatcher::addDevice(driver) {
+	// Put the new driver on the head of the devices list
+	driver.setNext(m_system);
+	m_system = driver;
+	
+	driver.updateChannelList(m_channels);
+}
+
+function Dispatcher::on(event, action) {
+	var found = false;
+	var i = 0;
+	
+	while (!found && i < len(m_channels)) {
+		if (m_channels[i].getName() == event) {
+			m_channels[i].subscribe(action);
+			found = true;	
+		}
+		
+		i++;
+	}
+}
+
+function Dispatcher::processEvent(eventId, wparam, lparam, queue, window) {
+	m_system.processEvent(eventId, wparam, lparam, queue, window);
+}
+
+#endif // DISPATCHER_H
