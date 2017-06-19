@@ -53,7 +53,17 @@ function InteractionRay::length() {
 }
 
 function InteractionRay::seesObj(obj) {
-	return focus(obj) > 0.98;
+	var distance = distanceFrom(obj);
+	
+	if (distance > 0) {
+		var expectedSize = distanceFrom(obj) * tan(abs(asin(focus(obj)) - PI/2));
+		var bb = obj.GetMesh().GetBoundingBox();
+		var bbSideLen = modulus([bb[3], bb[4], bb[5]]);
+	
+		return expectedSize < bbSideLen;
+	} else {
+		return false;
+	}
 }
 
 function InteractionRay::setLenght(lenght) {
