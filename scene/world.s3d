@@ -50,6 +50,7 @@ class World
 	getCommandQueue();
 	handleInput(dispatcher);
 	removeCollisionPair(idPair);
+	removeObject(object);
 	/*
 	 * @brief Attaching the object to update it and check its collision with
 	 * the other objects in the scene.
@@ -157,10 +158,15 @@ function World::getCommandQueue() {
 
 function World::handleInput(dispatcher) {
 	dispatcher.on(ADD_OBJECT, Caller(World::this, "addObject"));
+	dispatcher.on(REMOVE_OBJECT, Caller(World::this, "removeObject"));
 }
 
 function World::removeCollisionPair(idPair) {
 	adel(m_collisionPair, idPair);
+}
+
+function World::removeObject(object) {
+	
 }
 
 function World::trackObject(object) {
