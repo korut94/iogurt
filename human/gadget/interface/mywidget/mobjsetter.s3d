@@ -7,22 +7,34 @@
 
 class MObjSetter : Object
 {
+	var m_actionChange;
+	var m_actionDecrement;
+	var m_actionIncrement;
 	var m_btnDec;
 	var m_btnInc;
 	var m_lblProp;
 	var m_lblValue;
 	
 	applyTo(world);
+	increment(opts);
+	decrement(opts);
 	init();
-	linkToDecrement(action);
-	linkToIncrement(action);
+	updateDigest(value);
 };
 
-function MObjSetter::MObjSetter(propName) {
+function MObjSetter::MObjSetter(propName, inc, dec, change) {
+	m_actionChange = change;
+	m_actionIncrement = inc;
+	m_actionDecrement = dec;
 	m_btnDec = Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.02, 0.02, 0.02]));
 	m_btnInc = Button(CVmNewMesh(VRP_BOX, 0, [0,0,0], [0.02, 0.02, 0.02]));
 	m_lblValue = Label("000.00", [0.03, 0.03]);
 	m_lblProp = Label(propName + ": ", [0.03, 0.03], [0.8, 0.8, 0.8]);
+	
+	updateDigest(m_actionChange.apply());
+	
+	m_btnDec.linkToOnPress(Caller(MObjSetter::this, "decrement"));
+	m_btnInc.linkToOnPress(Caller(MObjSetter::this, "increment"));
 	
 	MObjSetter::this.getCVmObj().AddChild(m_btnDec.getCVmObj());
 	MObjSetter::this.getCVmObj().AddChild(m_btnInc.getCVmObj());
@@ -42,12 +54,36 @@ function MObjSetter::init() {
 	m_lblProp.getCVmObj().SetPosition([0.105, -0.01, -0.01]);
 }
 
-function MObjSetter::linkToDecrement(action) {
-	m_btnDec.linkToOnPress(action);
+function MObjSetter::decrement(opts) {
+	m_actionDecrement.apply(opts);
+	updateDigest(m_actionChange.apply());
 }
 
-function MObjSetter::linkToIncrement(action) {
-	m_btnInc.linkToOnPress(action);
+function MObjSetter::increment(opts) {
+	m_actionIncrement.apply(opts);
+	updateDigest(m_actionChange.apply());
+}
+
+function MObjSetter::updateDigest(value) {
+	var strValue = str(value);
+	var integer = "";
+	var dec = "";
+	var i = 0;
+	
+	while (i < len(strValue) && strValue[i] != ".") {
+		integer = integer + strValue[i];
+		i = i + 1;
+	}
+	
+	for (var j = i + 1; j < len(strValue); ++j) {
+		dec = dec + strValue[j];
+	}
+	
+	if (integer[0] == "-") {
+		m_lblValue.text("-" + right(integer, 2) + "." + left(dec, 2));
+	} else {
+		m_lblValue.text(right(integer, 3) + "." + left(dec, 2));
+	}
 }
 
 #endif // MOBJSETTER_H

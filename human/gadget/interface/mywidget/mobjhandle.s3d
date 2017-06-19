@@ -26,8 +26,8 @@ function MObjHandle::MObjHandle(hud, width, height, object) {
 	m_frameSetting = Frame(0.25, 0.8, 0.01);
 	
 	m_handleTranslate = MObjHandleTranslate(object.getCVmObj());
-	m_handleRotate = MObjHandleRotate();
-	m_handleScale = MObjHandleScale();
+	m_handleRotate = MObjHandleRotate(object.getCVmObj());
+	m_handleScale = MObjHandleScale(object.getCVmObj());
 	
 	m_preview = MObjPreview(object.getCVmObj());
 	
