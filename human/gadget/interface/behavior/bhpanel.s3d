@@ -17,7 +17,7 @@ function BHPanel::BHPanel(panel) {
 }
 
 function BHPanel::onDrag(deltaRight, deltaUp) {
-	m_widget.setStep(m_prevStep + deltaRight / (2 * m_widget.hud().distanceFromUser()));
+	m_widget.setStep(m_prevStep + deltaRight / (2 * m_widget.hud().distanceFromUser()), deltaUp);
 }
 
 function BHPanel::onEnter(pointer, contactPoint) {
