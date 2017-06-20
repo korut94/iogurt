@@ -1,0 +1,48 @@
+#ifndef CONEFRUSTUM_H
+#define CONEFRUSTUM_H
+
+#include "../object.s3d"
+#include "../behavior/mono.s3d"
+
+class BHConefrustum : Mono
+{
+	var m_conefrustum;
+
+	onWatch();
+};
+
+function BHConefrustum::BHConefrustum(conefrustum) {
+	m_conefrustum = conefrustum;
+}
+
+function BHConefrustum::onWatch() {
+	EventSend(OBJECT_WATCHED, m_conefrustum);	
+}
+
+class Conefrustum : Object
+{
+	applyTo(world);
+	init();
+};
+
+function Conefrustum::Conefrustum(min, max, height, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
+	var mesh = CVmNewMesh(VRP_CONEFRUSTUM, 30, min, height, max, 1);
+	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
+	
+	Conefrustum::this.getCVmObj().LinkToMesh(mesh);
+	Conefrustum::this.linkToBehavior(BHConefrustum(Conefrustum::this));
+}
+
+function Conefrustum::applyTo(world) {
+	world.addRootToDraw(Conefrustum::this.getCVmObj());
+	world.trackObject(Conefrustum::this);
+}
+
+function Conefrustum::init() {
+	// Conefrustum::this.getCVmObj().SetPosition([0, 5, 0]);
+}
+
+#endif // CONEFRUSTUM_H

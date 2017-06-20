@@ -1,0 +1,6 @@
+# XVR Developer Studio temporary
+*.asm
+*.bin*
+
+# Emacs temporay
+*.*~

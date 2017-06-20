@@ -1,0 +1,33 @@
+#ifndef BUTTON_H
+#define BUTTON_H
+
+#include "../scene/object.s3d"
+#include "behavior/bhbutton.s3d"
+
+class Button : Object
+{
+	linkToOnPress(action);
+	linkToOnRelease(action);
+};
+
+function Button::Button(mesh) {
+	mesh.Rotate(180, [0,1,0]);
+	var material = CVmMaterial();
+	material.Diffuse = [1, 0, 0, 1];
+	mesh.ForceMaterial(material);
+	
+	Button::this.getCVmObj().LinkToMesh(mesh);
+	mesh.CenterBoundingBox();
+	
+	Button::this.linkToBehavior(BHButton(Button::this));
+}
+
+function Button::linkToOnPress(action) {
+	Button::this.getBehavior().setOnPress(action);
+}
+
+function Button::linkToOnRelease(action) {
+	Button::this.getBehavior().setOnRelease(action);
+}
+
+#endif // BUTTON_H

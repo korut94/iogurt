@@ -1,0 +1,128 @@
+#ifndef HUMAN_H
+#define HUMAN_H
+
+#include "../event/caller.s3d"
+#include "../scene/object.s3d"
+#include "../scene/utility.s3d"
+#include "../scene/physics/rigidbody.s3d"
+#include "view.s3d"
+#include "action/changeview.s3d"
+#include "action/move.s3d"
+#include "action/mousehandtracker.s3d"
+#include "action/rotate.s3d"
+
+#define N_PARTS 3
+
+#define BODY_ID 	0x00
+#define HEAD_ID		0x01
+#define HAND_DX_ID	0x02
+
+class Human
+{
+	var m_character;
+	var m_eye;
+	
+	applyTo(world);
+	getPart(id);
+	getView();
+	/*
+	 * @brief Initialiaze the trasformation of the human parts. Any settings in the
+	 * constructor's body will be missed since when the world attaches the parts
+	 * in its tree, their transformation are resetted. 
+	 */
+	init();
+	handleInput(dispatcher);
+	removeFrom(world);
+};
+
+function Human::Human() {
+	m_eye = CVmObj();
+	
+	m_character = Array(N_PARTS);
+	m_character[BODY_ID] = Object();
+	m_character[BODY_ID].linkToBody(RigidBody());
+	m_character[HEAD_ID] = Object();
+	m_character[HEAD_ID].linkToBody(RigidBody());
+	m_character[HAND_DX_ID] = Object();
+	m_character[HAND_DX_ID].linkToBody(RigidBody());
+	
+	// Block the head to the body
+	m_character[BODY_ID].getCVmObj().AddChild(m_character[HEAD_ID].getCVmObj());
+	m_character[HEAD_ID].getCVmObj().AddChild(m_character[HAND_DX_ID].getCVmObj());
+	m_character[HEAD_ID].getCVmObj().AddChild(m_eye);
+	
+	// Starting the min corner from the origin allow the definition of the box writing
+	// the max cornser as: [width, heigth, depth]. Then, the correct position is setted
+	// by the CVmObj's methods.
+	var meshBody = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1.5,1.5,0.5]);
+	meshBody.CenterBoundingBox();
+	var meshHead = CVmNewMesh(VRP_BOX, 0, [0,0,0], [1,1,0.35]);
+	meshHead.CenterBoundingBox();
+	var meshHandDx = CVmNewMesh(VRP_SPHERE, 30, 0.02, 1);
+	meshHandDx.CenterBoundingBox();
+	
+	m_character[BODY_ID].getCVmObj().LinkToMesh(meshBody);
+	m_character[HEAD_ID].getCVmObj().LinkToMesh(meshHead);
+	m_character[HAND_DX_ID].getCVmObj().LinkToMesh(meshHandDx);
+}
+
+function Human::applyTo(world) {
+	world.addRootToDraw(m_character[BODY_ID].GetCVmObj());
+	world.trackObject(m_character[BODY_ID]);
+	world.trackObject(m_character[HEAD_ID]);
+	
+	// NOTE: The systemt doens't track the hand because for the actual collision detection
+	// algorithm it always collides with the watcher ray and it occludes the other elements of the
+	// world since it is the closest object from the watcher ray.
+}
+
+function Human::getPart(id) {
+	return m_character[id];
+}
+
+function Human::getView() {
+	var pView = View();
+	// Get traslation component, the last column of the matrix.
+	pView.position = globalPosition(m_eye);
+	// Get the normalized vector for Z axis
+	pView.direction = forward(m_eye);
+	
+	return pView;
+}
+
+function Human::init() {
+	m_character[BODY_ID].getCVmObj().setPosition([0, 1, 0]);
+	// The head's position is: one more right, one more up and one more ahead respect the body
+	// size. The value are relative to the size of the body's mesh!
+	m_character[HEAD_ID].getCVmObj().SetPosition([0, 1.5, 0]);
+	m_character[HAND_DX_ID].getCVmObj().SetPosition([0, 0, 1.3]);
+}
+
+function Human::handleInput(dispatcher) {
+	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.05);
+	
+	dispatcher.on(KEY_PRESSED_UP, 		Rotate(m_character[HEAD_ID], -0.5, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_DOWN, 	Rotate(m_character[HEAD_ID], 0.5, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_LEFT, 	Rotate(m_character[HEAD_ID], 0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_RIGHT, 	Rotate(m_character[HEAD_ID], -0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_A, 		Rotate(m_character[BODY_ID], 1, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_D, 		Rotate(m_character[BODY_ID], -1, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_S, 		Move(m_character[BODY_ID], -0.2));
+	dispatcher.on(KEY_PRESSED_V, 		ChangeView(m_eye, [-2.5, 0, -8]));
+	dispatcher.on(KEY_PRESSED_W, 		Move(m_character[BODY_ID], 0.2));
+	dispatcher.on(MOUSE_MOVE,			Caller(tracker, "onMouseMove"));
+	dispatcher.on(MOUSE_WHEEL,			Caller(tracker, "onWheel"));
+	
+	dispatcher.on(KEY_RELEASED_UP, 		Rotate(m_character[HEAD_ID], 0, [1,0,0]));
+	dispatcher.on(KEY_RELEASED_DOWN, 	Rotate(m_character[HEAD_ID], 0, [1,0,0]));
+	dispatcher.on(KEY_RELEASED_LEFT, 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_RIGHT, 	Rotate(m_character[HEAD_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_A, 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_D, 		Rotate(m_character[BODY_ID], 0, [0,1,0]));
+	dispatcher.on(KEY_RELEASED_S, 		Move(m_character[BODY_ID], 0));
+	dispatcher.on(KEY_RELEASED_W, 		Move(m_character[BODY_ID], 0));
+}
+
+function Human::removeFrom(world) {}
+
+#endif // HUMAN_H

@@ -1,0 +1,68 @@
+#ifndef INTERACTIONRAY_H
+#define INTERACTIONRAY_H
+
+#include "object.s3d"
+#include "utility.s3d"
+
+class InteractionRay : Object
+{
+	var m_source;
+	
+	distanceFrom(obj);
+	/*
+	 * @brief Return the focus value for an obj as real between -1 and 1 where:
+	 * -1 means that the obj is behind to the source, 0 is parallel to it and 1
+	 * is in front to it.
+	 */
+	focus(obj);
+	from();
+	length();
+	seesObj(obj);
+	setLenght(lenght);
+	to();
+};
+
+function InteractionRay::InteractionRay(sourceObj) {
+	m_source = sourceObj;
+	m_source.AddChild(InteractionRay::this.getCVmObj());
+}
+
+function InteractionRay::distanceFrom(obj) {
+	return (globalPosition(obj) - from()) * forward(m_source);
+}
+
+function InteractionRay::focus(obj) {
+	return norm(globalPosition(obj) - from()) * forward(m_source);
+}
+
+function InteractionRay::from() {
+	return globalPosition(m_source);
+}
+
+function InteractionRay::length() {
+	return modulus(InteractionRay::this.getCVmObj().GetPosition());
+}
+
+function InteractionRay::seesObj(obj) {
+	var distance = distanceFrom(obj);
+	
+	if (distance > 0) {
+		var expectedSize = distanceFrom(obj) * tan(abs(asin(focus(obj)) - PI/2));
+		var bb = obj.GetMesh().GetBoundingBox();
+		var bbSideLen = modulus([bb[3], bb[4], bb[5]]);
+	
+		return expectedSize < bbSideLen;
+	} else {
+		return false;
+	}
+}
+
+function InteractionRay::setLenght(lenght) {
+	InteractionRay::this.getCVmObj().SetPosition([0,0,lenght]);
+}
+
+function InteractionRay::to() {
+	return globalPosition(InteractionRay::this.getCVmObj());
+}
+
+#endif // INTERACTIONRAY_H

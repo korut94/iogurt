@@ -1,0 +1,35 @@
+#ifndef CHANNEL_H
+#define CHANNEL_H
+
+#include "../command/command.s3d"
+
+class Channel
+{
+	var m_name;
+	var m_subscriber;
+	
+	getName();
+	subscribe(action);
+	trigger(queue, opts);
+};
+
+function Channel::Channel(name) {
+	m_name = name;
+	m_subscriber = VOID;
+}
+
+function Channel::getName() {
+	return m_name;
+}
+
+function Channel::subscribe(action) {
+	m_subscriber = action;
+}
+
+function Channel::trigger(queue, opts) {
+	if (m_subscriber != VOID) {
+		queue.push(command(m_subscriber, opts));
+	}
+}
+
+#endif // CHANNEL_H

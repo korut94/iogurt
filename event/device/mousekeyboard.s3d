@@ -1,0 +1,323 @@
+#ifndef MOUSE_KEYBOARD_H
+#define MOUSE_KEYBOARD_H
+
+#include "../channel.s3d"
+#include "driver.s3d"
+
+#define MOUSE_MOVE 			0x0200
+#define MOUSE_WHEEL			0x020A
+#define MOUSE_PRESSED_L		0x0201
+#define MOUSE_RELEASED_L	0x0202
+#define MOUSE_PRESSED_R		0x0207
+#define MOUSE_RELEASED_R	0x0208
+
+#define KEY_PRESSED 	0x0100
+#define KEY_RELEASED	0x0101
+#define KEY_TAPPED		0x0102
+#define KEY_LEFT		0x25
+#define MAP_KEY_LEFT	0x05
+#define KEY_UP			0x26
+#define MAP_KEY_UP		0x06
+#define KEY_RIGHT		0x27
+#define MAP_KEY_RIGHT	0x07
+#define KEY_DOWN		0x28
+#define MAP_KEY_DOWN	0x08
+#define KEY_A			0x41	
+#define MAP_KEY_A 		0x00
+#define KEY_D			0x44
+#define MAP_KEY_D 		0x01
+#define KEY_E			0x45
+#define MAP_KEY_E		0x02
+#define KEY_S			0x53	
+#define MAP_KEY_S 		0x03
+#define KEY_V			0x56
+#define MAP_KEY_V		0x04
+#define KEY_W			0x57	
+#define MAP_KEY_W 		0x05
+#define COUNT_MAP_KEY	10
+
+var KEY_PRESSED_A 		= Event();
+var KEY_PRESSED_D 		= Event();
+var KEY_PRESSED_E 		= Event();
+var KEY_PRESSED_S 		= Event();
+var KEY_PRESSED_V 		= Event();
+var KEY_PRESSED_W 		= Event();
+var KEY_PRESSED_DOWN 	= Event();
+var KEY_PRESSED_LEFT 	= Event();
+var KEY_PRESSED_RIGHT	= Event();
+var KEY_PRESSED_UP		= Event();
+
+var KEY_RELEASED_A		= Event();
+var KEY_RELEASED_D		= Event();
+var KEY_RELEASED_E		= Event();
+var	KEY_RELEASED_S		= Event();
+var KEY_RELEASED_V		= Event();
+var KEY_RELEASED_W		= Event();
+var KEY_RELEASED_DOWN	= Event();
+var KEY_RELEASED_LEFT	= Event();
+var KEY_RELEASED_RIGHT	= Event();
+var KEY_RELEASED_UP		= Event();
+
+class MouseKeyboard : Driver
+{	
+	var m_chKeyLEFTPressed;
+	var m_chKeyUPPressed;
+	var m_chKeyRIGHTPressed;
+	var m_chKeyDOWNPressed;
+	var m_chKeyAPressed;
+	var m_chKeyDPressed;
+	var m_chKeyEPressed;
+	var m_chKeySPressed;
+	var m_chKeyVPressed;
+	var m_chKeyWPressed;
+	
+	var m_chKeyLEFTReleased;
+	var m_chKeyUPReleased;
+	var m_chKeyRIGHTReleased;
+	var m_chKeyDOWNReleased;
+	var m_chKeyAReleased;
+	var m_chKeyDReleased;
+	var m_chKeyEReleased;
+	var m_chKeySReleased;
+	var m_chKeyVReleased;
+	var m_chKeyWReleased;
+	
+	var m_chMouseMove;
+	var m_chMouseWheel;
+	
+	var m_chMouseLPressed;
+	var m_chMouseRPressed;
+	
+	var m_chMouseLReleased;
+	var m_chMouseRReleased;
+	
+	/*
+	 * @brief The keyboard status, when an item is true meaning that the relative
+	 * key is hold pressed.
+	 */
+	var m_kbStatus;
+	
+	/*
+	 * @brief The function translates all events relative to the mouse and 
+	 * keyboard in human interaction commands and it pushes their into the
+	 * queue commands.
+	 */
+	processEvent(eventId, wparam, lparam, queue, window);
+	updateChannelList(list);
+};
+
+function MouseKeyboard::MouseKeyboard() {
+	m_kbStatus = Array(COUNT_MAP_KEY);
+	
+	m_kbStatus[MAP_KEY_A] 		= false;
+	m_kbStatus[MAP_KEY_E] 		= false;
+	m_kbStatus[MAP_KEY_S] 		= false;
+	m_kbStatus[MAP_KEY_D] 		= false;
+	m_kbStatus[MAP_KEY_V] 		= false;
+	m_kbStatus[MAP_KEY_W] 		= false;
+	m_kbStatus[MAP_KEY_LEFT] 	= false;
+	m_kbStatus[MAP_KEY_UP] 		= false;
+	m_kbStatus[MAP_KEY_RIGHT] 	= false;
+	m_kbStatus[MAP_KEY_DOWN] 	= false;
+	
+	m_chKeyLEFTPressed		= Channel(KEY_PRESSED_LEFT);
+	m_chKeyUPPressed 		= Channel(KEY_PRESSED_UP);
+	m_chKeyRIGHTPressed		= Channel(KEY_PRESSED_RIGHT);
+	m_chKeyDOWNPressed		= Channel(KEY_PRESSED_DOWN);
+	m_chKeyAPressed			= Channel(KEY_PRESSED_A);
+	m_chKeyDPressed 		= Channel(KEY_PRESSED_D);
+	m_chKeyEPressed			= Channel(KEY_PRESSED_E);
+	m_chKeySPressed			= Channel(KEY_PRESSED_S);
+	m_chKeyVPressed			= Channel(KEY_PRESSED_V);
+	m_chKeyWPressed 		= Channel(KEY_PRESSED_W);
+	m_chKeyLEFTReleased		= Channel(KEY_RELEASED_LEFT);
+	m_chKeyUPReleased 		= Channel(KEY_RELEASED_UP);
+	m_chKeyDOWNReleased		= Channel(KEY_RELEASED_DOWN);
+	m_chKeyRIGHTReleased	= Channel(KEY_RELEASED_RIGHT);
+	m_chKeyAReleased		= Channel(KEY_RELEASED_A);
+	m_chKeyDReleased 		= Channel(KEY_RELEASED_D);
+	m_chKeyEReleased		= Channel(KEY_RELEASED_E);
+	m_chKeySReleased		= Channel(KEY_RELEASED_S);
+	m_chKeyVReleased		= Channel(KEY_RELEASED_V);
+	m_chKeyWReleased 		= Channel(KEY_RELEASED_W);
+	m_chMouseMove			= Channel(MOUSE_MOVE);
+	m_chMouseWheel			= Channel(MOUSE_WHEEL);
+	m_chMouseLPressed		= Channel(MOUSE_PRESSED_L);
+	m_chMouseRPressed		= Channel(MOUSE_PRESSED_R);
+	m_chMouseLReleased		= Channel(MOUSE_RELEASED_L);
+	m_chMouseRReleased		= Channel(MOUSE_RELEASED_R);
+}
+
+function MouseKeyboard::processEvent(eventId, wparam, lparam, queue, window) {
+	if (eventId == KEY_PRESSED && KeyPressed(wparam)) {
+		switch (wparam) {
+			case KEY_LEFT : {
+				if (!m_kbStatus[MAP_KEY_LEFT]) m_chKeyLEFTPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_LEFT] = true;
+				break;
+			}
+			
+			case KEY_UP : {
+				if (!m_kbStatus[MAP_KEY_UP]) m_chKeyUPPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_UP] = true;
+				break;
+			}
+			
+			case KEY_RIGHT : {
+				if (!m_kbStatus[MAP_KEY_RIGHT]) m_chKeyRIGHTPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_RIGHT] = true;
+				break;
+			}
+			
+			case KEY_DOWN : {
+				if (!m_kbStatus[MAP_KEY_DOWN]) m_chKeyDOWNPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_DOWN] = true;
+				break;
+			}
+			
+			case KEY_A: {
+				if (!m_kbStatus[MAP_KEY_A]) m_chKeyAPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_A] = true;
+				break; 
+			}
+			
+			case KEY_D: {
+				if (!m_kbStatus[MAP_KEY_D]) m_chKeyDPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_D] = true;
+				break; 
+			}
+			
+			case KEY_E: {
+				if (!m_kbStatus[MAP_KEY_E]) m_chKeyEPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_E] = true;
+				break; 
+			}
+			
+			case KEY_S: {
+				if (!m_kbStatus[MAP_KEY_S]) m_chKeySPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_S] = true;
+				break; 
+			}
+			
+			case KEY_V: {
+				if (!m_kbStatus[MAP_KEY_V]) m_chKeyVPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_V] = true;
+				break;
+			}
+			
+			case KEY_W: {
+				if (!m_kbStatus[MAP_KEY_W]) m_chKeyWPressed.trigger(queue);
+				m_kbStatus[MAP_KEY_W] = true;
+				break;
+			}
+		}
+	// The second condition need to avoid the false positive by the keyboard repetition
+	} else if (eventId == KEY_RELEASED && !KeyPressed(wparam)) {
+		switch (wparam) {
+			case KEY_LEFT: {
+				m_chKeyLEFTReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_LEFT] = false;
+				break;
+			}
+			
+			case KEY_UP: {
+				m_chKeyUPReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_UP] = false;
+				break;
+			}
+			
+			case KEY_RIGHT: {
+				m_chKeyRIGHTReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_RIGHT] = false;
+				break;
+			}
+			
+			case KEY_DOWN: {
+				m_chKeyDOWNReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_DOWN] = false;
+				break;
+			}
+			
+			case KEY_A: {
+				m_chKeyAReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_A] = false;
+				break;
+			}
+			
+			case KEY_D: {
+				m_chKeyDReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_D] = false;
+				break;
+			}
+			
+			case KEY_E: {
+				m_chKeyEReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_E] = false;
+				break;
+			}
+			
+			case KEY_S: {
+				m_chKeySReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_S] = false;
+				break;
+			}
+			
+			case KEY_V: {
+				m_chKeyVReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_V] = false;
+				break;
+			}
+			
+			case KEY_W: {
+				m_chKeyWReleased.trigger(queue);
+				m_kbStatus[MAP_KEY_W] = false;
+				break;
+			}
+		}
+	} else if (eventId == MOUSE_MOVE) {
+		m_chMouseMove.trigger(queue, {window, wparam});
+	} else if (eventId == MOUSE_WHEEL) {
+		m_chMouseWheel.trigger(queue, wparam);		
+	} else if (eventId == MOUSE_PRESSED_L) {
+		m_chMouseLPressed.trigger(queue);
+	} else if (eventId == MOUSE_PRESSED_R) {
+		m_chMouseRPressed.trigger(queue);
+	} else if (eventId == MOUSE_RELEASED_L) {
+		m_chMouseLReleased.trigger(queue);
+	} else if (eventId == MOUSE_RELEASED_R) {
+		m_chMouseRReleased.trigger(queue);
+	} else {
+		m_next.processEvent(eventId, wparam, lparam, queue, window);
+	}
+}
+
+function MouseKeyboard::updateChannelList(list) {
+	aadd(list, m_chKeyLEFTPressed);
+	aadd(list, m_chKeyUPPressed);
+	aadd(list, m_chKeyRIGHTPressed);
+	aadd(list, m_chKeyDOWNPressed);
+	aadd(list, m_chKeyAPressed);
+	aadd(list, m_chKeyDPressed);
+	aadd(list, m_chKeyEPressed);	
+	aadd(list, m_chKeySPressed);
+	aadd(list, m_chKeyVPressed);
+	aadd(list, m_chKeyWPressed);
+	aadd(list, m_chKeyLEFTReleased);
+	aadd(list, m_chKeyUPReleased);
+	aadd(list, m_chKeyRIGHTReleased);
+	aadd(list, m_chKeyDOWNReleased);
+	aadd(list, m_chKeyAReleased);
+	aadd(list, m_chKeyDReleased);
+	aadd(list, m_chKeyEReleased);
+	aadd(list, m_chKeySReleased);
+	aadd(list, m_chKeyVReleased);
+	aadd(list, m_chKeyWReleased);
+	aadd(list, m_chMouseMove);
+	aadd(list, m_chMouseWheel);
+	aadd(list, m_chMouseLPressed);
+	aadd(list, m_chMouseRPressed);
+	aadd(list, m_chMouseLReleased);
+	aadd(list, m_chMouseRReleased);
+}
+
+#endif // MOUSE_KEYBOARD_H

@@ -1,0 +1,48 @@
+#ifndef PYRAMID_H
+#define PYRAMID_H
+
+#include "../object.s3d"
+#include "../behavior/mono.s3d"
+
+class BHPyramid : Mono
+{
+	var m_pyramid;
+
+	onWatch();
+};
+
+function BHPyramid::BHPyramid(pyramid) {
+	m_pyramid = pyramid;
+}
+
+function BHPyramid::onWatch() {
+	EventSend(OBJECT_WATCHED, m_pyramid);	
+}
+
+class Pyramid : Object
+{
+	applyTo(world);
+	init();
+};
+
+function Pyramid::Pyramid(base, height, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
+	var mesh = CVmNewMesh(VRP_PYRAMID, 4, base, height);
+	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
+	
+	Pyramid::this.getCVmObj().LinkToMesh(mesh);
+	Pyramid::this.linkToBehavior(BHPyramid(Pyramid::this));
+}
+
+function Pyramid::applyTo(world) {
+	world.addRootToDraw(Pyramid::this.getCVmObj());
+	world.trackObject(Pyramid::this);
+}
+
+function Pyramid::init() {
+	// Pyramid::this.getCVmObj().SetPosition([0, 5, 0]);
+}
+
+#endif // PYRAMID_H

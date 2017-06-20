@@ -1,0 +1,41 @@
+#ifndef BHBUTTON_H
+#define BHBUTTON_H
+
+#include "bhwidget.s3d"
+
+class BHButton : BHWidget
+{
+	var m_actionOnPress;
+	var m_actionOnRelease;
+	
+	onPress(strength);
+	onRelease();
+	setOnPress(action);
+	setOnRelease(action);
+};
+
+function BHButton::BHButton(button) {
+	BHWidget(button);
+}
+
+function BHButton::onPress(strength) {
+	if (m_actionOnPress != VOID) {
+		m_actionOnPress.apply({strength});
+	}
+}
+
+function BHButton::onRelease() {
+	if (m_actionOnRelease != VOID) {
+		m_actionOnRelease.apply();
+	}
+}
+
+function BHButton::setOnPress(action) {
+	m_actionOnPress = action;
+}
+
+function BHButton::setOnRelease(action) {
+	m_actionOnRelease = action;
+}
+
+#endif // BHBUTTON_H

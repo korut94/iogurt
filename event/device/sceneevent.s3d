@@ -1,0 +1,45 @@
+#ifndef SCENE_EVENT_H
+#define SCENE_EVENT_H
+
+#include "../channel.s3d"
+#include "driver.s3d"
+
+var ADD_OBJECT		= Event();
+var OBJECT_WATCHED	= Event();
+var REMOVE_OBJECT	= Event();
+
+class SceneEvent : Driver
+{
+	var m_chAddObject;
+	var m_chObjectWatched;
+	var m_chRemoveObject;
+	
+	processEvent(eventId, wparam, lparam, queue, window);
+	updateChannelList(list);
+};
+
+function SceneEvent::SceneEvent() {
+	m_chAddObject 		= Channel(ADD_OBJECT);
+	m_chObjectWatched 	= Channel(OBJECT_WATCHED);
+	m_chRemoveObject	= Channel(REMOVE_OBJECT);
+}
+
+function SceneEvent::processEvent(eventId, wparam, lparam, queue, window) {
+	if (eventId == ADD_OBJECT) {
+		m_chAddObject.trigger(queue, wparam);
+	} else if (eventId == OBJECT_WATCHED) {
+		m_chObjectWatched.trigger(queue, wparam);
+	} else if (eventId == REMOVE_OBJECT) {
+		m_chRemoveObject.trigger(queue, wparam);
+	} else {
+		m_next.processEvent(eventId, wparam, lparam, queue, window);
+	}
+}
+
+function SceneEvent::updateChannelList(list) {
+	aadd(list, m_chAddObject);
+	aadd(list, m_chObjectWatched);
+	aadd(list, m_chRemoveObject);
+}
+
+#endif // SCENE_EVENT_H

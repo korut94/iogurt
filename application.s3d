@@ -1,0 +1,131 @@
+#ifndef APPLICATION_H
+#define APPLICATION_H
+
+#include "event/dispatcher.s3d"
+#include "event/device/mousekeyboard.s3d"
+#include "event/device/sceneevent.s3d"
+#include "event/device/system.s3d"
+#include "graphics/window.s3d"
+#include "human/human.s3d"
+#include "human/gadget/hud.s3d"
+#include "human/gadget/selectionray.s3d"
+#include "human/gadget/watcherray.s3d"
+#include "scene/world.s3d"
+#include "scene/entity/conefrustum.s3d"
+#include "scene/entity/cube.s3d"
+#include "scene/entity/plane.s3d"
+#include "scene/entity/pyramid.s3d"
+#include "scene/entity/sphere.s3d"
+
+class Application 
+{
+	var m_dispatcher;
+	var m_human;
+	var m_window;
+	var m_world;
+	
+	event(eventId, wparam, lparam);
+	init(params);
+	render();
+	update();
+	updateView(view);
+};
+
+function Application::Application() {
+	m_dispatcher 	= Dispatcher();
+	m_human 		= Hud(SelectionRay(WatcherRay(Human())));
+	m_window 		= Window();
+	m_world 		= World();
+	
+	m_dispatcher.addDevice(SceneEvent());
+	// Allow the catching of mouse and keyboard events
+	m_dispatcher.addDevice(MouseKeyboard());
+	m_dispatcher.addDevice(System());
+}
+
+function Application::event(eventId, wparam, lparam) {
+	m_dispatcher.processEvent(
+		eventId,
+		wparam, lparam,
+		m_world.getCommandQueue(), m_window
+	);
+}
+
+function Application::init(params) {
+	// m_window.setFullScreen();
+	SetClearColor(1, 1, 1);
+	
+	/* initialize light */
+	var Light0 = CVmLight();
+	Light0.SetPosition([0.0, 10.0, -20.0]);
+	Light0.SetDiffuse(1, 1, 1);
+	Light0.Enable();
+	
+	m_world.addObject(m_human);
+	
+	m_human.handleInput(m_dispatcher);
+	m_world.handleInput(m_dispatcher);
+	
+	var sea = Cube(10, 10, 0.001, [0, 0, 1, 1]);
+	var beach = Cube(1, 0.2, 1, [0.7, 0.7, 0, 1]);
+	var maleBody = Conefrustum(1, 1.5, 4, [1, 0, 0, 1]);
+	var femaleBody = Conefrustum(1, 1.5, 4, [0.3, 0.1, 0, 1]);
+	var maleHead = Sphere(2, [0.3, 0.1, 0, 1]);
+	var femaleHead = Sphere(2, [1, 0, 0, 1]);
+	var sun = Sphere(2, [1, -1, -1, 1]);
+	var trunk = Pyramid(2, 5, [0.5, 0.2, 0, 1]);
+	var leaves = Cube(2, 0.1, 2, [0, 1, 0, 1]);
+	
+	m_world.addObject(sea);
+	m_world.addObject(beach);
+	m_world.addObject(maleBody);
+	m_world.addObject(femaleBody);
+	m_world.addObject(maleHead);
+	m_world.addObject(femaleHead);
+	m_world.addObject(sun);
+	m_world.addObject(trunk);
+	m_world.addObject(leaves);
+	
+	beach.getCVmObj().SetPosition([-3.5, -2, -6]);
+	beach.getCVmObj().SetScale(23);
+	sea.getCVmObj().SetPosition([0, -3, 0]);
+	sea.getCVmObj().SetRotation(90, [1,0,0]);
+	sea.getCVmObj().SetScale(15);
+	maleBody.getCVmObj().SetPosition([-5.3, 0.42, -11.68]);
+	maleBody.getCVmObj().SetRotation(-20, [0,0,1]);
+	maleBody.getCVmObj().SetScale(0.5);
+	femaleBody.getCVmObj().SetPosition([-2.76, 0.42, -11.68]);
+	femaleBody.getCVmObj().SetRotation(20, [0,0,1]);
+	femaleBody.getCVmObj().SetScale(0.5);
+	maleHead.getCVmObj().SetPosition([-3.53, 1.83, -11.64]);
+	maleHead.getCVmObj().SetScale(0.26);
+	femaleHead.getCVmObj().SetPosition([-4.55, 1.91, -11.52]);
+	femaleHead.getCVmObj().SetScale(0.27);
+	sun.getCVmObj().SetPosition([-2.84, -3.29, -80.25]);
+	sun.getCVmObj().SetScale(5.31);
+	trunk.getCVmObj().SetPosition([2.53, 0, -7.87]);
+	trunk.getCVmObj().SetScale(2.72);
+	leaves.getCVmObj().SetPosition(0.85, 7.23, -8.47);
+	leaves.getCVmObj().SetScale(2.66);
+}
+
+function Application::render() {
+	ShowCursor(false);
+	updateView(m_human.getView());
+	
+	SceneBegin();
+	m_window.updateInfo();
+	m_world.draw();
+	SceneEnd();
+}
+
+function Application::update() {
+	m_world.update();
+}
+
+function Application::updateView(view) {
+	CameraSetPosition(view.position);
+	CameraSetDirection(view.direction);
+}
+
+#endif // APPLICATION_H

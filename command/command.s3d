@@ -1,0 +1,21 @@
+#ifndef COMMAND_H
+#define COMMAND_H
+
+class Command
+{
+	var m_action;
+	var m_option;
+	
+	apply();
+};
+
+function Command::Command(action, option) {
+	m_action = action;
+	m_option = option;
+}
+
+function Command::apply() {
+	m_action.apply(m_option);
+}
+
+#endif // COMMAND_H

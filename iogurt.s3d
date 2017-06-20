@@ -1,0 +1,38 @@
+/* Include s3d symbols */
+#include <Script3d.h>
+#include <Camera.s3d.h>
+
+#include "application.s3d"
+
+var __application = Application();
+
+/* Set global scene parameters */
+SET SCENE_FOV  = 60;
+SET SCENE_NEAR = 0.1;
+SET SCENE_FAR  = 1000;
+
+function OnInit(params)
+{
+	__application.init(params);
+}
+
+function OnFrame()
+{	
+	__application.update();
+	__application.render();
+}
+
+function OnTimer()
+{
+	// __application.update();
+}
+
+function OnEvent(eventID, wparam, lparam)
+{
+	__application.event(eventID, wparam, lparam);
+}
+
+function DownloadReady(RequestID) {}
+function OnDownload() {}
+function OnError() {}
+function OnExit() {}

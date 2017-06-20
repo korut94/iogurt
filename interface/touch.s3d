@@ -1,0 +1,29 @@
+#ifndef TOUCH_H
+#define TOUCH_H
+
+#include "../scene/object.s3d"
+#include "behavior/bhtouch.s3d"
+
+class Touch : Object
+{
+	linkToOnDrag(action);
+	linkToOnRelease(action);
+};
+
+function Touch::Touch(width, height) {
+	var mesh = CVmNewMesh(VRP_PLANE, 0, [0,0,0], [width, height, 0], 2, 0);
+	mesh.CenterBoundingBox();
+	
+	Touch::this.getCVmObj().LinkToMesh(mesh);
+	Touch::this.LinkToBehavior(BHTouch(Touch::this));
+}
+
+function Touch::linkToOnDrag(action) {
+	Touch::this.GetBehavior().setOnDrag(action);
+}
+
+function Touch::linkToOnRelease(action) {
+	Touch::this.GetBehavior().setOnRelease(action);
+}
+
+#endif // TOUCH_H
