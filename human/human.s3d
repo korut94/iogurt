@@ -101,15 +101,15 @@ function Human::init() {
 function Human::handleInput(dispatcher) {
 	var tracker = MouseHandTracker(m_character[HAND_DX_ID], 0.05);
 	
-	dispatcher.on(KEY_PRESSED_UP, 		Rotate(m_character[HEAD_ID], -0.4, [1,0,0]));
-	dispatcher.on(KEY_PRESSED_DOWN, 	Rotate(m_character[HEAD_ID], 0.4, [1,0,0]));
-	dispatcher.on(KEY_PRESSED_LEFT, 	Rotate(m_character[HEAD_ID], 0.4, [0,1,0]));
-	dispatcher.on(KEY_PRESSED_RIGHT, 	Rotate(m_character[HEAD_ID], -0.4, [0,1,0]));
-	dispatcher.on(KEY_PRESSED_A, 		Rotate(m_character[BODY_ID], 0.5, [0,1,0]));
-	dispatcher.on(KEY_PRESSED_D, 		Rotate(m_character[BODY_ID], -0.5, [0,1,0]));
-	dispatcher.on(KEY_PRESSED_S, 		Move(m_character[BODY_ID], -0.15));
+	dispatcher.on(KEY_PRESSED_UP, 		Rotate(m_character[HEAD_ID], -0.5, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_DOWN, 	Rotate(m_character[HEAD_ID], 0.5, [1,0,0]));
+	dispatcher.on(KEY_PRESSED_LEFT, 	Rotate(m_character[HEAD_ID], 0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_RIGHT, 	Rotate(m_character[HEAD_ID], -0.5, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_A, 		Rotate(m_character[BODY_ID], 1, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_D, 		Rotate(m_character[BODY_ID], -1, [0,1,0]));
+	dispatcher.on(KEY_PRESSED_S, 		Move(m_character[BODY_ID], -0.2));
 	dispatcher.on(KEY_PRESSED_V, 		ChangeView(m_eye, [-2.5, 0, -8]));
-	dispatcher.on(KEY_PRESSED_W, 		Move(m_character[BODY_ID], 0.15));
+	dispatcher.on(KEY_PRESSED_W, 		Move(m_character[BODY_ID], 0.2));
 	dispatcher.on(MOUSE_MOVE,			Caller(tracker, "onMouseMove"));
 	dispatcher.on(MOUSE_WHEEL,			Caller(tracker, "onWheel"));
 	

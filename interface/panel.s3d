@@ -1,6 +1,7 @@
 #ifndef PANEL_H
 #define PANEL_H
 
+#include "../scene/object.s3d"
 #include "behavior/bhpanel.s3d"
 
 class Panel : Object

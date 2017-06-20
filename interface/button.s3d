@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "../../../scene/object.s3d"
+#include "../scene/object.s3d"
 #include "behavior/bhbutton.s3d"
 
 class Button : Object

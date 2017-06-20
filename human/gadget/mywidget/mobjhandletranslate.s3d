@@ -1,9 +1,9 @@
 #ifndef MOBJHANDLETRANSLATE_H
 #define MOBJHANDLETRANSLATE_H
 
-#include "../../../../scene/object.s3d"
-#include "../frame.s3d"
-#include "../label.s3d"
+#include "../../../interface/frame.s3d"
+#include "../../../interface/label.s3d"
+#include "../../../scene/object.s3d"
 #include "mobjsetter.s3d"
 
 class MObjHandleTranslate : Object
@@ -28,20 +28,20 @@ function MObjHandleTranslate::MObjHandleTranslate(obj) {
 	m_target = obj;
 	m_setterX = MObjSetter(
 		"X",
-		Caller(MObjHandleTranslate::this, "translate", {[0.1,0,0]}),
-		Caller(MObjHandleTranslate::this, "translate", {[-0.1,0,0]}),
+		Caller(MObjHandleTranslate::this, "translate", {[0.01,0,0]}),
+		Caller(MObjHandleTranslate::this, "translate", {[-0.01,0,0]}),
 		Caller(MObjHandleTranslate::this, "displayX")
 	);
 	m_setterY = MObjSetter(
 		"Y",
-		Caller(MObjHandleTranslate::this, "translate", {[0,0.1,0]}),
-		Caller(MObjHandleTranslate::this, "translate", {[0,-0.1,0]}),
+		Caller(MObjHandleTranslate::this, "translate", {[0,0.01,0]}),
+		Caller(MObjHandleTranslate::this, "translate", {[0,-0.01,0]}),
 		Caller(MObjHandleTranslate::this, "displayY")
 	);
 	m_setterZ = MObjSetter(
 		"Z",
-		Caller(MObjHandleTranslate::this, "translate", {[0,0,0.1]}),
-		Caller(MObjHandleTranslate::this, "translate", {[0,0,-0.1]}),
+		Caller(MObjHandleTranslate::this, "translate", {[0,0,0.01]}),
+		Caller(MObjHandleTranslate::this, "translate", {[0,0,-0.01]}),
 		Caller(MObjHandleTranslate::this, "displayZ")
 	);
 	
@@ -87,7 +87,12 @@ function MObjHandleTranslate::removeFrom(world) {
 }
 
 function MObjHandleTranslate::translate(opts) {
-	m_target.SetPosition(m_target.GetPosition() + opts[0]);
+	var multiply = 1;
+	
+	if (opts[0] > 0.1) multiply = 5;
+	else if (opts[0] > 0.2) multiply = 20;
+	
+	m_target.SetPosition(m_target.GetPosition() + opts[1] * multiply);
 }
 
 #endif // MOBJHANDLETRANSLATE_H

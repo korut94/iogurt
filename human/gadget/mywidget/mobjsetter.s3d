@@ -1,9 +1,9 @@
 #ifndef MOBJSETTER_H
 #define MOBJSETTER_H
 
-#include "../../../../scene/object.s3d"
-#include "../button.s3d"
-#include "../label.s3d"
+#include "../../../interface/button.s3d"
+#include "../../../interface/label.s3d"
+#include "../../../scene/object.s3d"
 
 class MObjSetter : Object
 {
@@ -74,7 +74,13 @@ function MObjSetter::updateDigest(value) {
 	var strValue = str(value);
 	var integer = "";
 	var dec = "";
+	var negative = false;
 	var i = 0;
+	
+	if (strValue[0] == "-") {
+		negative = true;
+		i = 1;
+	}
 	
 	while (i < len(strValue) && strValue[i] != ".") {
 		integer = integer + strValue[i];
@@ -85,7 +91,7 @@ function MObjSetter::updateDigest(value) {
 		dec = dec + strValue[j];
 	}
 	
-	if (integer[0] == "-") {
+	if (negative) {
 		m_lblValue.text("-" + right(integer, 2) + "." + left(dec, 2));
 	} else {
 		m_lblValue.text(right(integer, 3) + "." + left(dec, 2));

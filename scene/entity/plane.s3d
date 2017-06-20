@@ -1,0 +1,45 @@
+#ifndef PLANE_H
+#define PLANE_H
+
+#include "../object.s3d"
+#include "../behavior/mono.s3d"
+
+class BHPlane : Mono
+{
+	var m_plane;
+
+	onWatch();
+};
+
+function BHPlane::BHPlane(plane) {
+	m_plane = plane;
+}
+
+function BHPlane::onWatch() {
+	EventSend(OBJECT_WATCHED, m_plane);	
+}
+
+class Plane : Object
+{
+	applyTo(world);
+	init();
+};
+
+function Plane::Plane(width, height) {
+	var mesh = CVmNewMesh(VRP_PLANE, 4, [0,0,0], [width, height, 0.01], 2, 0);
+	mesh.CenterBoundingBox();
+	
+	Plane::this.getCVmObj().LinkToMesh(mesh);
+	Plane::this.linkToBehavior(BHPlane(Plane::this));
+}
+
+function Plane::applyTo(world) {
+	world.addRootToDraw(Plane::this.getCVmObj());
+	world.trackObject(Plane::this);
+}
+
+function Plane::init() {
+	// Plane::this.getCVmObj().SetPosition([0, 0, 0]);
+}
+
+#endif // PLANE_H

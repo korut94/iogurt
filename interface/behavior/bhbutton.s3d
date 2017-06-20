@@ -8,7 +8,7 @@ class BHButton : BHWidget
 	var m_actionOnPress;
 	var m_actionOnRelease;
 	
-	onPress();
+	onPress(strength);
 	onRelease();
 	setOnPress(action);
 	setOnRelease(action);
@@ -18,9 +18,9 @@ function BHButton::BHButton(button) {
 	BHWidget(button);
 }
 
-function BHButton::onPress() {
+function BHButton::onPress(strength) {
 	if (m_actionOnPress != VOID) {
-		m_actionOnPress.apply();
+		m_actionOnPress.apply({strength});
 	}
 }
 

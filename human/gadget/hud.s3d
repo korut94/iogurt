@@ -2,7 +2,7 @@
 #define HUD_H
 
 #include "humangadget.s3d"
-#include "interface/mywidget/mobjhandle.s3d"
+#include "mywidget/mobjhandle.s3d"
 
 class Hud : HumanGadget
 {
@@ -32,7 +32,7 @@ class Hud : HumanGadget
 };
 
 function Hud::Hud(human) {
-	m_deadLine = 0.4;
+	m_deadLine = 0.3;
 	m_radius = 2;
 	m_center = CVmObj();
 	

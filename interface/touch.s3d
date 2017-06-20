@@ -1,7 +1,7 @@
 #ifndef TOUCH_H
 #define TOUCH_H
 
-#include "../../../scene/object.s3d"
+#include "../scene/object.s3d"
 #include "behavior/bhtouch.s3d"
 
 class Touch : Object

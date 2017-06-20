@@ -1,7 +1,7 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "../../../scene/object.s3d"
+#include "../scene/object.s3d"
 
 class Label : Object
 {

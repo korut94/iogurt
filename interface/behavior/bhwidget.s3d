@@ -1,7 +1,7 @@
 #ifndef BHWIDGET_H
 #define BHWIDGET_H
 
-#include "../../../../scene/behavior/mono.s3d"
+#include "../../scene/behavior/mono.s3d"
 
 class BHWidget : Mono
 {

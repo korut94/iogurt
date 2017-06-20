@@ -1,9 +1,9 @@
 #ifndef MOBJHANDLEROTATE_H
 #define MOBJHANDLEROTATE_H
 
-#include "../../../../scene/object.s3d"
-#include "../frame.s3d"
-#include "../label.s3d"
+#include "../../../interface/frame.s3d"
+#include "../../../interface/label.s3d"
+#include "../../../scene/object.s3d"
 #include "mobjsetter.s3d"
 
 class MObjHandleRotate : Object
@@ -28,20 +28,20 @@ function MObjHandleRotate::MObjHandleRotate(obj) {
 	m_target = obj;
 	m_setterX = MObjSetter(
 		"X",
-		Caller(MObjHandleRotate::this, "rotate", {1, [1,0,0]}),
-		Caller(MObjHandleRotate::this, "rotate", {-1, [1,0,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {0.01, [1,0,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {-0.01, [1,0,0]}),
 		Caller(MObjHandleRotate::this, "displayX")
 	);
 	m_setterY = MObjSetter(
 		"Y",
-		Caller(MObjHandleRotate::this, "rotate", {1, [0,1,0]}),
-		Caller(MObjHandleRotate::this, "rotate", {-1, [0,1,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {0.01, [0,1,0]}),
+		Caller(MObjHandleRotate::this, "rotate", {-0.01, [0,1,0]}),
 		Caller(MObjHandleRotate::this, "displayY")
 	);
 	m_setterZ = MObjSetter(
 		"Z",
-		Caller(MObjHandleRotate::this, "rotate", {1, [0,0,1]}),
-		Caller(MObjHandleRotate::this, "rotate", {-1, [0,0,1]}),
+		Caller(MObjHandleRotate::this, "rotate", {0.01, [0,0,1]}),
+		Caller(MObjHandleRotate::this, "rotate", {-0.01, [0,0,1]}),
 		Caller(MObjHandleRotate::this, "displayZ")
 	);
 	
@@ -93,7 +93,12 @@ function MObjHandleRotate::removeFrom(world) {
 }
 
 function MObjHandleRotate::rotate(opts) {
-	m_target.RotateABS(opts[0], opts[1]);
+	var multiply = 1;
+	
+	if (opts[0] > 0.1) multiply = 5;
+	else if (opts[0] > 0.2) multiply = 20;
+	
+	m_target.RotateABS(opts[1] * multiply, opts[2]);
 }
 
 #endif // MOBJHANDLEROTATE_H

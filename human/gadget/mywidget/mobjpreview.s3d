@@ -1,10 +1,9 @@
 #ifndef MOBJPREVIEW_H
 #define MOBJPREVIEW_H
 
-#include "../../../../scene/object.s3d"
-
-#include "../label.s3d"
-#include "../touch.s3d"
+#include "../../../interface/label.s3d"
+#include "../../../interface/touch.s3d"
+#include "../../../scene/object.s3d"
 
 function drawBoundingBox(obj) {
 	obj.DrawBoundingBox(VR_WIREFRAME);
@@ -103,8 +102,8 @@ class MObjPreview : Object
 	removeFrom(world);
 };
 
-function MObjPreview::MObjPreview(obj) {
-	m_objTarget = obj;
+function MObjPreview::MObjPreview(object) {
+	m_objTarget = object.getCVmObj();
 	m_scaleFactor = 0.3;
 	m_meshPreview = CVmObj();
 	m_preview = CVmObj();
@@ -124,7 +123,7 @@ function MObjPreview::MObjPreview(obj) {
 	m_lblRight 	= Label("R", [0.045, 0.045]);
 	m_lblTop 	= Label("T", [0.045, 0.045]);
 	
-	m_lblTitle = Label("Object ID: " + str(m_objTarget.GetID()), [0.07,0.07]);
+	m_lblTitle = Label("Object ID: " + str(object.getId()), [0.07,0.07]);
 	m_lblView = Label("View: ", [0.05, 0.05], [0.8, 0.8, 0.8]);
 	
 	var rotateAction = RotatePrevMesh(m_meshPreview, m_scaleFactor);
@@ -138,7 +137,7 @@ function MObjPreview::MObjPreview(obj) {
 	m_touchPlane.linkToOnDrag(Caller(rotateAction, "rotate"));
 	m_touchPlane.linkToOnRelease(Caller(rotateAction, "clear"));
 	
-	var mesh = obj.GetMesh();
+	var mesh = object.getCVmObj().GetMesh();
 	mesh.CenterBoundingBox();
 	
 	m_meshPreview.LinkToMesh(mesh);

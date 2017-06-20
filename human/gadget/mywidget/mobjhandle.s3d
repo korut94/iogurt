@@ -1,8 +1,8 @@
 #ifndef MOBJHANDLE_H
 #define MOBJHANDLE_H
 
-#include "../frame.s3d"
-#include "../panel.s3d"
+#include "../../../interface/frame.s3d"
+#include "../../../interface/panel.s3d"
 #include "mobjhandlerotate.s3d"
 #include "mobjhandlescale.s3d"
 #include "mobjhandletranslate.s3d"
@@ -30,7 +30,7 @@ function MObjHandle::MObjHandle(hud, width, height, object) {
 	m_handleRotate = MObjHandleRotate(object.getCVmObj());
 	m_handleScale = MObjHandleScale(object.getCVmObj());
 	
-	m_preview = MObjPreview(object.getCVmObj());
+	m_preview = MObjPreview(object);
 	
 	m_frameSetting.getCVmObj().AddChild(m_handleTranslate.getCVmObj());
 	m_frameSetting.getCVmObj().AddChild(m_handleRotate.getCVmObj());
