@@ -25,9 +25,12 @@ class Conefrustum : Object
 	init();
 };
 
-function Conefrustum::Conefrustum(min, max, height) {
+function Conefrustum::Conefrustum(min, max, height, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
 	var mesh = CVmNewMesh(VRP_CONEFRUSTUM, 30, min, height, max, 1);
 	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
 	
 	Conefrustum::this.getCVmObj().LinkToMesh(mesh);
 	Conefrustum::this.linkToBehavior(BHConefrustum(Conefrustum::this));

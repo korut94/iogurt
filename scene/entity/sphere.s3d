@@ -25,9 +25,12 @@ class Sphere : Object
 	init();
 };
 
-function Sphere::Sphere(radius) {
+function Sphere::Sphere(radius, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
 	var mesh = CVmNewMesh(VRP_SPHERE, 20, radius, 1);
 	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
 	
 	Sphere::this.getCVmObj().LinkToMesh(mesh);
 	Sphere::this.linkToBehavior(BHSphere(Sphere::this));

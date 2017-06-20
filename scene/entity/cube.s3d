@@ -25,9 +25,12 @@ class Cube : Object
 	init();
 };
 
-function Cube::Cube(width, height, depth) {
+function Cube::Cube(width, height, depth, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
 	var mesh = CVmNewMesh(VRP_BOX, 0, [0,0,0], [width, height, depth]);
 	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
 	
 	Cube::this.getCVmObj().LinkToMesh(mesh);
 	Cube::this.linkToBehavior(BHCube(Cube::this));

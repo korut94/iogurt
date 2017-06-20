@@ -25,9 +25,12 @@ class Pyramid : Object
 	init();
 };
 
-function Pyramid::Pyramid(base, height) {
+function Pyramid::Pyramid(base, height, color) {
+	var material = CVmMaterial();
+	material.Ambient = color;
 	var mesh = CVmNewMesh(VRP_PYRAMID, 4, base, height);
 	mesh.CenterBoundingBox();
+	mesh.ForceMaterial(material);
 	
 	Pyramid::this.getCVmObj().LinkToMesh(mesh);
 	Pyramid::this.linkToBehavior(BHPyramid(Pyramid::this));

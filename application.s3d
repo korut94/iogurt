@@ -66,15 +66,15 @@ function Application::init(params) {
 	m_human.handleInput(m_dispatcher);
 	m_world.handleInput(m_dispatcher);
 	
-	var sea = Cube(10, 10, 0.001);
-	var beach = Cube(1, 0.2, 1);
-	var maleBody = Conefrustum(1, 1.5, 4);
-	var femaleBody = Conefrustum(1, 1.5, 4);
-	var maleHead = Sphere(2);
-	var femaleHead = Sphere(2);
-	var sun = Sphere(2);
-	var trunk = Pyramid(2, 5);
-	var leaves = Cube(2, 0.1, 2);
+	var sea = Cube(10, 10, 0.001, [0, 0, 1, 1]);
+	var beach = Cube(1, 0.2, 1, [0.7, 0.7, 0, 1]);
+	var maleBody = Conefrustum(1, 1.5, 4, [1, 0, 0, 1]);
+	var femaleBody = Conefrustum(1, 1.5, 4, [0.3, 0.1, 0, 1]);
+	var maleHead = Sphere(2, [0.3, 0.1, 0, 1]);
+	var femaleHead = Sphere(2, [1, 0, 0, 1]);
+	var sun = Sphere(2, [1, -1, -1, 1]);
+	var trunk = Pyramid(2, 5, [0.5, 0.2, 0, 1]);
+	var leaves = Cube(2, 0.1, 2, [0, 1, 0, 1]);
 	
 	m_world.addObject(sea);
 	m_world.addObject(beach);
