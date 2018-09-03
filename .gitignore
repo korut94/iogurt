@@ -35,5 +35,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-# Steam VR assets folder
-Assets/SteamVR
+# Dependecies for EditorXR resolved by Unity Assets Store
+Assets/SteamVR*
+Assets/TextMesh Pro*

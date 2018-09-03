@@ -1,0 +1,3 @@
+[submodule "Assets/EditorXR"]
+	path = Assets/EditorXR
+	url = https://github.com/Unity-Technologies/EditorXR
