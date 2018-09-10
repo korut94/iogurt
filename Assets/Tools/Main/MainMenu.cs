@@ -1,13 +1,18 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+
+using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.EditorVR;
 using UnityEditor.Experimental.EditorVR.Menus;
+using UnityEditor.Experimental.EditorVR.Utilities;
 using UnityEngine;
 
 namespace Iogurt.Tools
 {
     public class MainMenu : MonoBehaviour, IMenu
     {
+        public Action close;
+
         public Bounds       localBounds { get; private set; }
         public GameObject   menuContent { get { return gameObject; } }
 
@@ -18,16 +23,17 @@ namespace Iogurt.Tools
         
         public int priority { get { return 1; } }
 
-        // Use this for initialization
-        void Start()
+        public void Close()
         {
-
+            Debug.Log("MainMenu is being closed");
+            close();
         }
 
-        // Update is called once per frame
-        void Update()
+        void Awake()
         {
-
+            localBounds = ObjectUtils.GetBounds(transform);
         }
     }
 }
+
+#endif
