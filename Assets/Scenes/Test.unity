@@ -397,6 +397,11 @@ Prefab:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114411440438846114, guid: d15a78bbd7d3f5d4b917c9ea8048994b,
+        type: 2}
+      propertyPath: DefaultDPI
+      value: 200
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d15a78bbd7d3f5d4b917c9ea8048994b, type: 2}
   m_IsPrefabParent: 0

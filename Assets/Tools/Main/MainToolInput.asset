@@ -21,7 +21,7 @@ MonoBehaviour:
       m_Type:
         m_TypeName: UnityEngine.InputNew.VRInputDevice, Assembly-CSharp, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_TagIndex: 1
+      m_TagIndex: -1
     m_ActionMap: {fileID: 11400000}
     m_Bindings:
     - sources:
