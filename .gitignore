@@ -36,6 +36,6 @@ sysinfo.txt
 *.unitypackage
 
 # Dependecies for EditorXR resolved by Unity Assets Store
-Assets/SteamVR*
-Assets/TextMesh Pro*
-Assets/FingersLite*
+Assets/libs/SteamVR*
+Assets/libs/TextMesh Pro*
+Assets/libs/FingersLite*
