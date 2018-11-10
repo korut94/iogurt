@@ -1,11 +1,11 @@
-﻿using Iogurt.UI.Applications;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Iogurt
 {
     public interface IUsesListOfApplications
     {
-        IList<IApplication> LoadedApplications { set; }
+        IEnumerable<Type> applications { set; }
     }
 }
 
