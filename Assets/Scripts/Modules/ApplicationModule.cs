@@ -1,16 +1,23 @@
 ﻿using Iogurt.Modules.Injection;
 using Iogurt.UI.Applications;
-using RSG;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace Iogurt.Modules
 {
     public sealed class ApplicationModule : INested, IInterfaceProvider
     {
+        IEnumerable<Type>   m_availableApplications;
         int                 m_currentApplicationIndex = -1;
         List<IApplication>  m_loadedApplications = new List<IApplication>();
         IAppsNavigator      m_navigator;
+
+        public IEnumerable<Type> availableApplications
+        {
+            set { m_availableApplications = value; }
+        }
 
         public IAppsNavigator navigator
         {
@@ -26,11 +33,13 @@ namespace Iogurt.Modules
 
         public void ConnectInterface(object target, object userData = null)
         {
+            var loadedApplications = target as IUsesLoadedApplications;
+            if (loadedApplications != null)
+                loadedApplications.LoadedApplications = m_loadedApplications;
+
             var listOfApplications = target as IUsesListOfApplications;
             if (listOfApplications != null)
-            {
-                listOfApplications.LoadedApplications = m_loadedApplications;
-            }
+                listOfApplications.applications = m_availableApplications;
         }
 
         public void DisconnectInterface(object target, object userData = null)
@@ -44,7 +53,7 @@ namespace Iogurt.Modules
 
         GameObject InstantiateApplicationUI(IApplication prefab)
         {
-            var go =  Object.Instantiate(prefab.gameObject);
+            var go =  UnityObject.Instantiate(prefab.gameObject);
             var app = go.GetComponent<IApplication>();
 
             m_loadedApplications.Add(app);
