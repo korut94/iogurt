@@ -2,6 +2,7 @@
 using Iogurt.UI.Applications;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -9,15 +10,11 @@ namespace Iogurt.Modules
 {
     public sealed class ApplicationModule : INested, IInterfaceProvider
     {
-        IEnumerable<Type>   m_availableApplications;
+        Dictionary<Type, MonoBehaviour> m_availableTools;
+
         int                 m_currentApplicationIndex = -1;
         List<IApplication>  m_loadedApplications = new List<IApplication>();
         IAppsNavigator      m_navigator;
-
-        public IEnumerable<Type> availableApplications
-        {
-            set { m_availableApplications = value; }
-        }
 
         public IAppsNavigator navigator
         {
@@ -27,6 +24,7 @@ namespace Iogurt.Modules
         public ApplicationModule()
         {
             IInstantiateApplicationUIMethods.instantiateApplicationUI = InstantiateApplicationUI;
+            ILoadToolMethods.loadTool = LoadTool;
             IUsesCurrentApplicationMethods.currentApplication = CurrentApplication;
             IUsesCurrentApplicationMethods.currentApplicationIndex = CurrentApplicationIndex;
         }
@@ -39,12 +37,26 @@ namespace Iogurt.Modules
 
             var listOfApplications = target as IUsesListOfApplications;
             if (listOfApplications != null)
-                listOfApplications.applications = m_availableApplications;
+                listOfApplications.applications = m_availableTools.Select(pair => pair.Key);
+
+            var tool = target as ITool;
+            if (tool != null && tool.HasRightSignature())
+            {
+                if (!m_availableTools.ContainsKey(target.GetType()))
+                {
+                    m_availableTools[target.GetType()] = target as MonoBehaviour;
+                }
+            }
         }
 
         public void DisconnectInterface(object target, object userData = null)
         {
             // var application = target as IApplication;
+        }
+
+        public bool isAvailable(Type tool)
+        {
+            return m_availableTools.ContainsKey(tool);
         }
 
         IApplication CurrentApplication() { return m_loadedApplications[m_currentApplicationIndex]; }
@@ -68,6 +80,16 @@ namespace Iogurt.Modules
                 .Then(() => app.Resume());
 
             return go;
+        }
+
+        void LoadTool(Type type)
+        {
+            MonoBehaviour behaviour;
+
+            if (m_availableTools.TryGetValue(type, out behaviour))
+            {
+                behaviour.enabled = true;
+            }
         }
     }
 }
