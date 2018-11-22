@@ -38,7 +38,6 @@ GameObject:
   - component: {fileID: 224016708726413612}
   - component: {fileID: 222188720741767726}
   - component: {fileID: 114236600406295214}
-  - component: {fileID: 114886884458541294}
   - component: {fileID: 114544673591057234}
   m_Layer: 5
   m_Name: ApplicationLink
@@ -102,17 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d88e73b31b14df4db8bdddaf3b2f03c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114886884458541294
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640430254012872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
     m_SelectOnUp: {fileID: 0}
@@ -137,7 +125,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 114236600406295214}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
