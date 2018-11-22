@@ -54,7 +54,7 @@ namespace Iogurt.Modules
             // var application = target as IApplication;
         }
 
-        public bool isAvailable(Type tool)
+        public bool IsAvailable(Type tool)
         {
             return m_availableTools.ContainsKey(tool);
         }
