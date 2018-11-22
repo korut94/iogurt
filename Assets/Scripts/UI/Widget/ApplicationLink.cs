@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Iogurt.UI
 {
-    public class ApplicationLink : MonoBehaviour
+    public class ApplicationLink : Button
     {
         public Sprite icon
         {
