@@ -214,7 +214,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AppsNavigator: {fileID: 114214771832215012}
-  ScreenTarget: {fileID: 224989369949194342}
 --- !u!114 &114484596591070180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -258,7 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.29346886, g: 0.29563, b: 0.33823532, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

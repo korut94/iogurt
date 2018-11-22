@@ -1,8 +1,10 @@
 ﻿using Iogurt.Applications;
 using Iogurt.Modules;
 using Iogurt.Modules.Injection;
+using Iogurt.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Iogurt.Tools
@@ -26,20 +28,28 @@ namespace Iogurt.Tools
         // Use this for initialization
         void Awake()
         {
+            // Module initialization
             m_binder = AddNestedModule<InterfaceBinder>();
+            AddNestedModule<InDepthDependencyModule>();
+            AddNestedModule<ApplicationDataModule>();
             var applicationModule = AddNestedModule<ApplicationModule>();
-
+            
+            // Menu initialization
             var menu = Instantiate(MenuPrefab, transform);
             m_menu = menu.gameObject;
 
-            this.ConnectInterfaces(menu);
+            this.ConnectInterfaces(m_menu);
 
             applicationModule.navigator = menu.navigator;
 
-            m_application = this.InstantiateApplicationUI(ApplicationPrefab);
-            var application = m_application.GetComponent<IogurtMainApp>();
+            var tools = ObjectUtils.GetImplementationsOfInterface(typeof(ITool)).Where(type => type != typeof(IogurtMainTool));
+            foreach (var tool in tools)
+                if (!applicationModule.IsAvailable(tool))
+                    AddTool(tool);
             
-            this.ConnectInterfaces(application);
+            // Application initialization
+            m_application = this.InstantiateApplicationUI(ApplicationPrefab);
+            this.ConnectInterfaces(m_application);
         }
 
         T AddNestedModule<T>() where T : INested
@@ -67,6 +77,15 @@ namespace Iogurt.Tools
             }
 
             return (T) nested;
+        }
+
+        MonoBehaviour AddTool(Type type) 
+        {
+            MonoBehaviour behaviour = gameObject.AddComponent(type) as MonoBehaviour;
+            behaviour.enabled = false;
+
+            this.ConnectInterfaces(behaviour);
+            return behaviour;
         }
     }
 }

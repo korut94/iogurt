@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Iogurt.UI
 {
     public sealed class HorizontalAppsSlider : AbstractAppsNavigator, 
-        IProceduralAnimation, IUsesListOfApplications, IUsesCurrentApplication
+        IProceduralAnimation, IUsesLoadedApplications, IUsesCurrentApplication
     {
         [SerializeField]
         float TimeToSwitch = 0.0f;

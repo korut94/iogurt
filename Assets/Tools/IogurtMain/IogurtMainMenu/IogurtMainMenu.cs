@@ -9,11 +9,6 @@ namespace Iogurt
         AbstractAppsNavigator AppsNavigator;
 
         public AbstractAppsNavigator navigator { get { return AppsNavigator; } }
-
-        void Awake()
-        {
-            this.ConnectInterfaces(navigator);
-        }
     }
 }
 

@@ -325,6 +325,7 @@ GameObject:
   - component: {fileID: 621053226}
   - component: {fileID: 621053225}
   - component: {fileID: 621053229}
+  - component: {fileID: 621053230}
   m_Layer: 5
   m_Name: VRWindowFrame
   m_TagString: Untagged
@@ -385,7 +386,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -422,3 +423,14 @@ MonoBehaviour:
     type: 2}
   MenuPrefab: {fileID: 114344524968553194, guid: d74f1a24a76490648bdfcd373238dfff,
     type: 2}
+--- !u!225 &621053230
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 621053224}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
