@@ -3,10 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - ShowInMiniWorld
-  - MiniWorldCamera
-  - VRPlayer
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -39,7 +36,7 @@ TagManager:
   - 
   - 
   - 
-  - HMDOnly
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
