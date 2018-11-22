@@ -1,7 +1,6 @@
 ﻿using Iogurt.Applications;
 using Iogurt.Modules;
 using Iogurt.Modules.Injection;
-using Iogurt.UI.Applications;
 using Iogurt.Utilities;
 using System;
 using System.Collections.Generic;
@@ -31,9 +30,10 @@ namespace Iogurt.Tools
         {
             // Module initialization
             m_binder = AddNestedModule<InterfaceBinder>();
-            var applicationModule = AddNestedModule<ApplicationModule>();
             AddNestedModule<InDepthDependencyModule>();
-
+            AddNestedModule<ApplicationDataModule>();
+            var applicationModule = AddNestedModule<ApplicationModule>();
+            
             // Menu initialization
             var menu = Instantiate(MenuPrefab, transform);
             m_menu = menu.gameObject;
@@ -41,8 +41,12 @@ namespace Iogurt.Tools
             this.ConnectInterfaces(m_menu);
 
             applicationModule.navigator = menu.navigator;
-            applicationModule.availableApplications = ObjectUtils.GetImplementationsOfInterface(typeof(ITool)).Where(type => type != typeof(IogurtMainTool));
 
+            var tools = ObjectUtils.GetImplementationsOfInterface(typeof(ITool)).Where(type => type != typeof(IogurtMainTool));
+            foreach (var tool in tools)
+                if (!applicationModule.IsAvailable(tool))
+                    AddTool(tool);
+            
             // Application initialization
             m_application = this.InstantiateApplicationUI(ApplicationPrefab);
             this.ConnectInterfaces(m_application);
@@ -73,6 +77,15 @@ namespace Iogurt.Tools
             }
 
             return (T) nested;
+        }
+
+        MonoBehaviour AddTool(Type type) 
+        {
+            MonoBehaviour behaviour = gameObject.AddComponent(type) as MonoBehaviour;
+            behaviour.enabled = false;
+
+            this.ConnectInterfaces(behaviour);
+            return behaviour;
         }
     }
 }
