@@ -11,6 +11,10 @@ namespace Iogurt.UI.Applications
         /// <summary>
         /// 
         /// </summary>
+        Transform content { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         IPromise Next();
         /// <summary>
@@ -22,7 +26,7 @@ namespace Iogurt.UI.Applications
         /// 
         /// </summary>
         /// <returns></returns>
-        IPromise SpawnApplication(GameObject app); 
+        IPromise SpawnApplication(GameObject app);
     }
 }
 
