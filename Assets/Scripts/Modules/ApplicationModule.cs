@@ -4,13 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor.Experimental.EditorVR.Utilities;
+
 using UnityObject = UnityEngine.Object;
 
 namespace Iogurt.Modules
 {
     public sealed class ApplicationModule : INested, IInterfaceProvider
     {
-        Dictionary<Type, MonoBehaviour> m_availableTools;
+        Dictionary<Type, MonoBehaviour> m_availableTools = new Dictionary<Type, MonoBehaviour>();
 
         int                 m_currentApplicationIndex = -1;
         List<IApplication>  m_loadedApplications = new List<IApplication>();
@@ -65,7 +67,7 @@ namespace Iogurt.Modules
 
         GameObject InstantiateApplicationUI(IApplication prefab)
         {
-            var go =  UnityObject.Instantiate(prefab.gameObject);
+            var go = ObjectUtils.Instantiate(prefab.gameObject, m_navigator.content, false);
             var app = go.GetComponent<IApplication>();
 
             m_loadedApplications.Add(app);
