@@ -32,10 +32,8 @@ namespace Iogurt.UI
 
         public override IPromise SpawnApplication(GameObject app)
         {
-            app.transform.SetParent(scrollRect.content);
-
-            m_from = ((float) this.CurrentApplicationIndex() - 1) / (LoadedApplications.Count - 1);
-            m_to = ((float) this.CurrentApplicationIndex()) / (LoadedApplications.Count - 1);
+            m_from = scrollRect.horizontalNormalizedPosition;
+            m_to = 1f;
             return Start();
         }
 
