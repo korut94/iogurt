@@ -1,15 +1,22 @@
 ﻿using Iogurt.Applications;
 using Iogurt.Modules;
 using Iogurt.Modules.Injection;
-using Iogurt.Utilities;
+// using Iogurt.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor.Experimental.EditorVR;
+using UnityEditor.Experimental.EditorVR.Utilities;
+
+using EXR_ITool = UnityEditor.Experimental.EditorVR.ITool;
 
 namespace Iogurt.Tools
-{
-    sealed class IogurtMainTool : MonoBehaviour, ITool, IConnectInterface, IInstantiateApplicationUI
+{ 
+    [MainMenuItem("Iogurt", "Plugins", "Starting Iogurt Editor Extension")]
+    public sealed class IogurtMainTool : MonoBehaviour,
+        EXR_ITool,
+        ITool, IConnectInterface, IInstantiateMenuUI, IInstantiateApplicationUI, IUsesRayOrigin
     {
         [SerializeField]
         IogurtMainApp   ApplicationPrefab;
@@ -24,20 +31,19 @@ namespace Iogurt.Tools
         GameObject  m_menu;
 
         public UI.Application application { get { return m_application.GetComponent<IogurtMainApp>(); } }
+        public Transform rayOrigin { get; set; }
 
-        // Use this for initialization
-        void Awake()
+        void Start()
         {
             // Module initialization
             m_binder = AddNestedModule<InterfaceBinder>();
             AddNestedModule<InDepthDependencyModule>();
             AddNestedModule<ApplicationDataModule>();
             var applicationModule = AddNestedModule<ApplicationModule>();
-            
-            // Menu initialization
-            var menu = Instantiate(MenuPrefab, transform);
-            m_menu = menu.gameObject;
 
+            // Menu initialization
+            m_menu = this.InstantiateMenuUI(rayOrigin, MenuPrefab);
+            var menu = m_menu.GetComponent<IogurtMainMenu>();
             this.ConnectInterfaces(m_menu);
 
             applicationModule.navigator = menu.navigator;
@@ -81,7 +87,7 @@ namespace Iogurt.Tools
 
         MonoBehaviour AddTool(Type type) 
         {
-            MonoBehaviour behaviour = gameObject.AddComponent(type) as MonoBehaviour;
+            MonoBehaviour behaviour = ObjectUtils.AddComponent(type, gameObject) as MonoBehaviour;
             behaviour.enabled = false;
 
             this.ConnectInterfaces(behaviour);
