@@ -5,12 +5,13 @@ namespace Iogurt.Input.Touch
     /// <summary>
     /// 
     /// </summary>
-    public interface IUsesTapGesture
+    public interface IPanGesture
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gesture"></param>
-        void TapGesture(TapGestureRecognizer gesture);
+        void OnPanGesture(PanGestureRecognizer gesture);
     }
 }
+

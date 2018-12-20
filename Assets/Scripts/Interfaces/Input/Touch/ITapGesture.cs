@@ -5,12 +5,12 @@ namespace Iogurt.Input.Touch
     /// <summary>
     /// 
     /// </summary>
-    public interface IUsesLongPressGesture {
+    public interface ITapGesture
+    {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gesture"></param>
-        void LongPressGesture(LongPressGestureRecognizer gesture);
+        void OnTapGesture(TapGestureRecognizer gesture);
     }
-
 }
