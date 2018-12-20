@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Iogurt.UI.Applications
 {
@@ -6,6 +7,7 @@ namespace Iogurt.UI.Applications
     {
         bool        isActivated { get; }
         GameObject  gameObject { get; }
+        Selectable  root { get; }
 
         void Pause();
         void Resume();

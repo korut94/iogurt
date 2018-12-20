@@ -11,7 +11,7 @@ namespace Iogurt.Modules.Injection
             var go = target as GameObject;
             if (go != null)
             {
-                foreach (var widget in go.GetComponentsInChildren<IWidget>(true))
+                foreach (var widget in go.GetComponentsInChildren<MonoBehaviour>(true))
                 {
                     this.ConnectInterfaces(widget);
                 }

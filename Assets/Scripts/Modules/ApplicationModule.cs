@@ -1,4 +1,5 @@
 ﻿using Iogurt.Modules.Injection;
+using Iogurt.UI;
 using Iogurt.UI.Applications;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,9 @@ namespace Iogurt.Modules
 
         int                 m_currentApplicationIndex = -1;
         List<IApplication>  m_loadedApplications = new List<IApplication>();
-        IAppsNavigator      m_navigator;
+        INavigationSystem   m_navigator;
 
-        public IAppsNavigator navigator
+        public INavigationSystem navigator
         {
             set { m_navigator = value; }
         }
@@ -67,21 +68,10 @@ namespace Iogurt.Modules
 
         GameObject InstantiateApplicationUI(IApplication prefab)
         {
-            var go = ObjectUtils.Instantiate(prefab.gameObject, m_navigator.content, false);
-            var app = go.GetComponent<IApplication>();
+            var app = m_navigator.LoadApplication(prefab);
+            m_navigator.ShowApplication(app);
 
-            m_loadedApplications.Add(app);
-
-            if (m_currentApplicationIndex > -1)
-                m_loadedApplications[m_currentApplicationIndex].Pause();
-
-            m_currentApplicationIndex++;
-
-            m_navigator
-                .SpawnApplication(go)
-                .Then(() => app.Resume());
-
-            return go;
+            return app.gameObject;
         }
 
         void LoadTool(Type type)

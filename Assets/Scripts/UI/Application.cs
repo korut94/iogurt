@@ -1,5 +1,6 @@
 ﻿using Iogurt.UI.Applications;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Iogurt.UI
 {
@@ -7,6 +8,8 @@ namespace Iogurt.UI
     {
         bool        m_isActivated = false;
         IWidget[]   m_widgets;
+
+        public abstract Selectable root { get; }
 
         public bool isActivated { get { return m_isActivated; } }
 

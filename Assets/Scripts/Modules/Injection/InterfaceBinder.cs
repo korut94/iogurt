@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor.Experimental.EditorVR;
+
+using EVR = UnityEditor.Experimental.EditorVR;
 
 namespace Iogurt.Modules.Injection
 {
-    public sealed class InterfaceBinder : INested
+    public sealed class InterfaceBinder : INested, EVR.IConnectInterfaces
     {
         readonly HashSet<object> m_connectedInterfaces = new HashSet<object>();
 
@@ -34,6 +38,8 @@ namespace Iogurt.Modules.Injection
 
             if (m_onConnectInterface != null)
                 m_onConnectInterface(target, userData);
+            // EditorVR
+            this.ConnectInterfaces(target, userData);
         }
 
         void DisconnectInterface(object target, object userData = null)
@@ -42,6 +48,8 @@ namespace Iogurt.Modules.Injection
 
             if (m_onDisconnectInterface != null)
                 m_onDisconnectInterface(target, userData);
+            // EditorVR
+            this.DisconnectInterfaces(target, userData);
         }
     }
 }

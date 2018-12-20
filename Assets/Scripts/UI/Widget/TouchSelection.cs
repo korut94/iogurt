@@ -6,10 +6,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEditor.Experimental.EditorVR;
+
+using EVR = UnityEditor.Experimental.EditorVR;
 
 namespace Iogurt.UI
 {
-    public sealed class TouchSelection : MonoBehaviour, IUsesTapGesture, IUsesLongPressGesture
+    public sealed class TouchSelection : MonoBehaviour, ITapGesture, ILongPressGesture, EVR.IRaycast
     {
         [SerializeField]
         GameObject CursorPrefab;
@@ -20,43 +23,46 @@ namespace Iogurt.UI
         List<RaycastResult>     m_prevHits = new List<RaycastResult>();
         GraphicRaycaster        m_raycaster;
         
-        public void LongPressGesture(LongPressGestureRecognizer gesture)
-        {
-            var pointerEventData = new PointerEventData(EventSystem.current) {
-                position = Camera.main.WorldToScreenPoint((m_cursor.transform as RectTransform).localPosition)
-            };
+        public Transform rayOrigin { get; set; }
 
+        public void OnLongPressGesture(LongPressGestureRecognizer gesture)
+        {
             if (gesture.State == GestureRecognizerState.Began)
             {
                 m_cursor.SetActive(true);
-                (m_cursor.transform as RectTransform).localPosition = BoundScreenRectToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
+                (m_cursor.transform as RectTransform).localPosition = BoundToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
             }
             else if (gesture.State == GestureRecognizerState.Executing)
             {
-                (m_cursor.transform as RectTransform).localPosition = BoundScreenRectToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
+                (m_cursor.transform as RectTransform).localPosition = BoundToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
 
-                var results = new List<RaycastResult>();
-                m_raycaster.Raycast(pointerEventData, results);
+                Debug.Log(EventSystem.current.currentSelectedGameObject);
 
+                var axisEventData = new AxisEventData(EventSystem.current);
+                axisEventData.moveDir = MoveDirection.Down;
+                ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, axisEventData, ExecuteEvents.moveHandler);
+
+                /*
                 ExecutePointerEnter(results.Where(hit => m_prevHits.FindIndex(other => hit.gameObject == other.gameObject) == -1), pointerEventData);
                 ExecutePointerExit(m_prevHits.Where(hit => results.FindIndex(other => hit.gameObject == other.gameObject) == -1), pointerEventData);
-
+                
                 m_prevHits = results;
+                */
             }
             else if (gesture.State == GestureRecognizerState.Ended)
             {
-                ExecutePointerExit(m_prevHits, pointerEventData);
+                // ExecutePointerExit(m_prevHits, pointerEventData);
 
                 m_cursor.SetActive(false);
                 m_prevHits.Clear();
             }
         }
 
-        public void TapGesture(TapGestureRecognizer gesture)
+        public void OnTapGesture(TapGestureRecognizer gesture)
         {
             if (gesture.State == GestureRecognizerState.Ended)
             {
-                (m_cursor.transform as RectTransform).localPosition = BoundScreenRectToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
+                (m_cursor.transform as RectTransform).localPosition = BoundToLocalRect(new Vector2(gesture.FocusX, gesture.FocusY));
                 StartCoroutine(FlashCursor());
 
                 var results = new List<RaycastResult>();
@@ -70,14 +76,14 @@ namespace Iogurt.UI
             }
         }
 
-        Vector2 BoundScreenRectToLocalRect(Vector2 position)
+        Vector2 BoundToLocalRect(Vector2 position)
         {
             var area = transform as RectTransform;
             var halfRectWidth = area.rect.width / 2f;
             var halfRectHeight = area.rect.height / 2f;
 
-            var x = Mathf.Lerp(-halfRectWidth, halfRectWidth, Mathf.InverseLerp(0f, Screen.width, position.x));
-            var y = Mathf.Lerp(-halfRectHeight, halfRectHeight, Mathf.InverseLerp(0f, Screen.height, position.y));
+            var x = Mathf.Lerp(-halfRectWidth, halfRectWidth, Mathf.Floor(position.x * 100f) / 100f);
+            var y = Mathf.Lerp(-halfRectHeight, halfRectHeight, Mathf.Floor(position.y * 100f) / 100f);
 
             return new Vector2(x, y);
         }

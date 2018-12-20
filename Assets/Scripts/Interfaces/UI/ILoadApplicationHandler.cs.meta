@@ -1,13 +1,11 @@
 fileFormatVersion: 2
-guid: b0a359fb83b01ef4c839a74d63b50b34
-timeCreated: 1543835744
+guid: 4e537fa8473983c48949c9b40b678f5c
+timeCreated: 1544105287
 licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - CursorPrefab: {fileID: 1049007257604908, guid: e8c8a93487721b642a8768592acf994e,
-      type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

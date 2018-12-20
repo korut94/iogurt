@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 20bfd6e2ee3a3b146b9d31627537553f
-timeCreated: 1538639785
+timeCreated: 1545312758
 licenseType: Free
 MonoImporter:
   externalObjects: {}
@@ -8,8 +8,9 @@ MonoImporter:
   defaultReferences:
   - ApplicationPrefab: {fileID: 114090522880616142, guid: a073899b06b6baa48947ae7a7024a414,
       type: 2}
-  - MenuPrefab: {fileID: 114344524968553194, guid: d74f1a24a76490648bdfcd373238dfff,
+  - MenuPrefab: {fileID: 114146999832246178, guid: d74f1a24a76490648bdfcd373238dfff,
       type: 2}
+  - ActionMap: {fileID: 11400000, guid: f103a247b03731149b4fc2126ac031a1, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

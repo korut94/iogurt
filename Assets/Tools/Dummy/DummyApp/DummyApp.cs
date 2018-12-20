@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Iogurt.Applications
 {
-    public sealed class IogurtMainApp : UI.Application, IConnectInterface, IInstantiateApplicationUI
+    public class DummyApp : UI.Application, IConnectInterface
     {
         [SerializeField]
         Selectable Root;
@@ -12,4 +12,3 @@ namespace Iogurt.Applications
         public override Selectable root { get { return Root; } }
     }
 }
-

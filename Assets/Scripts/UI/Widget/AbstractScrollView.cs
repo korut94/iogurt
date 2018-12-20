@@ -6,23 +6,20 @@ using UnityEngine.UI;
 namespace Iogurt.UI
 {
     [RequireComponent(typeof(ScrollRect))]
-    public abstract class AbstractScrollView : AbstractWidget, IUsesPanGesture
+    public abstract class AbstractScrollView : AbstractWidget, IPanGesture
     {
-        private ScrollRect m_scrollRect;
+        protected ScrollRect scrollRect { get; set; }
 
-        protected ScrollRect scrollRect { get { return m_scrollRect; } }
-
-        public void PanGesture(PanGestureRecognizer gesture)
+        void IPanGesture.OnPanGesture(PanGestureRecognizer gesture)
         {
-            if (activate)
-                OnPanGesture(gesture);
+            Debug.Log("Pan " + gesture.FocusX + " " + gesture.FocusY);
         }
 
         protected virtual void OnPanGesture(PanGestureRecognizer gesture) {}
 
         void Awake()
         {
-            m_scrollRect = GetComponent<ScrollRect>();
+            scrollRect = GetComponent<ScrollRect>();
         }
     }
 }
