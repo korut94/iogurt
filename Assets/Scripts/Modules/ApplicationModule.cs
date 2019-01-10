@@ -15,14 +15,13 @@ namespace Iogurt.Modules
     {
         Dictionary<Type, MonoBehaviour> m_availableTools = new Dictionary<Type, MonoBehaviour>();
 
-        int                 m_currentApplicationIndex = -1;
-        List<IApplication>  m_loadedApplications = new List<IApplication>();
+        IApplication        m_currentApplication;
         INavigationSystem   m_navigator;
+        ITooltipHandler     m_tooltipHandler;
 
-        public INavigationSystem navigator
-        {
-            set { m_navigator = value; }
-        }
+        // To discard
+        int m_currentApplicationIndex = -1;
+        List<IApplication> m_loadedApplications = new List<IApplication>();
 
         public ApplicationModule()
         {
@@ -30,6 +29,8 @@ namespace Iogurt.Modules
             ILoadToolMethods.loadTool = LoadTool;
             IUsesCurrentApplicationMethods.currentApplication = CurrentApplication;
             IUsesCurrentApplicationMethods.currentApplicationIndex = CurrentApplicationIndex;
+            IUsesTooltipMethods.showTooltip = ShowTooltip;
+            IUsesTooltipMethods.closeTooltip = CloseTooltip;
         }
 
         public void ConnectInterface(object target, object userData = null)
@@ -50,6 +51,14 @@ namespace Iogurt.Modules
                     m_availableTools[target.GetType()] = target as MonoBehaviour;
                 }
             }
+
+            var navigationSystem = target as INavigationSystem;
+            if (navigationSystem != null)
+                m_navigator = navigationSystem;
+
+            var tooltipHandler = target as ITooltipHandler;
+            if (tooltipHandler != null)
+                m_tooltipHandler = tooltipHandler;
         }
 
         public void DisconnectInterface(object target, object userData = null)
@@ -62,7 +71,7 @@ namespace Iogurt.Modules
             return m_availableTools.ContainsKey(tool);
         }
 
-        IApplication CurrentApplication() { return m_loadedApplications[m_currentApplicationIndex]; }
+        IApplication CurrentApplication() { return m_currentApplication; }
 
         int CurrentApplicationIndex() { return m_currentApplicationIndex; }
 
@@ -70,6 +79,8 @@ namespace Iogurt.Modules
         {
             var app = m_navigator.LoadApplication(prefab);
             m_navigator.ShowApplication(app);
+
+            m_currentApplication = app;
 
             return app.gameObject;
         }
@@ -82,6 +93,19 @@ namespace Iogurt.Modules
             {
                 behaviour.enabled = true;
             }
+        }
+
+        GameObject ShowTooltip(GameObject prefab)
+        {
+            if (m_tooltipHandler != null)
+                return m_tooltipHandler.ShowTooltip(prefab);
+            else return null;
+        }
+
+        void CloseTooltip(GameObject tooltip)
+        {
+            if (m_tooltipHandler != null && tooltip != null)
+                m_tooltipHandler.CloseTooltip(tooltip);
         }
     }
 }
