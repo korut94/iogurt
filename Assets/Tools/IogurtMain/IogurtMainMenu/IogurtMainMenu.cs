@@ -11,10 +11,13 @@ using UnityEditor.Experimental.EditorVR.Menus;
 
 namespace Iogurt
 {
-    public sealed class IogurtMainMenu : MonoBehaviour, IMenu, INavigationSystem, IPanGesture, ITapGesture
+    public sealed class IogurtMainMenu : MonoBehaviour,
+        IMenu, INavigationSystem, ITooltipHandler, IUsesCurrentApplication, IPanGesture, ITapGesture
     {
         [SerializeField]
         Transform ApplicationRect;
+        [SerializeField]
+        Transform TooltipRect;
         [SerializeField]
         float VerticalSensibility;
 
@@ -35,13 +38,21 @@ namespace Iogurt
         {
             var g = gesture as PanGestureRecognizerAdapter;
             var currentGO = EventSystem.current.currentSelectedGameObject;
-            
+
             if (g.State == GestureRecognizerState.Ended)
             {
                 m_currVStep = 0;
+                ExecuteEvents.Execute(currentGO, new PointerEventData(EventSystem.current), ExecuteEvents.pointerUpHandler);
             }
             else
             {
+                var pointerEventData = new PointerEventData(EventSystem.current)
+                {
+                    position = new Vector2(g.FocusX, g.FocusY)
+                };
+
+                ExecuteEvents.Execute(currentGO, pointerEventData, ExecuteEvents.pointerDownHandler);
+
                 var vStep = Mathf.FloorToInt(g.DeltaY / VerticalSensibility);
 
                 if (vStep > m_currVStep)
@@ -73,6 +84,7 @@ namespace Iogurt
         public IApplication LoadApplication(IApplication prefab)
         {
             var go = Instantiate(prefab.gameObject, ApplicationRect);
+            go.transform.SetAsFirstSibling();
             go.SetActive(false);
 
             return go.GetComponent<IApplication>();
@@ -80,6 +92,12 @@ namespace Iogurt
 
         public IPromise ShowApplication(IApplication application)
         {
+            var currentApp = this.CurrentApplication();
+
+            if (currentApp != null)
+                currentApp.gameObject.SetActive(false);
+
+            application.gameObject.transform.SetAsLastSibling();
             application.gameObject.SetActive(true);
 
             if (application.root != null)
@@ -89,6 +107,24 @@ namespace Iogurt
             
 
             return Promise.Resolved();
+        }
+
+        public void CloseTooltip(GameObject tooltip)
+        {
+            tooltip.SetActive(false);
+            Destroy(tooltip);
+        }
+
+        public GameObject ShowTooltip(GameObject tooltip)
+        {
+            var go = Instantiate(tooltip, TooltipRect);
+            var rect = go.transform as RectTransform;
+
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(0f, 1f);
+            rect.pivot = new Vector2(0f, 1f);
+
+            return go;
         }
     }
 }
