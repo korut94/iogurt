@@ -13,6 +13,8 @@ namespace Iogurt.UI
         [SerializeField]
         GameObject ApplicationLinkPrefab;
 
+        Selectable m_firstToolLink;
+
         public IEnumerable<Type> applications { get; set; }
 
         public override void OnSelect(BaseEventData eventData)
@@ -23,6 +25,8 @@ namespace Iogurt.UI
         protected override void Start()
         {
             base.Start();
+
+            Selectable prevSelectable = null;
 
             foreach (var tool in applications)
             {
@@ -39,11 +43,25 @@ namespace Iogurt.UI
 
                     link.title = item.title;
                     link.icon = this.GetApplicationIcon(tool);
-                    // link.onClick.AddListener(() => { this.LoadTool(tool); });
+                    link.onClick.AddListener(() => { this.LoadTool(tool); });
 
                     var nav = link.navigation;
-                    nav.mode = Navigation.Mode.Vertical;
+                    nav.mode = Navigation.Mode.Explicit;
+
+                    if (prevSelectable == null)
+                        m_firstToolLink = link;
+                    else
+                    {
+                        var preNav = prevSelectable.navigation;
+
+                        nav.selectOnUp = prevSelectable;
+                        preNav.selectOnDown = link;
+
+                        prevSelectable.navigation = preNav;
+                    }
+
                     link.navigation = nav;
+                    prevSelectable = link;
                 }
             }
         }
