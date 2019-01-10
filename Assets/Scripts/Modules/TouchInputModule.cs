@@ -198,14 +198,17 @@ namespace Iogurt.Modules
         ///*
         float TimeTapInSeconds = 0.2f;
 
+        PanGestureRecognizerAdapter m_panGesture = new PanGestureRecognizerAdapter();
+
         Action<PanGestureRecognizer> m_listenersForPan;
         Action<TapGestureRecognizer> m_listenersForTap;
 
         List<Vector2> m_inputHistory = new List<Vector2>();
         float m_timeStartingInputSequence = 0f;
-        //*/
+
         public void ConnectInterface(object target, object userData = null)
-        {/*
+        {
+            /*
             var longPress = target as ILongPressGesture;
             if (longPress != null)
             {
@@ -288,7 +291,10 @@ namespace Iogurt.Modules
                     var delta = input - m_inputHistory[0];
                     var state = (isEndInput) ? GestureRecognizerState.Ended : GestureRecognizerState.Executing;
 
-                    m_listenersForPan(new PanGestureRecognizerAdapter(delta, state));
+                    m_panGesture.SetDelta(delta);
+                    m_panGesture.SetFocus(input);
+                    m_panGesture.SetState(state);
+                    m_listenersForPan(m_panGesture);
                 }
 
                 if (isEndInput)
