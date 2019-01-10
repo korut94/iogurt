@@ -55,7 +55,7 @@ namespace Iogurt.Tools
             var menu = m_menu.GetComponent<IogurtMainMenu>();
             this.ConnectInterfaces(m_menu);
 
-            applicationModule.navigator = menu;
+            // applicationModule.navigator = menu;
 
             var tools = ObjectUtils.GetImplementationsOfInterface(typeof(ITool)).Where(type => type != typeof(IogurtMainTool));
             foreach (var tool in tools)
